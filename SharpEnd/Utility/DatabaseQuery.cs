@@ -27,7 +27,7 @@ namespace SharpEnd.Utility
 
                 try
                 {
-                    Convert.ChangeType(a, typeof(T));
+                    return (T)(Convert.ChangeType(a, typeof(T)));
                 }
                 catch (InvalidCastException)
                 {
@@ -38,8 +38,6 @@ namespace SharpEnd.Utility
             {
                 return default(T);
             }
-
-            return default(T);
         }
 
         public object this[string pField] { get { return mReader[pField]; } }

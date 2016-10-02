@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Data;
+using SharpEnd.Utility;
 using System;
 
 namespace SharpEnd.Servers
@@ -11,6 +12,8 @@ namespace SharpEnd.Servers
 
         public LoginServer Login { get; private set; }
         public WorldServer[] Worlds { get; private set; }
+
+        public HandlerStore Handlers { get; private set; }
 
         public EquipDataProvider Equips { get; private set; }
         public ItemDataProvider Items { get; private set; }
@@ -31,6 +34,8 @@ namespace SharpEnd.Servers
             {
                 Worlds[i] = new WorldServer(i, 8585, 1);
             }
+
+            Handlers = new HandlerStore();
 
             Equips = new EquipDataProvider();
             Items = new ItemDataProvider();
@@ -57,6 +62,8 @@ namespace SharpEnd.Servers
             TamingMobs.Load();
 
             Console.WriteLine("Data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);
+
+            Handlers.Load();
 
             Login.Run();
 

@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace SharpEnd.Utility
 {
-    public static class Reflector
+    internal static class Reflector
     {
         public static List<Doublet<T1, T2>> FindAllMethods<T1, T2>()
             where T1 : Attribute

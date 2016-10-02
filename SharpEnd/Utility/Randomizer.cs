@@ -1,30 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SharpEnd
 {
-    public static class Randomizer
+    internal static class Randomizer
     {
         private static readonly Random mRandom = new Random();
 
-        public static T Select<T>(List<T> list)
+        public static long NextLong()
         {
-            return list[mRandom.Next(0, list.Count)];
-        }
+            byte[] buffer = new byte[8];
 
-        public static int Next()
-        {
-            return mRandom.Next();
-        }
-
-        public static int Next(int min, int max)
-        {
-            return mRandom.Next(min, max);
-        }
-
-        public static void NextBytes(byte[] buffer)
-        {
             mRandom.NextBytes(buffer);
+
+            return BitConverter.ToInt64(buffer, 0);
         }
     }
 }

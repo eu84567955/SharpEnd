@@ -97,8 +97,15 @@
     <Compile Include="Network\InPacket.cs" />
     <Compile Include="Network\OutPacket.cs" />
     <Compile Include="Network\PacketHandlerAttribute.cs" />
+    <Compile Include="Packets\LoginPackets.cs" />
     <Compile Include="Players\Account.cs" />
     <Compile Include="Players\Player.cs" />
+    <Compile Include="Players\PlayerItem.cs" />
+    <Compile Include="Players\PlayerItems.cs" />
+    <Compile Include="Players\PlayerQuest.cs" />
+    <Compile Include="Players\PlayerQuests.cs" />
+    <Compile Include="Players\PlayerSkill.cs" />
+    <Compile Include="Players\PlayerSkills.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AesCryptograph.cs" />
     <Compile Include="Servers\ChannelServer.cs" />
@@ -108,10 +115,12 @@
     <Compile Include="Social\Party.cs" />
     <Compile Include="Utility\Database.cs" />
     <Compile Include="Utility\DatabaseQuery.cs" />
+    <Compile Include="Utility\DatabaseUpdater.cs" />
     <Compile Include="Utility\Delay.cs" />
     <Compile Include="Utility\Doublet.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Utility\GameLogicUtilities.cs" />
+    <Compile Include="Utility\HandlerStore.cs" />
     <Compile Include="Utility\Randomizer.cs" />
     <Compile Include="Utility\Reflector.cs" />
   </ItemGroup>
@@ -119,7 +128,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Packets\" />
     <Folder Include="Scripting\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

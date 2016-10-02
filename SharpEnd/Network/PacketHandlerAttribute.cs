@@ -2,13 +2,13 @@
 
 namespace SharpEnd.Network
 {
+    internal delegate void PacketProcessor(Client pClient, InPacket inPacket);
+
     internal sealed class PacketHandlerAttribute : Attribute
     {
-        public EOpcode Header { get; private set; }
+        public readonly EOpcode Opcode;
+        public PacketProcessor Processor;
 
-        public PacketHandlerAttribute(EOpcode header)
-        {
-            Header = header;
-        }
+        public PacketHandlerAttribute(EOpcode pOpcode) { Opcode = pOpcode; }
     }
 }

@@ -5,6 +5,8 @@
         public byte Identifier { get; private set; }
         public ChannelServer[] Channels { get; private set; }
 
+        public short Status => 0;
+
         public WorldServer(byte identifier, ushort port, byte channels)
         {
             Identifier = identifier;

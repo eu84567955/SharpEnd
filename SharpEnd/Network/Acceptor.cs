@@ -6,7 +6,7 @@ namespace SharpEnd.Network
 {
     internal sealed class Acceptor
     {
-        public short Port { get; private set; }
+        public ushort Port { get; private set; }
 
         private readonly TcpListener m_listener;
 
@@ -14,12 +14,12 @@ namespace SharpEnd.Network
 
         public Action<Socket> OnClientAccepted;
 
-        public Acceptor(short port)
+        public Acceptor(ushort port)
             : this(IPAddress.Any, port)
         {
         }
 
-        public Acceptor(IPAddress ip, short port)
+        public Acceptor(IPAddress ip, ushort port)
         {
             Port = port;
             m_listener = new TcpListener(ip, port);

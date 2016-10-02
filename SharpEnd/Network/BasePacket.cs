@@ -9,6 +9,11 @@ namespace SharpEnd.Network
 
         protected MemoryStream m_stream;
 
+        public byte[] ToArray()
+        {
+            return m_stream.ToArray();
+        }
+
         protected virtual void CustomDispose()
         {
             // NOTE: Intentionally left blank

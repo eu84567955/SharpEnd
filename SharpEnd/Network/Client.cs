@@ -1,4 +1,7 @@
-﻿using SharpEnd.Security;
+﻿using SharpEnd.Packets;
+using SharpEnd.Players;
+using SharpEnd.Security;
+using SharpEnd.Servers;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -8,6 +11,12 @@ namespace SharpEnd.Network
     internal sealed class Client
     {
         public string Host { get; private set; }
+
+        public long Identifier { get; set; }
+        public Account Account { get; set; }
+        public Player Player { get; set; }
+        public byte WorldIdentifier { get; set; }
+        public byte ChannelIdentifier { get; set; }
 
         private static readonly byte[] riv = new byte[] { 0x52, 0x61, 0x6A, 0x61 };
         private static readonly byte[] siv = new byte[] { 0x6E, 0x52, 0x30, 0x58 };
@@ -36,14 +45,11 @@ namespace SharpEnd.Network
 
             Host = (m_socket.RemoteEndPoint as IPEndPoint).Address.ToString();
 
+            Identifier = Randomizer.NextLong();
             m_sendCipher = new MapleCipher(176, siv, MapleCipher.TransformDirection.Encrypt);
             m_recvCipher = new MapleCipher(176, riv, MapleCipher.TransformDirection.Decrypt);
 
-            //handshake
-            using (OutPacket outPacket = new OutPacket())
-            {
-
-            }
+            SendRaw(LoginPackets.Handshake(riv, siv));
 
             WaitForData(true, 4);
         }
@@ -118,14 +124,32 @@ namespace SharpEnd.Network
 
                 var header = (ushort)inPacket.Header;
 
-                Console.WriteLine("Received packet 0x{0:X4}.", header);
-                //check handler
+                {
+                    var handler = MasterServer.Instance.Handlers[inPacket.Header];
+
+                    if (handler != null)
+                    {
+                        try
+                        {
+                            handler(this, inPacket);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Unable to process packet from {0}.", Host);
+                            Console.WriteLine(e.ToString());
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unhandled packet 0x{0:X4}.", header);
+                    }
+                }
 
                 WaitForData(true, 4);
             }
         }
 
-        public void WritePacket(params byte[][] packets)
+        public void Send(params byte[][] packets)
         {
             if (m_disposed) { return; }
 
@@ -154,11 +178,11 @@ namespace SharpEnd.Network
                     offset += buffer.Length; //packet space
                 }
 
-                WriteRawPacket(finalPacket); //send the giant crypted packet
+                SendRaw(finalPacket); //send the giant crypted packet
             }
         }
 
-        public void WriteRawPacket(byte[] packet)
+        public void SendRaw(byte[] packet)
         {
             if (m_disposed) { return; }
 
@@ -204,7 +228,10 @@ namespace SharpEnd.Network
                 m_sendCipher = null;
                 m_recvCipher = null;
 
-                // TODO: Save player
+                if (Account != null && Player != null)
+                {
+                    Player.Save();
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace SharpEnd.Network
@@ -14,9 +15,9 @@ namespace SharpEnd.Network
             m_writer = new BinaryWriter(m_stream, Encoding.ASCII);
         }
 
-        public OutPacket WriteOpcode(EOpcode opcode)
+        public OutPacket WriteHeader(EOpcode header)
         {
-            Header = opcode;
+            Header = header;
 
             WriteUShort((ushort)Header);
 
@@ -98,7 +99,11 @@ namespace SharpEnd.Network
             if (count == 0)
             {
                 m_writer.Write((ushort)value.Length);
-                m_writer.Write(value);
+
+                foreach (char c in value)
+                {
+                    WriteByte((byte)c);
+                }
             }
             else
             {
@@ -113,6 +118,33 @@ namespace SharpEnd.Network
                         WriteByte();
                     }
                 }
+            }
+
+            return this;
+        }
+
+        public OutPacket WriteZero(int count)
+        {
+            while (count-- > 0)
+            {
+                WriteByte();
+            }
+
+            return this;
+        }
+
+        public OutPacket WriteHexString(string value)
+        {
+            value = value.Replace(" ", "");
+
+            if (value.Length % 2 != 0)
+            {
+                throw new ArgumentException("Size");
+            }
+
+            for (int i = 0; i < value.Length; i += 2)
+            {
+                WriteByte(byte.Parse(value.Substring(i, 2), System.Globalization.NumberStyles.HexNumber));
             }
 
             return this;
