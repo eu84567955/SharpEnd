@@ -56,6 +56,7 @@ namespace SharpEnd.Handlers
                 if (!query.NextRow())
                 {
                     client.Send(LoginPackets.LoginError(5));
+
                     return;
                 }
 
@@ -65,6 +66,14 @@ namespace SharpEnd.Handlers
             if (password != account.Password)
             {
                 client.Send(LoginPackets.LoginError(4));
+
+                return;
+            }
+
+            if (MasterServer.Instance.Migrations.Contains(account.Identifier))
+            {
+                client.Send(LoginPackets.LoginError(7));
+
                 return;
             }
 
@@ -255,6 +264,8 @@ namespace SharpEnd.Handlers
             }
 
             int playerIdentifier = inPacket.ReadInt();
+
+            MasterServer.Instance.Migrations.Register(playerIdentifier, client.Account.Identifier, client.Host);
 
             ushort port = 8585;
 

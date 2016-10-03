@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Data;
+using SharpEnd.Migrations;
 using SharpEnd.Utility;
 using System;
 
@@ -14,6 +15,8 @@ namespace SharpEnd.Servers
         public WorldServer[] Worlds { get; private set; }
 
         public HandlerStore Handlers { get; private set; }
+
+        public MigrationRequests Migrations { get; private set; }
 
         public EquipDataProvider Equips { get; private set; }
         public ItemDataProvider Items { get; private set; }
@@ -38,6 +41,8 @@ namespace SharpEnd.Servers
             }
 
             Handlers = new HandlerStore();
+
+            Migrations = new MigrationRequests();
 
             Equips = new EquipDataProvider();
             Items = new ItemDataProvider();

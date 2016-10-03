@@ -3,7 +3,7 @@ using SharpEnd.Packets;
 
 namespace SharpEnd.Handlers
 {
-    internal static class GeneralHandler
+    internal static class GeneralHandlers
     {
         [PacketHandler(EHeader.CMSG_PRIVATE_SERVER_AUTH)]
         public static void PrivateServerAuth(Client client, InPacket inPacket)

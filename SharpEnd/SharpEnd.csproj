@@ -88,9 +88,9 @@
     <Compile Include="Enums\EWorldRibbon.cs" />
     <Compile Include="Enums\EWorldStatus.cs" />
     <Compile Include="Extensions\PacketExtensions.cs" />
-    <Compile Include="Handlers\GeneralHandler.cs" />
+    <Compile Include="Handlers\GeneralHandlers.cs" />
     <Compile Include="Handlers\LoginHandlers.cs" />
-    <Compile Include="Handlers\MigrationHandler.cs" />
+    <Compile Include="Handlers\MigrationHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapEntities.cs" />
@@ -104,6 +104,8 @@
     <Compile Include="Maps\MovableLife.cs" />
     <Compile Include="Maps\Npc.cs" />
     <Compile Include="Maps\Reactor.cs" />
+    <Compile Include="Migrations\MigrationRequest.cs" />
+    <Compile Include="Migrations\MigrationRequests.cs" />
     <Compile Include="Network\Acceptor.cs" />
     <Compile Include="Network\BasePacket.cs" />
     <Compile Include="Network\Client.cs" />
