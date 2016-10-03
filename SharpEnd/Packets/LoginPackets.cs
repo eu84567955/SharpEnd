@@ -1,6 +1,9 @@
-﻿using SharpEnd.Network;
+﻿using MySql.Data.MySqlClient;
+using SharpEnd.Network;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
+using System;
+using System.Collections.Generic;
 
 namespace SharpEnd.Packets
 {
@@ -18,6 +21,44 @@ namespace SharpEnd.Packets
                     .WriteBytes(siv)
                     .WriteByte(8)
                     .WriteByte();
+
+                return outPacket.ToArray();
+            }
+        }
+
+
+
+        public static byte[] PrivateServerAuth(int response)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EOpcode.SMSG_PRIVATE_SERVER_AUTH)
+                    .WriteInt(response);
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] Start()
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EOpcode.SMSG_START)
+                    .WriteBoolean(true);
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] AuthServer(bool enable)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EOpcode.SMSG_AUTH_SERVER)
+                    .WriteBoolean(enable);
 
                 return outPacket.ToArray();
             }
@@ -153,7 +194,6 @@ namespace SharpEnd.Packets
                     .WriteByte()
                     .WriteZero(5);
 
-
                 return outPacket.ToArray();
             }
         }
@@ -258,11 +298,49 @@ namespace SharpEnd.Packets
                 .WriteBoolean(true)
                 .WriteInt(query.Get<int>("hair"));
 
-            // NOTE: Equipment layers
-            outPacket
-                .WriteSByte(-1) // NOTE: Shown layer
-                .WriteSByte(-1) // NOTE: Hidden layer
-                .WriteSByte(-1); // NOTE: Totem later
+            SortedDictionary<byte, int> shownLayer = new SortedDictionary<byte, int>();
+            SortedDictionary<byte, int> hiddenLayer = new SortedDictionary<byte, int>();
+            SortedDictionary<byte, int> totemLayer = new SortedDictionary<byte, int>();
+
+            using (DatabaseQuery equipmentQuery = Database.Query("SELECT item_identifier,inventory_slot FROM player_item WHERE player_identifier=@player_identifier AND inventory_slot<0", new MySqlParameter("@player_identifier", query.Get<int>("identifier"))))
+            {
+                while (equipmentQuery.NextRow())
+                {
+                    int itemIdentifier = equipmentQuery.Get<int>("item_identifier");
+                    short inventorySlot = Math.Abs(equipmentQuery.Get<short>("inventory_slot"));
+
+                    if (inventorySlot > 100)
+                    {
+                        inventorySlot -= 100;
+                    }
+
+                    shownLayer.Add((byte)inventorySlot, itemIdentifier);
+                }
+            }
+
+            foreach (KeyValuePair<byte, int> entry in shownLayer)
+            {
+                outPacket
+                    .WriteByte(entry.Key)
+                    .WriteInt(entry.Value);
+            }
+            outPacket.WriteSByte(-1);
+
+            foreach (KeyValuePair<byte, int> entry in hiddenLayer)
+            {
+                outPacket
+                    .WriteByte(entry.Key)
+                    .WriteInt(entry.Value);
+            }
+            outPacket.WriteSByte(-1);
+
+            foreach (KeyValuePair<byte, int> entry in totemLayer)
+            {
+                outPacket
+                    .WriteByte(entry.Key)
+                    .WriteInt(entry.Value);
+            }
+            outPacket.WriteSByte(-1);
 
             outPacket
                 .WriteInt() // NOTE: Cash weapon
@@ -276,37 +354,53 @@ namespace SharpEnd.Packets
                 .WriteByte(); // NOTE: Mixed hair percent
         }
 
-        public static byte[] PrivateServerAuth(int response)
+        public static byte[] PlayerNameCheck(string name, bool unusable)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_PRIVATE_SERVER_AUTH)
-                    .WriteInt(response);
+                    .WriteHeader(EOpcode.SMSG_PLAYER_NAME_CHECK)
+                    .WriteString(name)
+                    .WriteBoolean(unusable);
 
                 return outPacket.ToArray();
             }
         }
 
-        public static byte[] Start()
+        public static byte[] PlayerCreate(DatabaseQuery query)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_START)
-                    .WriteBoolean(true);
+                    .WriteHeader(EOpcode.SMSG_PLAYER_CREATE)
+                    .WriteBoolean(false);
+
+                AddPlayerEntry(outPacket, query);
 
                 return outPacket.ToArray();
             }
         }
 
-        public static byte[] AuthServer(bool enable)
+        private static readonly byte[] channelIP = new byte[4] { 8, 31, 99, 141 };
+        private static readonly byte[] chatIP = new byte[4] { 8, 31, 99, 133 };
+
+        public static byte[] ServerIP(ushort port, int playerIdentifier)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_AUTH_SERVER)
-                    .WriteBoolean(enable);
+                    .WriteHeader(EOpcode.SMSG_SERVER_IP)
+                    .WriteByte()
+                    .WriteByte()
+                    .WriteBytes(channelIP)
+                    .WriteUShort(port)
+                    .WriteBytes(chatIP)
+                    .WriteUShort(port)
+                    .WriteInt(playerIdentifier)
+                    .WriteByte()
+                    .WriteInt()
+                    .WriteByte()
+                    .WriteLong();
 
                 return outPacket.ToArray();
             }

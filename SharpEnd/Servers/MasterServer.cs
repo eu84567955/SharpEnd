@@ -17,6 +17,7 @@ namespace SharpEnd.Servers
 
         public EquipDataProvider Equips { get; private set; }
         public ItemDataProvider Items { get; private set; }
+        public MapDataProvider Maps { get; private set; }
         public MobDataProvider Mobs { get; private set; }
         public NpcDataProvider Npcs { get; private set; }
         public QuestDataProvider Quests { get; private set; }
@@ -39,6 +40,7 @@ namespace SharpEnd.Servers
 
             Equips = new EquipDataProvider();
             Items = new ItemDataProvider();
+            Maps = new MapDataProvider();
             Mobs = new MobDataProvider();
             Npcs = new NpcDataProvider();
             Quests = new QuestDataProvider();
@@ -54,6 +56,7 @@ namespace SharpEnd.Servers
 
             Equips.Load();
             Items.Load();
+            Maps.Load();
             Mobs.Load();
             Npcs.Load();
             Quests.Load();

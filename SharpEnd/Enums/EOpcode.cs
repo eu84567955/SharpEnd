@@ -17,6 +17,7 @@
         CMSG_PONG =                             0x0093,
         CMSG_CLIENT_ERROR =                     0x0095,
         CMSG_CLIENT_START =                     0x0098,
+        CMSG_STRANGE_DATA =                     0x009A,
         CMSG_WORLD_STATUS =                     0x009D,
         CMSG_WORLD_LIST =                       0x00A2,
         CMSG_PIC_CHANGE =                       0x00AA,
@@ -40,6 +41,7 @@
         SMSG_AUTH_SERVER =                      0x002F,
 
         CMSG_PLAYER_LOAD =                      0x006E,
+        CMSG_PLAYER_MOVE =                      0x00BE,
 
         SMSG_INVENTORY_OPERATION =              0x0047,
         SMSG_INVENTORY_GROW =                   0x0048,
@@ -48,5 +50,7 @@
         SMSG_BUFF_CANCEL =                      0x004B,
         SMSG_TEMPORARY_STATS =                  0x004C,
         SMSG_TEMPORARY_STATS_RESET =            0x004D,
+        SMSG_NOTIFICATION =                     0x0082,
+        SMSG_CHANGE_MAP =                       0x01AC,
     }
 }

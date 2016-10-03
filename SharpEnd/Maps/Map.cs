@@ -1,12 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpEnd.Maps
+﻿namespace SharpEnd.Maps
 {
-    class Map
+    internal sealed class Map
     {
+        public int Identifier { get; private set; }
+
+        public MapPortals Portals { get; private set; }
+        public MapMobs Mobs { get; private set; }
+        public MapNpcs Npcs { get; private set; }
+        public MapReactors Reactors { get; private set; }
+
+        public Map(int identifier)
+        {
+            Identifier = identifier;
+
+            Portals = new MapPortals(this);
+            Mobs = new MapMobs(this);
+            Npcs = new MapNpcs(this);
+            Reactors = new MapReactors(this);
+        }
     }
 }

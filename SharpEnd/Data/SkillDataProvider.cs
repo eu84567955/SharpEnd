@@ -55,7 +55,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class SkillData
+    internal sealed class SkillData
     {
         public int Identifier { get; set; }
     }

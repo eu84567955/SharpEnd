@@ -232,6 +232,8 @@ namespace SharpEnd.Network
                 {
                     Player.Save();
                 }
+
+                Console.WriteLine("Connection lost from {0}.", Host);
             }
         }
     }

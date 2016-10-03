@@ -33,7 +33,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class QuestData
+    internal sealed class QuestData
     {
         public ushort Identifier { get; set; }
     }

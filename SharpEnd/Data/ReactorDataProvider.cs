@@ -42,7 +42,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class ReactorData
+    internal sealed class ReactorData
     {
         public int Identifier { get; set; }
     }

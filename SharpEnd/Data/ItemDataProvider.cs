@@ -64,7 +64,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class ItemData
+    internal sealed class ItemData
     {
         public int Identifier { get; set; }
         public int Price { get; set; }

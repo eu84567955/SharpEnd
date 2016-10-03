@@ -149,5 +149,13 @@ namespace SharpEnd.Network
 
             return this;
         }
+
+        public void SetUInt(int offset, uint value)
+        {
+            int tOffset = Position;
+            Position = offset;
+            WriteUInt(value);
+            Position = tOffset;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using SharpEnd.Drawing;
+using System.IO;
 using System.Text;
 
 namespace SharpEnd.Network
@@ -14,6 +15,11 @@ namespace SharpEnd.Network
             m_reader = new BinaryReader(m_stream, Encoding.ASCII);
 
             Header = (EOpcode)ReadUShort();
+        }
+
+        public void Skip(int count)
+        {
+            Position += count;
         }
 
         public byte[] ReadBytes(int count)
@@ -76,6 +82,11 @@ namespace SharpEnd.Network
             char[] chars = m_reader.ReadChars(count);
 
             return new string(chars);
+        }
+
+        public Point ReadPoint()
+        {
+            return new Point(ReadShort(), ReadShort());
         }
 
         protected override void CustomDispose()

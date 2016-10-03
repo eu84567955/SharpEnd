@@ -61,7 +61,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class EquipData
+    internal sealed class EquipData
     {
         public int Identifier { get; set; }
     }

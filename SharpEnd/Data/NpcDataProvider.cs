@@ -42,7 +42,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class NpcData
+    internal sealed class NpcData
     {
         public int Identifier { get; set; }
     }

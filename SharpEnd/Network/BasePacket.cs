@@ -7,6 +7,18 @@ namespace SharpEnd.Network
     {
         public EOpcode Header { get; protected set; }
 
+        public int Position
+        {
+            get
+            {
+                return (int)m_stream.Position;
+            }
+            set
+            {
+                m_stream.Position = value;
+            }
+        }
+
         protected MemoryStream m_stream;
 
         public byte[] ToArray()

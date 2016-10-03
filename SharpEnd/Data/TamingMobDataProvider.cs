@@ -50,7 +50,7 @@ namespace SharpEnd.Data
         }
     }
 
-    public class TamingMobData
+    internal sealed class TamingMobData
     {
         public int Identifier { get; set; }
         public int Fatigue { get; set; }
