@@ -1,7 +1,6 @@
 ﻿using SharpEnd.Servers;
 using SharpEnd.Utility;
 using System;
-using System.Diagnostics;
 
 namespace SharpEnd
 {
@@ -13,7 +12,7 @@ namespace SharpEnd
 
         static Application()
         {
-            m_usageDelay = new Delay(3 * 1000, () => UpdateTitle(), true);
+            m_usageDelay = new Delay(15 * 1000, () => UpdateTitle(), true);
         }
 
         private static void Main(string[] args)
@@ -51,7 +50,7 @@ namespace SharpEnd
 
         private static void UpdateTitle()
         {
-            Console.Title = $"SharpEnd | Memory Usage: {Math.Round(Process.GetCurrentProcess().PrivateMemorySize64 / 1024f) } KB";
+            Console.Title = $"SharpEnd | Memory Usage: {Math.Round(GC.GetTotalMemory(true) / 1024f) } KB";
         }
     }
 }

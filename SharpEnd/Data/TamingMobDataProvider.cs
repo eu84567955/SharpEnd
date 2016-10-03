@@ -7,11 +7,11 @@ namespace SharpEnd.Data
 {
     internal sealed class TamingMobDataProvider
     {
-        private Dictionary<int, TamingMobData> m_items;
+        private Dictionary<int, TamingMobData> m_tamingMobs;
 
         public TamingMobDataProvider()
         {
-            m_items = new Dictionary<int, TamingMobData>();
+            m_tamingMobs = new Dictionary<int, TamingMobData>();
         }
 
         public void Load()
@@ -34,18 +34,18 @@ namespace SharpEnd.Data
                     item.Speed = infoNode.GetInt("speed");
                     item.Swim = infoNode.GetDouble("swim");
 
-                    m_items.Add(identifier, item);
+                    m_tamingMobs.Add(identifier, item);
                 }
             }
-            
-            Console.WriteLine($"Loaded {m_items.Count} taming mobs.");
+
+            Console.WriteLine($"Loaded {m_tamingMobs.Count} taming mobs.");
         }
 
         public TamingMobData this[int identifier]
         {
             get
             {
-                return m_items.GetOrDefault(identifier, null);
+                return m_tamingMobs.GetOrDefault(identifier, null);
             }
         }
     }

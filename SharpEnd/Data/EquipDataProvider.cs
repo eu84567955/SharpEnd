@@ -49,7 +49,8 @@ namespace SharpEnd.Data
                 }
                 
                 Console.WriteLine($"Loaded {m_equips.Count} equips.");
-            }
+            
+}
         }
 
         public EquipData this[int identifier]
