@@ -95,6 +95,7 @@
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapEntities.cs" />
     <Compile Include="Maps\MapEntity.cs" />
+    <Compile Include="Maps\MapPlayers.cs" />
     <Compile Include="Maps\MapPortals.cs" />
     <Compile Include="Maps\MapReactors.cs" />
     <Compile Include="Maps\MapNpcs.cs" />

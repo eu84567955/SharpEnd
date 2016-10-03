@@ -1,7 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
+using SharpEnd.Data;
+using SharpEnd.Drawing;
 using SharpEnd.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
+using SharpEnd.Servers;
 using SharpEnd.Utility;
 
 namespace SharpEnd.Players
@@ -79,6 +82,53 @@ namespace SharpEnd.Players
         public void Notify(string text, EMessageType type = EMessageType.Pink)
         {
             m_client.Send(MessagePackets.Notification(text, type));
+        }
+
+        public void SetMap(int mapIdentifier, sbyte portalIdentifier, Point position)
+        {
+            InternalSetMap(mapIdentifier, portalIdentifier, position, true);
+        }
+
+        public void SetMap(int mapIdentifier, PortalData portal = null, bool isInstance = false)
+        {
+            if (!MasterServer.Instance.Maps.Contains(mapIdentifier))
+            {
+                return;
+            }
+
+            Map oldMap = MasterServer.Instance.Maps[Map];
+            Map newMap = MasterServer.Instance.Maps[mapIdentifier];
+
+            if (portal == null)
+            {
+                portal = newMap.Portals.GetSpawnPoint();
+            }
+
+            if (!isInstance)
+            {
+
+            }
+
+            InternalSetMap(mapIdentifier, portal.Identifier, new Point(portal.Position.X, (short)(portal.Position.Y - 40)), false);
+        }
+
+        private void InternalSetMap(int mapIdentifier, sbyte portalIdentifier, Point position, bool fromPosition)
+        {
+            Map oldMap = MasterServer.Instance.Maps[Map];
+            Map newMap = MasterServer.Instance.Maps[mapIdentifier];
+
+            oldMap.Players.Remove(this);
+
+            Map = mapIdentifier;
+            SpawnPoint = portalIdentifier;
+
+            Position = position;
+            Stance = 0;
+            Foothold = 0;
+
+            Send(MapPackets.ChangeMap(this, fromPosition: fromPosition, position: position));
+
+            newMap.Players.Add(this);
         }
     }
 }

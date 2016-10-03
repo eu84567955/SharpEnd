@@ -1,11 +1,12 @@
-﻿using SharpEnd.Network;
+﻿using SharpEnd.Drawing;
+using SharpEnd.Network;
 using SharpEnd.Players;
 
 namespace SharpEnd.Packets
 {
     internal static class MapPackets
     {
-        public static byte[] ChangeMap(Player player, bool initial = false)
+        public static byte[] ChangeMap(Player player, bool initial = false, bool fromPosition = false, Point position = null)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -247,7 +248,12 @@ namespace SharpEnd.Packets
                         .WriteInt(player.Map)
                         .WriteSByte(player.SpawnPoint)
                         .WriteUInt(player.Stats.Health) // NOTE: Health
-                        .WriteBoolean(false); // NOTE: Unknown
+                        .WriteBoolean(fromPosition);
+
+                    if (fromPosition)
+                    {
+                        outPacket.WritePoint(position);
+                    }
                 }
 
                 outPacket

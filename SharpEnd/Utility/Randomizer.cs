@@ -11,6 +11,11 @@ namespace SharpEnd
             return mRandom.Next();
         }
 
+        public static int NextInt(int minValue, int maxValue)
+        {
+            return mRandom.Next(minValue, maxValue);
+        }
+
         public static long NextLong()
         {
             byte[] buffer = new byte[8];

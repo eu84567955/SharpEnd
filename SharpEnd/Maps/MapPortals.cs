@@ -12,5 +12,24 @@ namespace SharpEnd.Maps
         {
             Map = map;
         }
+
+        public PortalData GetSpawnPoint(sbyte portalIdentifier = -1)
+        {
+            List<PortalData> spawnPoints = new List<PortalData>();
+
+            foreach (PortalData portal in this)
+            {
+                if (portal.Label.StartsWith("sp"))
+                {
+                    spawnPoints.Add(portal);
+                }
+            }
+
+            sbyte identifier = (sbyte)(portalIdentifier != -1 ?
+                        portalIdentifier :
+                        Randomizer.NextInt(0, spawnPoints.Count));
+
+            return spawnPoints[identifier];
+        }
     }
 }

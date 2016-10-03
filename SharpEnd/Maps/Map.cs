@@ -4,6 +4,7 @@
     {
         public int Identifier { get; private set; }
 
+        public MapPlayers Players { get; private set; }
         public MapPortals Portals { get; private set; }
         public MapMobs Mobs { get; private set; }
         public MapNpcs Npcs { get; private set; }
@@ -13,6 +14,7 @@
         {
             Identifier = identifier;
 
+            Players = new MapPlayers(this);
             Portals = new MapPortals(this);
             Mobs = new MapMobs(this);
             Npcs = new MapNpcs(this);

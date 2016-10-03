@@ -58,7 +58,7 @@ namespace SharpEnd.Data
 
         private void LoadPortals(Map map, NXNode portalNode)
         {
-            byte identifier = 0;
+            sbyte identifier = 0;
 
             foreach (var node in portalNode)
             {
@@ -74,6 +74,11 @@ namespace SharpEnd.Data
             }
         }
 
+        public bool Contains(int identifier)
+        {
+            return m_maps.ContainsKey(identifier);
+        }
+
         public Map this[int identifier]
         {
             get
@@ -85,7 +90,7 @@ namespace SharpEnd.Data
 
     internal sealed class PortalData
     {
-        public byte Identifier { get; set; }
+        public sbyte Identifier { get; set; }
         public string Label { get; set; }
         public int DestinationMap { get; set; }
         public string DestinationLabel { get; set; }
