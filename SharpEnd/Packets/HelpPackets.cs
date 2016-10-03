@@ -136,5 +136,34 @@ namespace SharpEnd.Packets
                 }
             }
         }
+
+        public static void AddPlayerDisplay(OutPacket outPacket, Player player)
+        {
+            outPacket
+                .WriteByte(player.Gender)
+                .WriteByte(player.Skin)
+                .WriteInt(player.Face)
+                .WriteInt(player.Stats.Job)
+                .WriteBoolean(false)
+                .WriteInt(player.Hair);
+
+            player.Items.WriteEquipment(outPacket);
+
+            outPacket.WriteBoolean(false); // NOTE: Elf ears
+
+            // NOTE: Pets
+            {
+                sbyte count = 3;
+
+                while (count-- > 0)
+                {
+                    outPacket.WriteInt();
+                }
+            }
+
+            outPacket
+                .WriteSByte() // NOTE: Mixed hair
+                .WriteSByte(); // NOTE: Mixed hair
+        }
     }
 }

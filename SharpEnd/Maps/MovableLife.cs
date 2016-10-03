@@ -6,14 +6,14 @@ namespace SharpEnd.Maps
     internal abstract class MovableLife
     {
         public Point Position { get; set; }
-        public ushort Foothold { get; set; }
         public byte Stance { get; set; }
+        public ushort Foothold { get; set; }
 
         public bool ParseMovement(InPacket inPacket)
         {
             Point position = null;
-            ushort foothold = 0;
             byte stance = 0;
+            ushort foothold = 0;
 
             byte count = inPacket.ReadByte();
 
@@ -189,8 +189,8 @@ namespace SharpEnd.Maps
             if (position != null)
             {
                 Position = position;
-                Foothold = foothold;
                 Stance = stance;
+                Foothold = foothold;
             }
 
             return true;

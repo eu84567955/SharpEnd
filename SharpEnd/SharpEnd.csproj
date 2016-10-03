@@ -56,6 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Commands\PlayerCommandAttribute.cs" />
+    <Compile Include="Commands\GmCommandAttribute.cs" />
+    <Compile Include="Commands\ManagmentCommands.cs" />
     <Compile Include="Data\MapDataProvider.cs" />
     <Compile Include="Data\TamingMobDataProvider.cs" />
     <Compile Include="Data\SkillDataProvider.cs" />
@@ -109,6 +114,7 @@
     <Compile Include="Packets\LoginPackets.cs" />
     <Compile Include="Packets\MapPackets.cs" />
     <Compile Include="Packets\MessagePackets.cs" />
+    <Compile Include="Packets\PlayerPackets.cs" />
     <Compile Include="Players\Account.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Players\PlayerItem.cs" />

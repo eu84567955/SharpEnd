@@ -24,6 +24,7 @@ namespace SharpEnd.Servers
         public ReactorDataProvider Reactors { get; private set; }
         public SkillDataProvider Skills { get; private set; }
         public TamingMobDataProvider TamingMobs { get; private set; }
+        public Commands.Commands Commands { get; private set; }
 
         private MasterServer()
         {
@@ -47,6 +48,7 @@ namespace SharpEnd.Servers
             Reactors = new ReactorDataProvider();
             Skills = new SkillDataProvider();
             TamingMobs = new TamingMobDataProvider();
+            Commands = new Commands.Commands();
         }
 
         public void Run()
@@ -63,6 +65,7 @@ namespace SharpEnd.Servers
             Reactors.Load();
             Skills.Load();
             TamingMobs.Load();
+            Commands.Load();
 
             Console.WriteLine("Data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);
 

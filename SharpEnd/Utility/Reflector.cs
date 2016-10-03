@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEnd.Commands;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -30,6 +31,45 @@ namespace SharpEnd.Utility
                 }
             }
             return results;
+        }
+
+        public static List<Command> FindAllGmCommands()
+        {
+            List<Command> commands = new List<Command>();
+
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (assembly.GlobalAssemblyCache)
+                {
+                    continue;
+                }
+
+                Type[] types = assembly.GetTypes();
+
+                foreach (Type type in types)
+                {
+                    MethodInfo[] methods = type.GetMethods();
+
+                    foreach (var method in methods)
+                    {
+                        GmCommandAttribute attribute = Attribute.GetCustomAttribute(method, typeof(GmCommandAttribute), false) as GmCommandAttribute;
+
+                        if (attribute == null)
+                        {
+                            continue;
+                        }
+
+                        string name = attribute.Name;
+                        string description = attribute.Description;
+                        MethodInfo methodInfo = method;
+                        ParameterInfo[] parameters = method.GetParameters();
+
+                        commands.Add(new Command(name, description, methodInfo, parameters));
+                    }
+                }
+            }
+
+            return commands;
         }
     }
 }

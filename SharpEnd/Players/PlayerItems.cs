@@ -2,6 +2,7 @@
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Utility;
+using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Players
@@ -111,6 +112,71 @@ namespace SharpEnd.Players
             outPacket.WriteByte();
 
             outPacket.WriteZero(21);
+        }
+
+        public void WriteEquipment(OutPacket outPacket)
+        {
+            SortedDictionary<byte, int> visibleLayer = new SortedDictionary<byte, int>();
+            SortedDictionary<byte, int> hiddenLayer = new SortedDictionary<byte, int>();
+            SortedDictionary<byte, int> totemLayer = new SortedDictionary<byte, int>();
+
+            foreach (PlayerItem item in GetEquipped())
+            {
+                byte position = (byte)Math.Abs(item.Slot);
+
+                if (position < 100 && !visibleLayer.ContainsKey(position))
+                {
+                    visibleLayer[position] = item.Identifier;
+                }
+                else if (position > 100 && position != 111)
+                {
+                    position -= 100;
+
+                    if (visibleLayer.ContainsKey(position))
+                    {
+                        hiddenLayer[position] = visibleLayer[position];
+                    }
+
+                    visibleLayer[position] = item.Identifier;
+                }
+                else if (visibleLayer.ContainsKey(position))
+                {
+                    hiddenLayer[position] = item.Identifier;
+                }
+            }
+
+            foreach (KeyValuePair<byte, int> entry in visibleLayer)
+            {
+                outPacket
+                    .WriteByte(entry.Key)
+                    .WriteInt(entry.Value);
+            }
+            outPacket.WriteSByte(-1);
+
+            foreach (KeyValuePair<byte, int> entry in hiddenLayer)
+            {
+                outPacket
+                    .WriteByte(entry.Key)
+                    .WriteInt(entry.Value);
+            }
+            outPacket.WriteSByte(-1);
+
+            foreach (KeyValuePair<byte, int> entry in totemLayer)
+            {
+                outPacket
+                    .WriteByte(entry.Key)
+                    .WriteInt(entry.Value);
+            }
+            outPacket.WriteSByte(-1);
+
+            PlayerItem cashWeapon = null;
+            PlayerItem weapon = null;
+            PlayerItem offhand = null;
+
+            outPacket
+                .WriteInt(cashWeapon != null ? cashWeapon.Identifier : 0)
+                .WriteInt(weapon != null ? weapon.Identifier : 0)
+                .WriteInt(offhand != null ? offhand.Identifier : 0);
         }
 
         public IEnumerable<PlayerItem> GetEquipped(EEquippedQueryMode mode = EEquippedQueryMode.Any)

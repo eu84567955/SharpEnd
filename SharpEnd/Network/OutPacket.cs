@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEnd.Drawing;
+using System;
 using System.IO;
 using System.Text;
 
@@ -146,6 +147,14 @@ namespace SharpEnd.Network
             {
                 WriteByte(byte.Parse(value.Substring(i, 2), System.Globalization.NumberStyles.HexNumber));
             }
+
+            return this;
+        }
+
+        public OutPacket WritePoint(Point value)
+        {
+            WriteShort(value.X);
+            WriteShort(value.Y);
 
             return this;
         }

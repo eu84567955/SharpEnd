@@ -246,7 +246,7 @@ namespace SharpEnd.Packets
                         .WriteBoolean(false) // NOTE: bUsingBuffProtector
                         .WriteInt(player.Map)
                         .WriteSByte(player.SpawnPoint)
-                        .WriteInt() // NOTE: Health
+                        .WriteUInt(player.Stats.Health) // NOTE: Health
                         .WriteBoolean(false); // NOTE: Unknown
                 }
 

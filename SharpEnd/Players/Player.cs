@@ -16,8 +16,8 @@ namespace SharpEnd.Players
         public byte Skin { get; private set; }
         public int Face { get; private set; }
         public int Hair { get; private set; }
-        public int Map { get; private set; }
-        public sbyte SpawnPoint { get; private set; }
+        public int Map { get; set; }
+        public sbyte SpawnPoint { get; set; }
         public byte PortalCount { get; set; }
 
         public PlayerStats Stats { get; private set; }
@@ -69,6 +69,11 @@ namespace SharpEnd.Players
             Items.Save();
             Skills.Save();
             Quests.Save();
+        }
+
+        public void Send(byte[] buffer)
+        {
+            m_client.Send(buffer);
         }
 
         public void Notify(string text, EMessageType type = EMessageType.Pink)

@@ -6,6 +6,11 @@ namespace SharpEnd
     {
         private static readonly Random mRandom = new Random();
 
+        public static int NextInt()
+        {
+            return mRandom.Next();
+        }
+
         public static long NextLong()
         {
             byte[] buffer = new byte[8];

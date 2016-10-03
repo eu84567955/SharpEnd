@@ -42,6 +42,8 @@
 
         CMSG_PLAYER_LOAD =                      0x006E,
         CMSG_PLAYER_MOVE =                      0x00BE,
+        CMSG_PLAYER_CHAT =                      0x00CB,
+        CMSG_PLAYER_EMOTE =                     0x00CD,
 
         SMSG_INVENTORY_OPERATION =              0x0047,
         SMSG_INVENTORY_GROW =                   0x0048,
@@ -52,5 +54,6 @@
         SMSG_TEMPORARY_STATS_RESET =            0x004D,
         SMSG_NOTIFICATION =                     0x0082,
         SMSG_CHANGE_MAP =                       0x01AC,
+        SMSG_PLAYER_SPAWN =                     0x0204,
     }
 }
