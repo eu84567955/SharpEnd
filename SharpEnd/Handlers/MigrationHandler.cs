@@ -8,7 +8,7 @@ namespace SharpEnd.Handlers
 {
     internal static class MigrationHandler
     {
-        [PacketHandler(EOpcode.CMSG_PLAYER_LOAD)]
+        [PacketHandler(EHeader.CMSG_PLAYER_LOAD)]
         public static void PlayerLoad(Client client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: Alliance identifier

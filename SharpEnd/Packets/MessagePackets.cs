@@ -9,7 +9,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_NOTIFICATION)
+                    .WriteHeader(EHeader.SMSG_NOTIFICATION)
                     .WriteByte((byte)type);
 
                 if (type == EMessageType.Header)

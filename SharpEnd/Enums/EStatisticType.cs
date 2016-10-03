@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    public enum EStatisticType : int
+    public enum EStatisticType : ulong
     {
         Skin = 0x1,
         Face = 0x2,
@@ -11,12 +11,12 @@
         Dexterity = 0x80,
         Intelligence = 0x100,
         Luck = 0x200,
-        CurrentHP = 0x400,
-        MaxHP = 0x800,
-        CurrentMP = 0x1000,
-        MaxMP = 0x2000,
-        AvailableAP = 0x4000,
-        AvailableSP = 0x8000,
+        Health = 0x400,
+        MaxHealth = 0x800,
+        Mana = 0x1000,
+        MaxMana = 0x2000,
+        AbilityPoints = 0x4000,
+        SkillPoints = 0x8000,
         Experience = 0x10000,
         Fame = 0x20000,
         Meso = 0x40000,

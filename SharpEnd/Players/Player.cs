@@ -45,7 +45,7 @@ namespace SharpEnd.Players
 
             using (DatabaseQuery itemQuery = Database.Query("SELECT * FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
             {
-                long meso = query.Get<long>("meso");
+                ulong meso = query.Get<ulong>("meso");
 
                 byte equipmentSlots = query.Get<byte>("equipment_slots");
                 byte usableSlots = query.Get<byte>("usable_slots");
@@ -69,6 +69,34 @@ namespace SharpEnd.Players
 
         public void Save()
         {
+            Database.Execute("UPDATE `player` SET gender=@gender, skin=@skin, face=@face, hair=@hair, level=@level, job=@job, strength=@strength, dexterity=@dexterity, intelligence=@intelligence, luck=@luck, health=@health, max_health=@max_health, mana=@mana, max_mana=@max_mana, ability_points=@ability_points, experience=@experience, fame=@fame, map_identifier=@map_identifier, map_spawn=@map_spawn, meso=@meso, equipment_slots=@equipment_slots, use_slots=@use_slots, etc_slots=@etc_slots, cash_slots=@cash_slots WHERE identifier=@identifier",
+                               new MySqlParameter("identifier", Identifier),
+                               new MySqlParameter("gender", Gender),
+                               new MySqlParameter("skin", Skin),
+                               new MySqlParameter("face", Face),
+                               new MySqlParameter("hair", Hair),
+                               new MySqlParameter("level", Stats.Level),
+                               new MySqlParameter("job", Stats.Job),
+                               new MySqlParameter("strength", Stats.Strength),
+                               new MySqlParameter("dexterity", Stats.Dexterity),
+                               new MySqlParameter("intelligence", Stats.Intelligence),
+                               new MySqlParameter("luck", Stats.Luck),
+                               new MySqlParameter("health", Stats.Health),
+                               new MySqlParameter("max_health", Stats.MaxHealth),
+                               new MySqlParameter("mana", Stats.Mana),
+                               new MySqlParameter("max_mana", Stats.MaxMana),
+                               new MySqlParameter("ability_points", Stats.AbilityPoints),
+                               new MySqlParameter("experience", Stats.Experience),
+                               new MySqlParameter("fame", Stats.Fame),
+                               new MySqlParameter("map_identifier", Map),
+                               new MySqlParameter("map_spawn", SpawnPoint),
+                               new MySqlParameter("meso", Items.Meso),
+                               new MySqlParameter("equipment_slots", Items.EquipmentSlots),
+                               new MySqlParameter("use_slots", Items.UsableSlots),
+                               new MySqlParameter("setup_slots", Items.SetupSlots),
+                               new MySqlParameter("etc_slots", Items.EtceteraSlots),
+                               new MySqlParameter("cash_slots", Items.CashSlots));
+
             Items.Save();
             Skills.Save();
             Quests.Save();
@@ -129,6 +157,20 @@ namespace SharpEnd.Players
             Send(MapPackets.ChangeMap(this, fromPosition: fromPosition, position: position));
 
             newMap.Players.Add(this);
+        }
+
+        public void AcceptDeath(bool wheel)
+        {
+            int returnMapIdentifier = 0;
+
+            if (wheel)
+            {
+                returnMapIdentifier = Map;
+            }
+
+            Stats.SetHealth(50, false);
+
+            SetMap(returnMapIdentifier);
         }
     }
 }

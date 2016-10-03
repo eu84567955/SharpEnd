@@ -5,7 +5,7 @@ namespace SharpEnd.Network
 {
     internal abstract class BasePacket : IDisposable
     {
-        public EOpcode Header { get; protected set; }
+        public EHeader Header { get; protected set; }
 
         public int Position
         {

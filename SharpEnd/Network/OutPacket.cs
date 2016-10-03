@@ -16,7 +16,7 @@ namespace SharpEnd.Network
             m_writer = new BinaryWriter(m_stream, Encoding.ASCII);
         }
 
-        public OutPacket WriteHeader(EOpcode header)
+        public OutPacket WriteHeader(EHeader header)
         {
             Header = header;
 

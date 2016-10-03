@@ -6,9 +6,9 @@ namespace SharpEnd.Network
 
     internal sealed class PacketHandlerAttribute : Attribute
     {
-        public readonly EOpcode Opcode;
+        public readonly EHeader Opcode;
         public PacketProcessor Processor;
 
-        public PacketHandlerAttribute(EOpcode pOpcode) { Opcode = pOpcode; }
+        public PacketHandlerAttribute(EHeader pOpcode) { Opcode = pOpcode; }
     }
 }

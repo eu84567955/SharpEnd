@@ -14,7 +14,7 @@ namespace SharpEnd.Network
 
             m_reader = new BinaryReader(m_stream, Encoding.ASCII);
 
-            Header = (EOpcode)ReadUShort();
+            Header = (EHeader)ReadUShort();
         }
 
         public void Skip(int count)

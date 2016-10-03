@@ -5,12 +5,85 @@ namespace SharpEnd.Packets
 {
     internal static class PlayerPackets
     {
+        public static byte[] PlayerStatUpdate(EStatisticType updateBits, long value, bool itemReaction = false)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_PLAYER_STAT_UPDATE)
+                    .WriteBoolean(itemReaction)
+                    .WriteULong((ulong)updateBits);
+
+                // NOTE: For now it only accepts updateBits as a single unit
+                // Might be a collection later when we need it
+                switch (updateBits)
+                {
+                    case EStatisticType.Skin:
+                    case EStatisticType.Level:
+                        outPacket.WriteByte((byte)value);
+                        break;
+
+                    case EStatisticType.Job:
+                    case EStatisticType.Strength:
+                    case EStatisticType.Dexterity:
+                    case EStatisticType.Intelligence:
+                    case EStatisticType.Luck:
+                    case EStatisticType.AbilityPoints:
+                        {
+                            outPacket.WriteUShort((ushort)value);
+
+                            if (updateBits == EStatisticType.Job)
+                            {
+                                outPacket.WriteUShort(); // NOTE: Subcategory.
+                            }
+                        }
+                        break;
+
+                    case EStatisticType.Face:
+                    case EStatisticType.Hair:
+                    case EStatisticType.Health:
+                    case EStatisticType.MaxHealth:
+                    case EStatisticType.Mana:
+                    case EStatisticType.MaxMana:
+                    case EStatisticType.Fame:
+                        outPacket.WriteInt((int)value);
+                        break;
+
+                    case EStatisticType.Experience:
+                    case EStatisticType.Meso:
+                        outPacket.WriteULong((ulong)value);
+                        break;
+
+                    case EStatisticType.SkillPoints:
+                        {
+                            // TODO: Skill points special case
+                        }
+                        break;
+
+                    case EStatisticType.Pet:
+                        {
+                            // TODO: Pet special case
+                        }
+                        break;
+                }
+
+                outPacket
+                    .WriteByte() // NOTE: Unknown
+                    .WriteByte() // NOTE: Unknown
+                    .WriteByte() // NOTE: Unknown
+                    .WriteByte() // NOTE: Unknown
+                    .WriteByte(); // NOTE: Unknown
+
+                return outPacket.ToArray();
+            }
+        }
+
         public static byte[] PlayerSpawn(Player player)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_PLAYER_SPAWN)
+                    .WriteHeader(EHeader.SMSG_PLAYER_SPAWN)
                     .WriteInt(player.Identifier)
                     .WriteByte(player.Stats.Level)
                     .WriteString(player.Name)

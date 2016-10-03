@@ -107,7 +107,7 @@
     <Compile Include="Network\Acceptor.cs" />
     <Compile Include="Network\BasePacket.cs" />
     <Compile Include="Network\Client.cs" />
-    <Compile Include="Enums\EOpcode.cs" />
+    <Compile Include="Enums\EHeader.cs" />
     <Compile Include="Network\InPacket.cs" />
     <Compile Include="Network\OutPacket.cs" />
     <Compile Include="Network\PacketHandlerAttribute.cs" />

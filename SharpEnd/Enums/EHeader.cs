@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EOpcode : ushort
+    internal enum EHeader : ushort
     {
         CMSG_GUEST_LOGIN =                      0x0016,
         CMSG_TOS =                              0x001D,
@@ -40,10 +40,19 @@
         SMSG_WORLD_STATUS =                     0x0026,
         SMSG_AUTH_SERVER =                      0x002F,
 
-        CMSG_PLAYER_LOAD =                      0x006E,
+        CMSG_CHANGE_MAP =                       0x00AF,
+        CMSG_CHANGE_CHANNEL =                   0x00B0,
+        CMSG_CASH_SHOP =                        0x00B4,
+        CMSG_MONSTER_LIFE =                     0x00B7,
         CMSG_PLAYER_MOVE =                      0x00BE,
+        CMSG_ATTACK_MELEE =                     0x00C3,
+        CMSG_ATTACK_RANGED =                    0x00C4,
+        CMSG_ATTACK_MAGIC =                     0x00C5,
+        CMSG_ATTACK_ENERGY_CHARGE =             0x00C6,
+        CMSG_PLAYER_HIT =                       0x00C9,
         CMSG_PLAYER_CHAT =                      0x00CB,
         CMSG_PLAYER_EMOTE =                     0x00CD,
+        CMSG_PLAYER_LOAD =                      0x006E,
 
         SMSG_INVENTORY_OPERATION =              0x0047,
         SMSG_INVENTORY_GROW =                   0x0048,

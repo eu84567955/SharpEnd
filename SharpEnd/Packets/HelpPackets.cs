@@ -55,7 +55,7 @@ namespace SharpEnd.Packets
 
                     outPacket.WriteUInt();
 
-                    outPacket.WriteFlaggedValue(0x00000001, (byte)7, ref flag);
+                    outPacket.WriteFlaggedValue(0x00000001, item.Slots, ref flag);
                     outPacket.WriteFlaggedValue(0x00000002, item.Scrolls, ref flag);
                     outPacket.WriteFlaggedValue(0x00000004, item.Strength, ref flag);
                     outPacket.WriteFlaggedValue(0x00000008, item.Dexterity, ref flag);

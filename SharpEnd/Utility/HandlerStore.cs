@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SharpEnd.Utility
 {
-    internal sealed class HandlerStore : Dictionary<EOpcode, PacketHandlerAttribute>
+    internal sealed class HandlerStore : Dictionary<EHeader, PacketHandlerAttribute>
     {
-        public new PacketProcessor this[EOpcode header]
+        public new PacketProcessor this[EHeader header]
         {
             get
             {

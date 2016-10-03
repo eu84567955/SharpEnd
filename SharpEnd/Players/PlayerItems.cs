@@ -11,14 +11,26 @@ namespace SharpEnd.Players
     {
         private Player m_player;
 
-        public long Meso { get; private set; }
+        public ulong Meso { get; private set; }
 
-        public PlayerItems(Player player, DatabaseQuery query, long meso, byte equipmentSlots, byte usableSlots, byte setupSlots, byte etceteraSlots, byte cashSlots)
+        public byte EquipmentSlots { get; set; }
+        public byte UsableSlots { get; set; }
+        public byte SetupSlots { get; set; }
+        public byte EtceteraSlots { get; set; }
+        public byte CashSlots { get; set; }
+
+        public PlayerItems(Player player, DatabaseQuery query, ulong meso, byte equipmentSlots, byte usableSlots, byte setupSlots, byte etceteraSlots, byte cashSlots)
             : base()
         {
             m_player = player;
 
             Meso = meso;
+
+            EquipmentSlots = equipmentSlots;
+            UsableSlots = usableSlots;
+            SetupSlots = setupSlots;
+            EtceteraSlots = etceteraSlots;
+            CashSlots = cashSlots;
 
             while (query.NextRow())
             {
@@ -39,7 +51,7 @@ namespace SharpEnd.Players
         public void WriteInitial(OutPacket outPacket)
         {
             outPacket
-                .WriteLong(Meso)
+                .WriteULong(Meso)
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
@@ -54,11 +66,11 @@ namespace SharpEnd.Players
                 .WriteByte()
                 .WriteByte()
                 .WriteByte()
-                .WriteByte(24)
-                .WriteByte(24)
-                .WriteByte(24)
-                .WriteByte(24)
-                .WriteByte(96)
+                .WriteByte(EquipmentSlots)
+                .WriteByte(UsableSlots)
+                .WriteByte(SetupSlots)
+                .WriteByte(EtceteraSlots)
+                .WriteByte(CashSlots)
                 .WriteLong()
                 .WriteByte();
 

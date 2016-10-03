@@ -33,7 +33,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_PRIVATE_SERVER_AUTH)
+                    .WriteHeader(EHeader.SMSG_PRIVATE_SERVER_AUTH)
                     .WriteInt(response);
 
                 return outPacket.ToArray();
@@ -45,7 +45,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_START)
+                    .WriteHeader(EHeader.SMSG_START)
                     .WriteBoolean(true);
 
                 return outPacket.ToArray();
@@ -57,7 +57,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_AUTH_SERVER)
+                    .WriteHeader(EHeader.SMSG_AUTH_SERVER)
                     .WriteBoolean(enable);
 
                 return outPacket.ToArray();
@@ -69,7 +69,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_AUTHENTICATION)
+                    .WriteHeader(EHeader.SMSG_AUTHENTICATION)
                     .WriteUInt(type)
                     .WriteByte()
                     .WriteByte();
@@ -83,7 +83,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_AUTHENTICATION)
+                    .WriteHeader(EHeader.SMSG_AUTHENTICATION)
                     .WriteUInt()
                     .WriteByte()
                     .WriteByte()
@@ -103,7 +103,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_WORLD_INFORMATION)
+                    .WriteHeader(EHeader.SMSG_WORLD_INFORMATION)
                     .WriteByte(world.Identifier)
                     .WriteString("Scania")
                     .WriteByte()
@@ -136,7 +136,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_WORLD_INFORMATION)
+                    .WriteHeader(EHeader.SMSG_WORLD_INFORMATION)
                     .WriteSByte(-1)
                     .WriteBoolean(false)
                     .WriteBoolean(false)
@@ -151,7 +151,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_WORLD_STATUS)
+                    .WriteHeader(EHeader.SMSG_WORLD_STATUS)
                     .WriteShort(status);
 
                 return outPacket.ToArray();
@@ -163,7 +163,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_PLAYER_LIST)
+                    .WriteHeader(EHeader.SMSG_PLAYER_LIST)
                     .WriteByte()
                     .WriteString("normal")
                     .WriteInt()
@@ -359,7 +359,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_PLAYER_NAME_CHECK)
+                    .WriteHeader(EHeader.SMSG_PLAYER_NAME_CHECK)
                     .WriteString(name)
                     .WriteBoolean(unusable);
 
@@ -372,7 +372,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_PLAYER_CREATE)
+                    .WriteHeader(EHeader.SMSG_PLAYER_CREATE)
                     .WriteBoolean(false);
 
                 AddPlayerEntry(outPacket, query);
@@ -389,7 +389,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EOpcode.SMSG_SERVER_IP)
+                    .WriteHeader(EHeader.SMSG_SERVER_IP)
                     .WriteByte()
                     .WriteByte()
                     .WriteBytes(channelIP)

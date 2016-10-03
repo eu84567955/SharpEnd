@@ -13,6 +13,22 @@ namespace SharpEnd.Maps
             Map = map;
         }
 
+        public PortalData this[string label]
+        {
+            get
+            {
+                foreach (PortalData portal in this)
+                {
+                    if (portal.Label == label)
+                    {
+                        return portal;
+                    }
+                }
+
+                return null;
+            }
+        }
+
         public PortalData GetSpawnPoint(sbyte portalIdentifier = -1)
         {
             List<PortalData> spawnPoints = new List<PortalData>();

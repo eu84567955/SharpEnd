@@ -5,11 +5,11 @@ namespace SharpEnd.Handlers
 {
     internal static class GeneralHandler
     {
-        [PacketHandler(EOpcode.CMSG_PRIVATE_SERVER_AUTH)]
+        [PacketHandler(EHeader.CMSG_PRIVATE_SERVER_AUTH)]
         public static void PrivateServerAuth(Client client, InPacket inPacket)
         {
             int request = inPacket.ReadInt();
-            int response = request ^ (int)EOpcode.SMSG_PRIVATE_SERVER_AUTH;
+            int response = request ^ (int)EHeader.SMSG_PRIVATE_SERVER_AUTH;
 
             client.Send(LoginPackets.PrivateServerAuth(response));
         }
