@@ -39,6 +39,8 @@ namespace SharpEnd.Players
         public ulong Experience { get; private set; }
         public int Fame { get; private set; }
 
+        public bool IsAlive => Health > 0;
+
         public ushort StrengthWithBonus => (ushort)(Strength + mEquipBonuses.Strength + mBuffBonuses.Strength);
         public ushort DexterityWithBonus => (ushort)(Dexterity + mEquipBonuses.Dexterity + mBuffBonuses.Dexterity);
         public ushort IntelligenceWithBonus => (ushort)(Intelligence + mEquipBonuses.Intelligence + mBuffBonuses.Intelligence);
@@ -68,7 +70,7 @@ namespace SharpEnd.Players
             Experience = query.Get<ulong>("experience");
             Fame = query.Get<int>("fame");
 
-            if (!IsAlive())
+            if (!IsAlive)
             {
                 Health = 50;
             }
@@ -95,11 +97,6 @@ namespace SharpEnd.Players
                 .WriteByte()
                 .WriteULong(Experience)
                 .WriteInt(Fame);
-        }
-
-        public bool IsAlive()
-        {
-            return Health > 0;
         }
 
         private void UpdateBonuses(bool updateEquips = false, bool isLoading = false)

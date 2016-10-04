@@ -10,6 +10,11 @@ namespace SharpEnd.Data
             return int.Parse(node.Name.Replace(".img", ""));
         }
 
+        public static bool GetBoolean(this NXNode node, string childName, bool def = false)
+        {
+            return GetByte(node, childName) == 1;
+        }
+
         public static double GetDouble(this NXNode node, string childName, double def = 0.0d)
         {
             if (!node.ContainsChild(childName))

@@ -43,6 +43,11 @@ namespace SharpEnd.Data
 
                         // TODO: Fetch info from infoNode
 
+                        if (node.ContainsChild("life"))
+                        {
+                            LoadLife(map, node["life"]);
+                        }
+
                         if (node.ContainsChild("portal"))
                         {
                             LoadPortals(map, node["portal"]);
@@ -54,6 +59,52 @@ namespace SharpEnd.Data
             }
 
             Console.WriteLine($"Loaded {m_maps.Count} maps.");
+        }
+
+        private void LoadLife(Map map, NXNode lifeNode)
+        {
+            // NOTE: Some maps have life in categories.
+            // We're going to skip them for now until we figure this one out.
+            if (lifeNode.ContainsChild("isCategory"))
+            {
+                return;
+            }
+
+            foreach (var node in lifeNode)
+            {
+                int identifier = int.Parse(node.GetString("id")); // NOTE: Life identifiers are string
+                Point position = new Point(node.GetShort("x"), node.GetShort("cy"));
+                ushort foothold = 0;
+                bool flip = node.GetBoolean("f");
+                bool hide = node.GetBoolean("hide");
+
+                switch (node.GetString("type"))
+                {
+                    case "n":
+                        {
+                            short cy = node.GetShort("cy");
+                            short rx0 = node.GetShort("rx0");
+                            short rx1 = node.GetShort("rx1");
+
+                            Npc npc = new Npc(identifier, rx0, rx1, position, foothold, flip, hide);
+
+                            map.Npcs.Add(npc);
+                        }
+                        break;
+
+                    case "m":
+                        {
+
+                        }
+                        break;
+
+                    case "r":
+                        {
+
+                        }
+                        break;
+                }
+            }
         }
 
         private void LoadPortals(Map map, NXNode portalNode)

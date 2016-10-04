@@ -27,6 +27,8 @@ namespace SharpEnd.Players
         public PlayerItems Items { get; private set; }
         public PlayerSkills Skills { get; private set; }
         public PlayerQuests Quests { get; private set; }
+        public ControlledMobs ControlledMobs { get; private set; }
+        public ControlledNpcs ControlledNpcs { get; private set; }
 
         public Player(Client client, DatabaseQuery query)
         {
@@ -65,6 +67,9 @@ namespace SharpEnd.Players
             {
                 Quests = new PlayerQuests(this, query);
             }
+
+            ControlledMobs = new ControlledMobs(this);
+            ControlledNpcs = new ControlledNpcs(this);
         }
 
         public void Save()
@@ -102,6 +107,33 @@ namespace SharpEnd.Players
             Quests.Save();
         }
 
+        public void Initialize()
+        {
+            if (false) // TODO: Check if the player is a Gm
+            {
+                Map = 180000000;
+                SpawnPoint = -1;
+            }
+            else if (false) // TODO: Check if the map has a forced return map
+            {
+                // TODO: Set map to forced return map
+                SpawnPoint = -1;
+            }
+            else if (!Stats.IsAlive)
+            {
+                // TODO: Set map to return map
+                SpawnPoint = -1;
+            }
+
+            Position = MasterServer.Instance.Maps[Map].Portals.GetSpawnPoint(SpawnPoint).Position;
+            Stance = 0;
+            Foothold = 0;
+
+            Send(MapPackets.ChangeMap(this, true));
+
+            MasterServer.Instance.Maps[Map].Players.Add(this);
+        }
+
         public void Send(byte[] buffer)
         {
             m_client.Send(buffer);
@@ -114,7 +146,7 @@ namespace SharpEnd.Players
 
         public void SetMap(int mapIdentifier, sbyte portalIdentifier, Point position)
         {
-            InternalSetMap(mapIdentifier, portalIdentifier, position, true);
+            InternalSetMap(mapIdentifier, portalIdentifier, true, position);
         }
 
         public void SetMap(int mapIdentifier, PortalData portal = null, bool isInstance = false)
@@ -137,10 +169,10 @@ namespace SharpEnd.Players
 
             }
 
-            InternalSetMap(mapIdentifier, portal.Identifier, new Point(portal.Position.X, (short)(portal.Position.Y - 40)), false);
+            InternalSetMap(mapIdentifier, portal.Identifier, false, new Point(portal.Position.X, (short)(portal.Position.Y - 40)));
         }
 
-        private void InternalSetMap(int mapIdentifier, sbyte portalIdentifier, Point position, bool fromPosition)
+        private void InternalSetMap(int mapIdentifier, sbyte portalIdentifier, bool spawnByPosition, Point position)
         {
             Map oldMap = MasterServer.Instance.Maps[Map];
             Map newMap = MasterServer.Instance.Maps[mapIdentifier];
@@ -154,14 +186,14 @@ namespace SharpEnd.Players
             Stance = 0;
             Foothold = 0;
 
-            Send(MapPackets.ChangeMap(this, fromPosition: fromPosition, position: position));
+            Send(MapPackets.ChangeMap(this, spawnByPosition: spawnByPosition, position: Position));
 
             newMap.Players.Add(this);
         }
 
         public void AcceptDeath(bool wheel)
         {
-            int returnMapIdentifier = 0;
+            int returnMapIdentifier = 0; // TODO: Change to map's return map.
 
             if (wheel)
             {

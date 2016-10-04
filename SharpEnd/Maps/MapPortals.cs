@@ -35,7 +35,7 @@ namespace SharpEnd.Maps
 
             foreach (PortalData portal in this)
             {
-                if (portal.Label.StartsWith("sp"))
+                if (portal.Label == "sp")
                 {
                     spawnPoints.Add(portal);
                 }

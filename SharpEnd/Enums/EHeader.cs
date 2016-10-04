@@ -52,7 +52,12 @@
         CMSG_PLAYER_HIT =                       0x00C9,
         CMSG_PLAYER_CHAT =                      0x00CB,
         CMSG_PLAYER_EMOTE =                     0x00CD,
+        CMSG_NPC_CONVERSE =                     0x00DD,
+        CMSG_NPC_CONVERSE_RESULT =              0x00DF,
+        CMSG_NPC_SHOP =                         0x00E0,
+        CMSG_NPC_STORAGE =                      0x00E1,
         CMSG_PLAYER_LOAD =                      0x006E,
+        CMSG_NPC_ACTION =                       0x0353,
 
         SMSG_INVENTORY_OPERATION =              0x0047,
         SMSG_INVENTORY_GROW =                   0x0048,
@@ -72,5 +77,9 @@
         SMSG_ATTACK_RANGED =                    0x027B,
         SMSG_ATTACK_MAGIC =                     0x027C,
         SMSG_ATTACK_ENERGY_CHARGE =             0x027D,
+        SMSG_NPC_SPAWN =                        0x03D8,
+        SMSG_NPC_DESPAWN =                      0x03D9,
+        SMSG_NPC_CONTROL =                      0x03DB,
+        SMSG_NPC_ACTION =                       0x03DC,
     }
 }

@@ -26,7 +26,7 @@ namespace SharpEnd.Handlers
             {
                 case 0:
                     {
-                        if (!player.Stats.IsAlive())
+                        if (!player.Stats.IsAlive)
                         {
                             inPacket.ReadString();
                             inPacket.ReadByte();

@@ -2,5 +2,6 @@
 {
     internal sealed class Reactor : MapEntity
     {
+
     }
 }

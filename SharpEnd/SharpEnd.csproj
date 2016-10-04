@@ -91,7 +91,10 @@
     <Compile Include="Handlers\GeneralHandlers.cs" />
     <Compile Include="Handlers\LoginHandlers.cs" />
     <Compile Include="Handlers\MigrationHandlers.cs" />
+    <Compile Include="Handlers\NpcHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
+    <Compile Include="Maps\IControllable.cs" />
+    <Compile Include="Maps\LifeEntity.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapEntities.cs" />
     <Compile Include="Maps\MapEntity.cs" />
@@ -117,9 +120,14 @@
     <Compile Include="Packets\LoginPackets.cs" />
     <Compile Include="Packets\MapPackets.cs" />
     <Compile Include="Packets\MessagePackets.cs" />
+    <Compile Include="Packets\MobPackets.cs" />
+    <Compile Include="Packets\NpcPackets.cs" />
     <Compile Include="Packets\PlayerPackets.cs" />
     <Compile Include="Packets\PlayersPackets.cs" />
+    <Compile Include="Packets\ReactorPackets.cs" />
     <Compile Include="Players\Account.cs" />
+    <Compile Include="Players\ControlledMobs.cs" />
+    <Compile Include="Players\ControlledNpcs.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Players\PlayerItem.cs" />
     <Compile Include="Players\PlayerItems.cs" />

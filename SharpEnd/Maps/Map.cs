@@ -4,6 +4,8 @@ namespace SharpEnd.Maps
 {
     internal sealed class Map
     {
+        private int sObjectIdentifiers = 0;
+
         public int Identifier { get; private set; }
 
         public MapPlayers Players { get; private set; }
@@ -21,6 +23,11 @@ namespace SharpEnd.Maps
             Mobs = new MapMobs(this);
             Npcs = new MapNpcs(this);
             Reactors = new MapReactors(this);
+        }
+
+        public int AssignObjectIdentifier()
+        {
+            return ++sObjectIdentifiers;
         }
 
         public void Send(byte[] buffer, Player ignored = null)

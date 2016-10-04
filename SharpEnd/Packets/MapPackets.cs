@@ -6,7 +6,7 @@ namespace SharpEnd.Packets
 {
     internal static class MapPackets
     {
-        public static byte[] ChangeMap(Player player, bool initial = false, bool fromPosition = false, Point position = null)
+        public static byte[] ChangeMap(Player player, bool initial = false, bool spawnByPosition = false, Point position = null)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -248,9 +248,9 @@ namespace SharpEnd.Packets
                         .WriteInt(player.Map)
                         .WriteSByte(player.SpawnPoint)
                         .WriteUInt(player.Stats.Health) // NOTE: Health
-                        .WriteBoolean(fromPosition);
+                        .WriteBoolean(spawnByPosition);
 
-                    if (fromPosition)
+                    if (spawnByPosition)
                     {
                         outPacket.WritePoint(position);
                     }
