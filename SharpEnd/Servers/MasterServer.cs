@@ -72,7 +72,7 @@ namespace SharpEnd.Servers
             Reactors.Load();
             Skills.Load();
             TamingMobs.Load();
-            ValidCharData.Load();
+            //ValidCharData.Load();
             Commands.Load();
 
             Log.Inform("Maple data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);

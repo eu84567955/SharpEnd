@@ -99,6 +99,7 @@
     <Compile Include="Handlers\InventoryHandlers.cs" />
     <Compile Include="Handlers\LoginHandlers.cs" />
     <Compile Include="Handlers\MigrationHandlers.cs" />
+    <Compile Include="Handlers\MobHandlers.cs" />
     <Compile Include="Handlers\NpcHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
     <Compile Include="IO\Logger.cs" />

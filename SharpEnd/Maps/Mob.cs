@@ -14,5 +14,30 @@ namespace SharpEnd.Maps
         {
             RespawnTime = respawnTime;
         }
+
+        public void AssignController()
+        {
+            if (Controller == null)
+            {
+                int leastControlled = int.MaxValue;
+
+                Player newController = null;
+
+                foreach (Player player in Map.Players)
+                {
+                    if (player.ControlledMobs.Count < leastControlled)
+                    {
+                        leastControlled = player.ControlledMobs.Count;
+
+                        newController = player;
+                    }
+                }
+
+                if (newController != null)
+                {
+                    newController.ControlledMobs.Add(this);
+                }
+            }
+        }
     }
 }

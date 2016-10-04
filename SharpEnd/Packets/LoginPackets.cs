@@ -223,8 +223,37 @@ namespace SharpEnd.Packets
                 .WriteUInt(query.Get<uint>("max_health"))
                 .WriteUInt(query.Get<uint>("mana"))
                 .WriteUInt(query.Get<uint>("max_mana"))
-                .WriteUShort(query.Get<ushort>("ability_points"))
-                .WriteSByte()
+                .WriteUShort(query.Get<ushort>("ability_points"));
+
+            byte[] skillPoints = query.Get<byte[]>("skill_points");
+
+            if (GameLogicUtilities.HasSeparatedSkillPoints(query.Get<ushort>("job")))
+            {
+                List<int> points = new List<int>();
+
+                for (int i = 0; i < skillPoints.Length; i++)
+                {
+                    if (skillPoints[i] != 0)
+                    {
+                        points.Add(skillPoints[i]);
+                    }
+                }
+
+                outPacket.WriteByte((byte)points.Count);
+
+                foreach (var point in points)
+                {
+                    outPacket
+                        .WriteSByte()
+                        .WriteInt(point);
+                }
+            }
+            else
+            {
+                outPacket.WriteUShort(skillPoints[0]);
+            }
+
+            outPacket
                 .WriteULong(query.Get<ulong>("experience"))
                 .WriteInt(query.Get<int>("fame"))
                 .WriteInt()

@@ -13,7 +13,7 @@ namespace SharpEnd.Maps
         {
             Identifier = identifier;
             Position = position;
-            Stance = (sbyte)(Flip ? 1 : 0);
+            Stance = (sbyte)(Flip ? 1 : 2); // TODO: Validate if this is the correct way of determing initial stance
             Foothold = foothold;
             Flip = flip;
             Hide = hide;

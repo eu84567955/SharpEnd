@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Maps;
+using SharpEnd.Packets;
 using System.Collections.Generic;
 
 namespace SharpEnd.Players
@@ -14,9 +15,9 @@ namespace SharpEnd.Players
 
         public void Add(Mob mob)
         {
-            // TODO: Set controller
+            mob.Controller = m_player;
 
-            // TODO: Packet
+            m_player.Send(MobPackets.MobControlRequest(mob));
 
             Add(mob.ObjectIdentifier, mob);
         }
@@ -25,9 +26,9 @@ namespace SharpEnd.Players
         {
             Remove(mob.ObjectIdentifier);
 
-            // TODO: Set controller
+            mob.Controller = null;
 
-            // TODO: Packet
+            m_player.Send(MobPackets.MobControlCancel(mob.ObjectIdentifier));
         }
 
         public new void Clear()

@@ -41,6 +41,10 @@ namespace SharpEnd.Utility
         // Mob skills
 
         // Jobs
+        public static bool HasSeparatedSkillPoints(ushort job)
+        {
+            return true;
+        }
         /*public static Jobs.JobLines GetJobLine(ushort job) => (Jobs.JobLines)(job / 100);
         public static bool IsBeginnerJob(ushort job) // TODO: Include every beginner job
         {

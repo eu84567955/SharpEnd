@@ -25,9 +25,19 @@ namespace SharpEnd.Maps
 
             base.Add(player);
 
+            foreach (Mob mob in Map.Mobs.Values)
+            {
+                player.Send(MobPackets.MobSpawn(mob));
+            }
+
             foreach (Npc npc in Map.Npcs.Values)
             {
                 player.Send(NpcPackets.NpcSpawn(npc));
+            }
+
+            foreach (Mob mob in Map.Mobs.Values)
+            {
+                mob.AssignController();
             }
 
             foreach (Npc npc in Map.Npcs.Values)
@@ -42,6 +52,11 @@ namespace SharpEnd.Maps
             player.ControlledNpcs.Clear();
 
             base.Remove(player);
+
+            foreach (Mob mob in Map.Mobs.Values)
+            {
+                mob.AssignController();
+            }
 
             foreach (Npc npc in Map.Npcs.Values)
             {

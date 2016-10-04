@@ -36,6 +36,7 @@ namespace SharpEnd.Players
         public uint Mana { get; private set; }
         public uint MaxMana { get; private set; }
         public ushort AbilityPoints { get; private set; }
+        public byte[] SkillPoints { get; private set; }
         public ulong Experience { get; private set; }
         public int Fame { get; private set; }
 
@@ -67,6 +68,7 @@ namespace SharpEnd.Players
             Mana = query.Get<uint>("mana");
             MaxMana = query.Get<uint>("max_mana");
             AbilityPoints = query.Get<ushort>("ability_points");
+            SkillPoints = query.Get<byte[]>("skill_points");
             Experience = query.Get<ulong>("experience");
             Fame = query.Get<int>("fame");
 
@@ -93,8 +95,35 @@ namespace SharpEnd.Players
                 .WriteUInt(MaxHealth)
                 .WriteUInt(Mana)
                 .WriteUInt(MaxMana)
-                .WriteUShort(AbilityPoints)
-                .WriteByte()
+                .WriteUShort(AbilityPoints);
+
+            if (GameLogicUtilities.HasSeparatedSkillPoints(Job))
+            {
+                List<int> points = new List<int>();
+
+                for (int i = 0; i < SkillPoints.Length; i++)
+                {
+                    if (SkillPoints[i] != 0)
+                    {
+                        points.Add(SkillPoints[i]);
+                    }
+                }
+
+                outPacket.WriteByte((byte)points.Count);
+
+                foreach (var p in points)
+                {
+                    outPacket
+                        .WriteByte()
+                        .WriteInt(p);
+                }
+            }
+            else
+            {
+                outPacket.WriteUShort(SkillPoints[0]);
+            }
+
+            outPacket
                 .WriteULong(Experience)
                 .WriteInt(Fame);
         }

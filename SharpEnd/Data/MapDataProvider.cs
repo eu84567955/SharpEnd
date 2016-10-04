@@ -92,13 +92,18 @@ namespace SharpEnd.Data
 
                     case "m":
                         {
+                            int respawnTime = node.GetInt("mobTime");
 
+                            Mob mob = new Mob(identifier, respawnTime, position, foothold, flip, hide);
+
+                            map.Mobs.Add(mob);
                         }
                         break;
 
                     case "r":
                         {
-
+                            // NOTE: Reactors are no longer inside the life node.
+                            // Instead, they have their own separate node called "reactor".
                         }
                         break;
                 }
