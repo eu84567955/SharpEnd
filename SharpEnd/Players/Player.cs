@@ -136,6 +136,7 @@ namespace SharpEnd.Players
             Stance = 0;
             Foothold = 0;
 
+            Send(PlayerPackets.EventNameTag(new sbyte[5] { -1, -1, -1, -1, -1 }));
             Send(MapPackets.ChangeMap(this, true));
 
             MasterServer.Instance.Maps[Map].Players.Add(this);

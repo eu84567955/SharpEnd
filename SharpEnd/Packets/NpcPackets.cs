@@ -87,14 +87,14 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] NpcAction(int objectIdentifier, byte[] buffer)
+        public static byte[] NpcAction(int objectIdentifier, byte[] data)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_ACTION)
                     .WriteInt(objectIdentifier)
-                    .WriteBytes(buffer);
+                    .WriteBytes(data);
 
                 return outPacket.ToArray();
             }

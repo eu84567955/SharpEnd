@@ -26,20 +26,9 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            int available = inPacket.Available;
+            byte[] data = inPacket.ReadLeftoverBytes();
 
-            byte[] buffer = null;
-
-            if (available == 6)
-            {
-                buffer = inPacket.ReadLeftoverBytes();
-            }
-            else if (available > 6)
-            {
-                buffer = inPacket.ReadBytes(available - 5);
-            }
-
-            MasterServer.Instance.Maps[player.Map].Send(NpcPackets.NpcAction(npc.ObjectIdentifier, buffer));
+            MasterServer.Instance.Maps[player.Map].Send(NpcPackets.NpcAction(npc.ObjectIdentifier, data));
         }
     }
 }

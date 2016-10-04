@@ -1,5 +1,6 @@
 ﻿using SharpEnd.Network;
 using SharpEnd.Players;
+using SharpEnd.Utility;
 
 namespace SharpEnd.Packets
 {
@@ -73,6 +74,24 @@ namespace SharpEnd.Packets
                     .WriteByte() // NOTE: Unknown
                     .WriteByte() // NOTE: Unknown
                     .WriteByte(); // NOTE: Unknown
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] EventNameTag(sbyte[] activeEventNameTag)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket.WriteHeader(EHeader.SMSG_EVENT_NAME_TAG_INFO);
+
+                int count = 0;
+                do
+                {
+                    outPacket
+                        .WriteString(string.Empty)
+                        .WriteSByte(activeEventNameTag[count]);
+                } while (count < 5);
 
                 return outPacket.ToArray();
             }

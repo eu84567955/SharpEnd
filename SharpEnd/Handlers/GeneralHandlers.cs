@@ -14,6 +14,23 @@ namespace SharpEnd.Handlers
             client.Send(LoginPackets.PrivateServerAuth(response));
         }
 
+        [PacketHandler(EHeader.CMSG_CLIENT_ERROR)]
+        public static void ClientError(Client client, InPacket inPacket)
+        {
+            ushort type = inPacket.ReadUShort();
+            int error = inPacket.ReadInt();
+
+            if (error == 38)
+            {
+                inPacket.ReadUShort(); // NOTE: Packet length
+                inPacket.Skip(4); // NOTE: Unknown
+                EHeader header = (EHeader)inPacket.ReadUShort();
+                inPacket.ReadLeftoverBytes(); // NOTE: Packet data
+
+                Log.Error("Client {0} crashed with error 38 by header {1}.", client.Host, header.ToString());
+            }
+        }
+
         [PacketHandler(EHeader.CMSG_BUTTON_PRESS)]
         public static void ButtonPress(Client client, InPacket inPacket)
         {

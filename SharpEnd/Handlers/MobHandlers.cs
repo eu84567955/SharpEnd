@@ -40,6 +40,7 @@ namespace SharpEnd.Handlers
             inPacket.Skip(5); // NOTE: Unknown
             inPacket.ReadInt(); // NOLTE: tEncodedGatherDuration
             Point origin = inPacket.ReadPoint();
+            inPacket.ReadPoint();
 
             if (!mob.ParseMovement(inPacket))
             {

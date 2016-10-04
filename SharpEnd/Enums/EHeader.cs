@@ -71,6 +71,7 @@
         SMSG_TEMPORARY_STATS =                  0x004C,
         SMSG_TEMPORARY_STATS_RESET =            0x004D,
         SMSG_NOTIFICATION =                     0x0082,
+        SMSG_EVENT_NAME_TAG_INFO =              0x0118,
         SMSG_CHANGE_MAP =                       0x01AC,
         SMSG_PLAYER_SPAWN =                     0x0204,
         SMSG_PLAYER_DESPAWN =                   0x0205,
