@@ -118,7 +118,7 @@ namespace SharpEnd.Packets
                 outPacket
                     .WriteHexString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
                     .WritePoint(player.Position)
-                    .WriteByte(player.Stance)
+                    .WriteSByte(player.Stance)
                     .WriteUShort(player.Foothold)
                     .WriteHexString("00 00 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
 

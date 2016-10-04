@@ -190,6 +190,11 @@ namespace SharpEnd.Handlers
                 objects.Add(inPacket.ReadInt());
             }
 
+            if (!MasterServer.Instance.ValidCharData.Validate(job, objects))
+            {
+                return;
+            }
+
             int i = 0;
 
             int face = objects[i++];

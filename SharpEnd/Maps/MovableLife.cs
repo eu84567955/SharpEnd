@@ -6,13 +6,13 @@ namespace SharpEnd.Maps
     internal abstract class MovableLife
     {
         public Point Position { get; set; }
-        public byte Stance { get; set; }
+        public sbyte Stance { get; set; }
         public ushort Foothold { get; set; }
 
         public bool ParseMovement(InPacket inPacket)
         {
             Point position = null;
-            byte stance = 0;
+            sbyte stance = 0;
             ushort foothold = 0;
 
             byte count = inPacket.ReadByte();
@@ -42,7 +42,7 @@ namespace SharpEnd.Maps
                             }
 
                             inPacket.ReadPoint();
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -55,7 +55,7 @@ namespace SharpEnd.Maps
                             position = inPacket.ReadPoint();
                             inPacket.ReadPoint();
                             foothold = inPacket.ReadUShort();
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -79,7 +79,7 @@ namespace SharpEnd.Maps
                                 inPacket.ReadShort();
                             }
 
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -120,7 +120,7 @@ namespace SharpEnd.Maps
                     case 81:
                     case 83:
                         {
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -149,7 +149,7 @@ namespace SharpEnd.Maps
                         {
                             position = inPacket.ReadPoint();
                             foothold = inPacket.ReadUShort();
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -160,7 +160,7 @@ namespace SharpEnd.Maps
                         {
                             inPacket.ReadPoint();
                             inPacket.ReadShort();
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -170,7 +170,7 @@ namespace SharpEnd.Maps
                         {
                             position = inPacket.ReadPoint();
                             inPacket.ReadPoint();
-                            stance = inPacket.ReadByte();
+                            stance = inPacket.ReadSByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }

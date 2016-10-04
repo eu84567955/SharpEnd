@@ -298,7 +298,7 @@ namespace SharpEnd.Packets
                 .WriteBoolean(true)
                 .WriteInt(query.Get<int>("hair"));
 
-            SortedDictionary<byte, int> shownLayer = new SortedDictionary<byte, int>();
+            SortedDictionary<byte, int> visibleLayer = new SortedDictionary<byte, int>();
             SortedDictionary<byte, int> hiddenLayer = new SortedDictionary<byte, int>();
             SortedDictionary<byte, int> totemLayer = new SortedDictionary<byte, int>();
 
@@ -314,11 +314,11 @@ namespace SharpEnd.Packets
                         inventorySlot -= 100;
                     }
 
-                    shownLayer.Add((byte)inventorySlot, itemIdentifier);
+                    visibleLayer.Add((byte)inventorySlot, itemIdentifier);
                 }
             }
 
-            foreach (KeyValuePair<byte, int> entry in shownLayer)
+            foreach (KeyValuePair<byte, int> entry in visibleLayer)
             {
                 outPacket
                     .WriteByte(entry.Key)
@@ -343,9 +343,9 @@ namespace SharpEnd.Packets
             outPacket.WriteSByte(-1);
 
             outPacket
-                .WriteInt() // NOTE: Cash weapon
-                .WriteInt() // NOTE: Weapon
-                .WriteInt() // NOTE: Offhand
+                .WriteInt(hiddenLayer.GetOrDefault((byte)11, 0))
+                .WriteInt(visibleLayer.GetOrDefault((byte)11, 0))
+                .WriteInt(visibleLayer.GetOrDefault((byte)15, 0)) // TODO: Find the correct slot
                 .WriteBoolean(false) // NOTE: Elf ears
                 .WriteInt() // NOTE: Pet 1
                 .WriteInt() // NOTE: Pet 2

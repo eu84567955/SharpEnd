@@ -29,8 +29,6 @@ namespace SharpEnd.Data
                     m_npcs.Add(identifier, item);
                 }
             }
-
-            Log.Inform($"Loaded {m_npcs.Count} npcs.");
         }
 
         public NpcData this[int identifier]

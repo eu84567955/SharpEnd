@@ -30,5 +30,20 @@ namespace SharpEnd.Players
 
             m_player.Send(NpcPackets.NpcControlCancel(npc.ObjectIdentifier));
         }
+
+        public new void Clear()
+        {
+            List<Npc> toRemove = new List<Npc>();
+
+            foreach (Npc npc in this.Values)
+            {
+                toRemove.Add(npc);
+            }
+
+            foreach (Npc npc in toRemove)
+            {
+                Remove(npc);
+            }
+        }
     }
 }

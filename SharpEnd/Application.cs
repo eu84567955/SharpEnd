@@ -27,10 +27,9 @@ namespace SharpEnd
 
                 MasterServer.Instance.Run();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Log.Inform("Unable to initialize SharpEnd.");
-                Log.Inform(e.ToString());
+                Log.Error(exception);
             }
 
             while (MasterServer.Instance.Running)
@@ -43,9 +42,11 @@ namespace SharpEnd
             m_usageDelay.Stop();
             m_usageDelay = null;
 
-            Console.WriteLine();
-            Console.WriteLine("Press any key to quit....");
-            Console.Read();
+            Log.SkipLine();
+
+            Console.WriteLine(" Press any key to quit...");
+
+            Console.ReadKey();
         }
 
         private static void UpdateTitle()

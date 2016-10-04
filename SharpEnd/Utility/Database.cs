@@ -49,7 +49,7 @@ namespace SharpEnd.Utility
             connection.Open();
             connection.Close();
 
-            Log.Inform("Database initialized.");
+            Log.Inform("Able to connect to database '{0}'.", Database.Schema);
         }
 
         public static DatabaseQuery Query(string pQuery, params MySqlParameter[] pParams)

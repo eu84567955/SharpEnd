@@ -48,8 +48,6 @@ namespace SharpEnd.Data
                     }
                 }
             }
-
-            Log.Inform($"Loaded {m_equips.Count} equips.");
         }
 
         public EquipData this[int identifier]

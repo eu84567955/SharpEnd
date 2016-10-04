@@ -20,8 +20,6 @@ namespace SharpEnd.Data
             {
 
             }
-
-            Log.Inform($"Loaded {m_quests.Count} quests.");
         }
 
         public QuestData this[ushort identifier]

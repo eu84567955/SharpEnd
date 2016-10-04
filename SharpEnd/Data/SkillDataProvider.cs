@@ -41,8 +41,6 @@ namespace SharpEnd.Data
                     }
                 }
             }
-
-            Log.Inform($"Loaded {m_playerSkills.Count} player skills.");
         }
 
         public SkillData this[int identifier]

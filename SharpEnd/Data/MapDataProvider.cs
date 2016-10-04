@@ -57,8 +57,6 @@ namespace SharpEnd.Data
                     }
                 }
             }
-
-            Log.Inform($"Loaded {m_maps.Count} maps.");
         }
 
         private void LoadLife(Map map, NXNode lifeNode)
@@ -74,7 +72,7 @@ namespace SharpEnd.Data
             {
                 int identifier = int.Parse(node.GetString("id")); // NOTE: Life identifiers are string
                 Point position = new Point(node.GetShort("x"), node.GetShort("cy"));
-                ushort foothold = 0;
+                ushort foothold = node.GetUShort("fh");
                 bool flip = node.GetBoolean("f");
                 bool hide = node.GetBoolean("hide");
 

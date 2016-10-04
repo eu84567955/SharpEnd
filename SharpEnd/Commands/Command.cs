@@ -25,9 +25,9 @@ namespace SharpEnd.Commands
             {
                 string syntax = "!" + Name;
 
-                foreach (ParameterInfo parameter in Parameters)
+                for (int i = 1; i < Parameters.Length; i++)
                 {
-                    syntax += " [" + parameter.Name + "]";
+                    syntax += " [" + Parameters[i].Name + "]";
                 }
 
                 return syntax;

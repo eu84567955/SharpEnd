@@ -13,6 +13,7 @@ namespace SharpEnd.Maps
         {
             Identifier = identifier;
             Position = position;
+            Stance = (sbyte)(Flip ? 1 : 0);
             Foothold = foothold;
             Flip = flip;
             Hide = hide;

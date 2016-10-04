@@ -29,5 +29,20 @@ namespace SharpEnd.Players
 
             // TODO: Packet
         }
+
+        public new void Clear()
+        {
+            List<Mob> toRemove = new List<Mob>();
+
+            foreach (Mob mob in this.Values)
+            {
+                toRemove.Add(mob);
+            }
+
+            foreach (Mob mob in toRemove)
+            {
+                Remove(mob);
+            }
+        }
     }
 }

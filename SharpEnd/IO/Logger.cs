@@ -45,6 +45,11 @@ namespace SharpEnd
             WriteItem("Warning", ConsoleColor.Yellow, value, args);
         }
 
+        public static void Error(Exception exception)
+        {
+            Error(exception.ToString());
+        }
+
         public static void Error(string value, params object[] args)
         {
             WriteItem("Error", ConsoleColor.Red, value, args);
@@ -53,6 +58,8 @@ namespace SharpEnd
         public static void Success(string value, params object[] args)
         {
             WriteItem("Success", ConsoleColor.Green, value, args);
+
+            Log.SkipLine();
         }
 
         public static void SkipLine()

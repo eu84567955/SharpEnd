@@ -181,14 +181,10 @@ namespace SharpEnd.Players
             }
             outPacket.WriteSByte(-1);
 
-            PlayerItem cashWeapon = null;
-            PlayerItem weapon = null;
-            PlayerItem offhand = null;
-
             outPacket
-                .WriteInt(cashWeapon != null ? cashWeapon.Identifier : 0)
-                .WriteInt(weapon != null ? weapon.Identifier : 0)
-                .WriteInt(offhand != null ? offhand.Identifier : 0);
+                .WriteInt(hiddenLayer.GetOrDefault((byte)11, 0))
+                .WriteInt(visibleLayer.GetOrDefault((byte)11, 0))
+                .WriteInt(visibleLayer.GetOrDefault((byte)15, 0)); // TODO: Find the correct slot
         }
 
         public void Equip(short source, short destination)

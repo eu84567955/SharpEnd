@@ -43,7 +43,7 @@ namespace SharpEnd.Maps
                 portalIdentifier = Randomizer.NextSByte(0, SpawnPoints.Count);
             }
 
-            return SpawnPoints[portalIdentifier];
+            return SpawnPoints.Find(s => s.Identifier == portalIdentifier);
         }
 
         public PortalData GetNearestSpawnPoint(Point position)
