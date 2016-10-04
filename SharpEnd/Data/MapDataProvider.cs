@@ -35,7 +35,7 @@ namespace SharpEnd.Data
 
                     foreach (var node in category)
                     {
-                        int identifier = node.GetIdentifier();
+                        int identifier = node.GetIdentifier<int>();
 
                         Map map = new Map(identifier);
 
@@ -107,21 +107,35 @@ namespace SharpEnd.Data
             }
         }
 
+        // TODO: Use the "pt" property which indicates the type of the portal (spawn point, door, etcetera)
         private void LoadPortals(Map map, NXNode portalNode)
         {
-            sbyte identifier = 0;
-
             foreach (var node in portalNode)
             {
-                PortalData portal = new PortalData();
+                try
+                {
+                    PortalData portal = new PortalData();
 
-                portal.Identifier = identifier++;
-                portal.Label = node.GetString("pn");
-                portal.DestinationMap = node.GetInt("tm");
-                portal.DestinationLabel = node.GetString("tn");
-                portal.Position = new Point(node.GetShort("x"), node.GetShort("y"));
+                    portal.Identifier = node.GetIdentifier<sbyte>();
+                    portal.Label = node.GetString("pn");
+                    portal.DestinationMap = node.GetInt("tm");
+                    portal.DestinationLabel = node.GetString("tn");
+                    portal.Position = new Point(node.GetShort("x"), node.GetShort("y"));
 
-                map.Portals.Add(portal);
+                    if (portal.Label == "sp")
+                    {
+                        map.Portals.SpawnPoints.Add(portal);
+                    }
+                    else
+                    {
+                        map.Portals.Regular.Add(portal);
+                    }
+                }
+                catch
+                {
+                    // NOTE: Some maps include way too many portals. We'll deal with them later.
+                    // For now, we're skipping them.
+                }
             }
         }
 

@@ -34,7 +34,7 @@ namespace SharpEnd.Data
                     {
                         foreach (var node in container)
                         {
-                            int identifier = node.GetIdentifier();
+                            int identifier = node.GetIdentifier<int>();
 
                             ItemData item = new ItemData();
 

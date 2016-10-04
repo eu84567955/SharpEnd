@@ -74,6 +74,12 @@ namespace SharpEnd.Players
 
         public void Save()
         {
+            Map currentMap = MasterServer.Instance.Maps[Map];
+
+            currentMap.Players.Remove(this);
+
+            SpawnPoint = currentMap.Portals.GetNearestSpawnPoint(Position).Identifier;
+
             Database.Execute("UPDATE player SET gender=@gender, skin=@skin, face=@face, hair=@hair, level=@level, job=@job, strength=@strength, dexterity=@dexterity, intelligence=@intelligence, luck=@luck, health=@health, max_health=@max_health, mana=@mana, max_mana=@max_mana, ability_points=@ability_points, experience=@experience, fame=@fame, map_identifier=@map_identifier, map_spawn=@map_spawn, meso=@meso, equipment_slots=@equipment_slots, usable_slots=@usable_slots, etcetera_slots=@etcetera_slots, cash_slots=@cash_slots WHERE identifier=@identifier",
                                new MySqlParameter("identifier", Identifier),
                                new MySqlParameter("gender", Gender),

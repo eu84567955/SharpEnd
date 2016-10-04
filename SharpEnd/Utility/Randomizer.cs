@@ -6,6 +6,11 @@ namespace SharpEnd
     {
         private static readonly Random mRandom = new Random();
 
+        public static sbyte NextSByte(int minValue, int maxValue)
+        {
+            return Convert.ToSByte(mRandom.Next(minValue, maxValue));
+        }
+
         public static int NextInt()
         {
             return mRandom.Next();

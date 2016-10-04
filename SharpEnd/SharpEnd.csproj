@@ -89,6 +89,7 @@
     <Compile Include="Enums\EWorldStatus.cs" />
     <Compile Include="Extensions\PacketExtensions.cs" />
     <Compile Include="Handlers\GeneralHandlers.cs" />
+    <Compile Include="Handlers\InventoryHandlers.cs" />
     <Compile Include="Handlers\LoginHandlers.cs" />
     <Compile Include="Handlers\MigrationHandlers.cs" />
     <Compile Include="Handlers\NpcHandlers.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Network\OutPacket.cs" />
     <Compile Include="Network\PacketHandlerAttribute.cs" />
     <Compile Include="Packets\HelpPackets.cs" />
+    <Compile Include="Packets\InventoryPackets.cs" />
     <Compile Include="Packets\LoginPackets.cs" />
     <Compile Include="Packets\MapPackets.cs" />
     <Compile Include="Packets\MessagePackets.cs" />

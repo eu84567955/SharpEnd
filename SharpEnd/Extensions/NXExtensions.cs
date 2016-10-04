@@ -5,9 +5,9 @@ namespace SharpEnd.Data
 {
     internal static class NXExtensions
     {
-        public static int GetIdentifier(this NXNode node)
+        public static T GetIdentifier<T>(this NXNode node)
         {
-            return int.Parse(node.Name.Replace(".img", ""));
+            return (T)Convert.ChangeType(node.Name.Replace(".img", ""), typeof(T));
         }
 
         public static bool GetBoolean(this NXNode node, string childName, bool def = false)

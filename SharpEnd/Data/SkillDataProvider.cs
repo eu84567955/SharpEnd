@@ -26,7 +26,7 @@ namespace SharpEnd.Data
                     {
                         foreach (var node in job["skill"])
                         {
-                            int identifier = node.GetIdentifier();
+                            int identifier = node.GetIdentifier<int>();
 
                             SkillData item = new SkillData();
 

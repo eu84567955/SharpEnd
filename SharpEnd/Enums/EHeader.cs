@@ -56,6 +56,9 @@
         CMSG_NPC_CONVERSE_RESULT =              0x00DF,
         CMSG_NPC_SHOP =                         0x00E0,
         CMSG_NPC_STORAGE =                      0x00E1,
+        CMSG_INVENTORY_SORT =                   0x00EF,
+        CMSG_INVENTORY_GATHER =                 0x00F0,
+        CMSG_INVENTORY_OPERATION =              0x00F1,
         CMSG_PLAYER_LOAD =                      0x006E,
         CMSG_NPC_ACTION =                       0x0353,
 

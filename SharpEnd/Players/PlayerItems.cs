@@ -191,6 +191,60 @@ namespace SharpEnd.Players
                 .WriteInt(offhand != null ? offhand.Identifier : 0);
         }
 
+        public void Equip(short source, short destination)
+        {
+
+        }
+
+        public void Unequip(short sourceSlot, short destinationSlot)
+        {
+            PlayerItem source = this[EInventoryType.Equipment, sourceSlot];
+            PlayerItem destination = this[EInventoryType.Equipment, destinationSlot];
+
+            if (source == null)
+            {
+                return;
+            }
+
+            if (destination != null)
+            {
+
+            }
+        }
+
+        public void Swap(EInventoryType inventory, short sourceSlot, short destinationSlot)
+        {
+            PlayerItem source = this[inventory, sourceSlot];
+            PlayerItem destination = this[inventory, destinationSlot];
+
+            if (source == null)
+            {
+                return;
+            }
+
+            if (destination != null && source.Identifier == destination.Identifier && GameLogicUtilities.IsStackable(source.Identifier))
+            {
+                // TODO: Stack items
+            }
+            else
+            {
+                source.Slot = destinationSlot;
+
+                if (destination != null)
+                {
+                    destination.Slot = sourceSlot;
+                }
+
+                m_player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                {
+                    Type = EInventoryOperation.ModifySlot,
+                    Item = source,
+                    CurrentSlot = sourceSlot,
+                    OldSlot = destinationSlot
+                }));
+            }
+        }
+
         public IEnumerable<PlayerItem> GetEquipped(EEquippedQueryMode mode = EEquippedQueryMode.Any)
         {
             foreach (PlayerItem item in this)

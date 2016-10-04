@@ -1,4 +1,5 @@
-﻿using SharpEnd.Players;
+﻿using SharpEnd.Packets;
+using SharpEnd.Players;
 using SharpEnd.Servers;
 using System.Collections.Generic;
 
@@ -15,6 +16,17 @@ namespace SharpEnd.Commands
             {
                 player.Notify(string.Format("    {0}: {1}", command.Syntax, command.Description));
             }
+        }
+
+        private static sbyte counter = 0;
+
+        [GmCommand("test", "Test")]
+        public static void Test(Player player)
+        {
+            player.Map = 100000100;
+            player.SpawnPoint = counter++;
+
+            player.Send(MapPackets.ChangeMap(player));
         }
 
         [GmCommand("map", "Teleports you to the desired map.")]

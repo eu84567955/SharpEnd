@@ -20,7 +20,7 @@ namespace SharpEnd.Data
             {
                 foreach (var node in file.BaseNode)
                 {
-                    int identifier = node.GetIdentifier();
+                    int identifier = node.GetIdentifier<int>();
 
                     NpcData item = new NpcData();
 

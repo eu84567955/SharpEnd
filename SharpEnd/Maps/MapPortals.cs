@@ -1,23 +1,30 @@
 ﻿using SharpEnd.Data;
+using SharpEnd.Drawing;
 using System.Collections.Generic;
 
 namespace SharpEnd.Maps
 {
-    internal sealed class MapPortals : List<PortalData>
+    internal sealed class MapPortals
     {
         public Map Map { get; private set; }
+
+        public List<PortalData> Regular { get; private set; }
+        public List<PortalData> SpawnPoints { get; private set; }
 
         public MapPortals(Map map)
             : base()
         {
             Map = map;
+
+            Regular = new List<PortalData>();
+            SpawnPoints = new List<PortalData>();
         }
 
         public PortalData this[string label]
         {
             get
             {
-                foreach (PortalData portal in this)
+                foreach (PortalData portal in Regular)
                 {
                     if (portal.Label == label)
                     {
@@ -31,21 +38,33 @@ namespace SharpEnd.Maps
 
         public PortalData GetSpawnPoint(sbyte portalIdentifier = -1)
         {
-            List<PortalData> spawnPoints = new List<PortalData>();
-
-            foreach (PortalData portal in this)
+            if (portalIdentifier == -1)
             {
-                if (portal.Label == "sp")
+                portalIdentifier = Randomizer.NextSByte(0, SpawnPoints.Count);
+            }
+
+            return SpawnPoints[portalIdentifier];
+        }
+
+        public PortalData GetNearestSpawnPoint(Point position)
+        {
+            PortalData closestSpawnPoint = SpawnPoints[0];
+
+            double shortestDistance = double.PositiveInfinity;
+
+            foreach (PortalData spawnPoint in SpawnPoints)
+            {
+                double distance = spawnPoint.Position.DistanceFrom(position);
+
+                if (distance < shortestDistance)
                 {
-                    spawnPoints.Add(portal);
+                    closestSpawnPoint = spawnPoint;
+
+                    shortestDistance = distance;
                 }
             }
 
-            sbyte identifier = (sbyte)(portalIdentifier != -1 ?
-                        portalIdentifier :
-                        Randomizer.NextInt(0, spawnPoints.Count));
-
-            return spawnPoints[identifier];
+            return closestSpawnPoint;
         }
     }
 }

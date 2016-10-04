@@ -25,7 +25,7 @@ namespace SharpEnd.Data
                         continue;
                     }
 
-                    int identifier = node.GetIdentifier();
+                    int identifier = node.GetIdentifier<int>();
 
                     MobData item = new MobData();
 

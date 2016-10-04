@@ -32,7 +32,7 @@ namespace SharpEnd.Data
 
                     foreach (var node in category)
                     {
-                        int identifier = node.GetIdentifier();
+                        int identifier = node.GetIdentifier<int>();
 
                         EquipData item = new EquipData();
 
