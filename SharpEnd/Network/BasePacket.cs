@@ -7,6 +7,14 @@ namespace SharpEnd.Network
     {
         public EHeader Header { get; protected set; }
 
+        public int Length
+        {
+            get
+            {
+                return (int)m_stream.Length;
+            }
+        }
+
         public int Position
         {
             get
@@ -16,6 +24,14 @@ namespace SharpEnd.Network
             set
             {
                 m_stream.Position = value;
+            }
+        }
+
+        public int Available
+        {
+            get
+            {
+                return Length - Position;
             }
         }
 

@@ -118,6 +118,7 @@
     <Compile Include="Packets\MapPackets.cs" />
     <Compile Include="Packets\MessagePackets.cs" />
     <Compile Include="Packets\PlayerPackets.cs" />
+    <Compile Include="Packets\PlayersPackets.cs" />
     <Compile Include="Players\Account.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Players\PlayerItem.cs" />

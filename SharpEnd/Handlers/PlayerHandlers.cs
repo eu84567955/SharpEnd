@@ -1,5 +1,7 @@
 ﻿using SharpEnd.Data;
+using SharpEnd.Drawing;
 using SharpEnd.Network;
+using SharpEnd.Packets;
 using SharpEnd.Servers;
 
 namespace SharpEnd.Handlers
@@ -42,6 +44,7 @@ namespace SharpEnd.Handlers
 
                 case -1:
                     {
+                        inPacket.Skip(4); // NOTE: Unknown
                         string label = inPacket.ReadString();
 
                         PortalData portal = MasterServer.Instance.Maps[player.Map].Portals[label];
@@ -59,7 +62,7 @@ namespace SharpEnd.Handlers
 
                 default:
                     {
-
+                        // TODO: /m command
                     }
                     break;
             }
@@ -77,16 +80,22 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            inPacket.Skip(21);
+            inPacket.Skip(13);
+
+            Point origin = inPacket.ReadPoint();
+
+            inPacket.Skip(4);
+
+            int rewindOffset = inPacket.Position;
 
             if (!player.ParseMovement(inPacket))
             {
                 return;
             }
 
-            player.Notify($"X: {player.Position.X}, Y: {player.Position.Y}, Foothold: {player.Foothold}, Stance: {player.Stance}");
+            inPacket.Position = rewindOffset;
 
-            // TODO: Rewind the packet & broadcast to map
+            MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerMove(player.Identifier, origin, inPacket.ReadLeftoverBytes()), player);
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_CHAT)]
@@ -100,7 +109,7 @@ namespace SharpEnd.Handlers
 
             if (!MasterServer.Instance.Commands.Execute(player, text))
             {
-
+                MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerChat(player.Identifier, text, false, shout));
             }
         }
 

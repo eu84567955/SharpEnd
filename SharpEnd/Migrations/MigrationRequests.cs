@@ -18,7 +18,7 @@ namespace SharpEnd.Migrations
 
         public int Validate(int playerIdentifier, string host)
         {
-            MigrationRequest request = Find(r => r.PlayerIdentifier == playerIdentifier && r.Host == host);
+            MigrationRequest request = Find(r => r.PlayerIdentifier == playerIdentifier/* && r.Host == host*/);
 
             if (request == null)
             {

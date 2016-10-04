@@ -15,12 +15,12 @@ namespace SharpEnd.Maps
 
         public new void Add(Player player)
         {
-
+            base.Add(player);
         }
 
         public new void Remove(Player player)
         {
-
+            base.Remove(player);
         }
     }
 }

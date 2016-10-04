@@ -57,14 +57,7 @@ namespace SharpEnd.Commands
 
                 if (args.Length < command.ParameterCount)
                 {
-                    string syntax = "[Command] Syntax: !" + commandName + " ";
-
-                    foreach (var parameter in command.Parameters)
-                    {
-                        syntax += "[" + parameter.Name + "] ";
-                    }
-
-                    player.Notify(syntax);
+                    player.Notify(string.Format("[Command] Syntax: {0}", command.Syntax));
 
                     execute = false;
                 }
@@ -80,14 +73,7 @@ namespace SharpEnd.Commands
                         }
                         catch
                         {
-                            string syntax = "[Command] Syntax: !" + commandName + " ";
-
-                            foreach (var parameter in command.Parameters)
-                            {
-                                syntax += "[" + parameter.Name + "] ";
-                            }
-
-                            player.Notify(syntax);
+                            player.Notify(string.Format("[Command] Syntax: {0}", command.Syntax));
 
                             execute = false;
 

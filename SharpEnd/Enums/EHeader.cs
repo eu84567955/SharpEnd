@@ -64,5 +64,13 @@
         SMSG_NOTIFICATION =                     0x0082,
         SMSG_CHANGE_MAP =                       0x01AC,
         SMSG_PLAYER_SPAWN =                     0x0204,
+        SMSG_PLAYER_DESPAWN =                   0x0205,
+        SMSG_PLAYER_CHAT =                      0x0206,
+        SMSG_CHALKBOARD =                       0x0207,
+        SMSG_PLAYER_MOVE =                      0x0279,
+        SMSG_ATTACK_MELEE =                     0x027A,
+        SMSG_ATTACK_RANGED =                    0x027B,
+        SMSG_ATTACK_MAGIC =                     0x027C,
+        SMSG_ATTACK_ENERGY_CHARGE =             0x027D,
     }
 }

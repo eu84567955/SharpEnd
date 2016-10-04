@@ -89,6 +89,11 @@ namespace SharpEnd.Network
             return new Point(ReadShort(), ReadShort());
         }
 
+        public byte[] ReadLeftoverBytes()
+        {
+            return ReadBytes(Available);
+        }
+
         protected override void CustomDispose()
         {
             m_reader.Dispose();

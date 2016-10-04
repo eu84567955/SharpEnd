@@ -1,4 +1,6 @@
-﻿namespace SharpEnd.Maps
+﻿using SharpEnd.Players;
+
+namespace SharpEnd.Maps
 {
     internal sealed class Map
     {
@@ -19,6 +21,17 @@
             Mobs = new MapMobs(this);
             Npcs = new MapNpcs(this);
             Reactors = new MapReactors(this);
+        }
+
+        public void Send(byte[] buffer, Player ignored = null)
+        {
+            foreach (Player player in Players)
+            {
+                if (player != ignored)
+                {
+                    player.Send(buffer);
+                }
+            }
         }
     }
 }

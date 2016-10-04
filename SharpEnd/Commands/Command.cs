@@ -18,5 +18,20 @@ namespace SharpEnd.Commands
             MethodInfo = methodInfo;
             Parameters = parameters;
         }
+
+        public string Syntax
+        {
+            get
+            {
+                string syntax = "!" + Name;
+
+                foreach (ParameterInfo parameter in Parameters)
+                {
+                    syntax += " [" + parameter.Name + "]";
+                }
+
+                return syntax;
+            }
+        }
     }
 }

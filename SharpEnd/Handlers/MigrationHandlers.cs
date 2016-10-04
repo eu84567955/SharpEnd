@@ -37,7 +37,11 @@ namespace SharpEnd.Handlers
                 client.Player = new Player(client, query);
             }
 
-            client.Send(MapPackets.ChangeMap(client.Player, true));
+            var player = client.Player;
+
+            client.Send(MapPackets.ChangeMap(player, true));
+
+            MasterServer.Instance.Maps[player.Map].Players.Add(player);
         }
     }
 }

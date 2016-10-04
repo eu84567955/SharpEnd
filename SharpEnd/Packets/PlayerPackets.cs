@@ -140,5 +140,17 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] PlayerDespawn(int playerIdentifier)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_PLAYER_DESPAWN)
+                    .WriteInt(playerIdentifier);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }
