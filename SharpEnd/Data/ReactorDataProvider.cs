@@ -30,7 +30,7 @@ namespace SharpEnd.Data
                 }
             }
             
-            Console.WriteLine($"Loaded {m_reactors.Count} reactors.");
+            Log.Inform($"Loaded {m_reactors.Count} reactors.");
         }
 
         public ReactorData this[int identifier]

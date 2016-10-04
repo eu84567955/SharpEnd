@@ -58,7 +58,7 @@ namespace SharpEnd.Data
                 }
             }
 
-            Console.WriteLine($"Loaded {m_maps.Count} maps.");
+            Log.Inform($"Loaded {m_maps.Count} maps.");
         }
 
         private void LoadLife(Map map, NXNode lifeNode)

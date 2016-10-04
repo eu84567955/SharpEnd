@@ -38,7 +38,7 @@ namespace SharpEnd.Data
                 }
             }
 
-            Console.WriteLine($"Loaded {m_tamingMobs.Count} taming mobs.");
+            Log.Inform($"Loaded {m_tamingMobs.Count} taming mobs.");
         }
 
         public TamingMobData this[int identifier]

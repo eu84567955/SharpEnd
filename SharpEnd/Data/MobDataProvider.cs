@@ -35,7 +35,7 @@ namespace SharpEnd.Data
                 }
             }
 
-            Console.WriteLine($"Loaded {m_mobs.Count} mobs.");
+            Log.Inform($"Loaded {m_mobs.Count} mobs.");
         }
 
         public MobData this[int identifier]

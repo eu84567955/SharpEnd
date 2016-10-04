@@ -17,7 +17,7 @@ namespace SharpEnd
 
         private static void Main(string[] args)
         {
-            Console.Title = "SharpEnd";
+            Log.Entitle();
 
             try
             {
@@ -29,8 +29,8 @@ namespace SharpEnd
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unable to initialize SharpEnd.");
-                Console.WriteLine(e.ToString());
+                Log.Inform("Unable to initialize SharpEnd.");
+                Log.Inform(e.ToString());
             }
 
             while (MasterServer.Instance.Running)

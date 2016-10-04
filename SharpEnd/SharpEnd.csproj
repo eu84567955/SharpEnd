@@ -98,6 +98,7 @@
     <Compile Include="Handlers\MigrationHandlers.cs" />
     <Compile Include="Handlers\NpcHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
+    <Compile Include="IO\Logger.cs" />
     <Compile Include="Maps\IControllable.cs" />
     <Compile Include="Maps\LifeEntity.cs" />
     <Compile Include="Maps\Map.cs" />

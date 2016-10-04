@@ -135,13 +135,13 @@ namespace SharpEnd.Network
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine("Unable to process packet from {0}.", Host);
-                            Console.WriteLine(e.ToString());
+                            Log.Inform("Unable to process packet from {0}.", Host);
+                            Log.Inform(e.ToString());
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Unhandled packet 0x{0:X4}.", header);
+                        Log.Inform("Unhandled packet 0x{0:X4}.", header);
                     }
                 }
 
@@ -233,7 +233,7 @@ namespace SharpEnd.Network
                     Player.Save();
                 }
 
-                Console.WriteLine("Connection lost from {0}.", Host);
+                Log.Inform("Connection lost from {0}.", Host);
             }
         }
     }

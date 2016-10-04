@@ -16,7 +16,7 @@ namespace SharpEnd.Commands
                 Add(command.Name, command);
             }
 
-            Console.WriteLine($"Loaded {Count} commands.");
+            Log.Inform($"Loaded {Count} commands.");
         }
 
         public bool Execute(Player player, string text)

@@ -50,9 +50,9 @@ namespace SharpEnd.Data
                         }
                     }
                 }
-
-                Console.WriteLine($"Loaded {m_items.Count} items.");
             }
+
+            Log.Inform($"Loaded {m_items.Count} items.");
         }
 
         public ItemData this[int identifier]

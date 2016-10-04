@@ -72,7 +72,7 @@ namespace SharpEnd.Servers
             TamingMobs.Load();
             Commands.Load();
 
-            Console.WriteLine("Data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);
+            Log.Inform("Data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);
 
             Handlers.Load();
 
@@ -85,7 +85,7 @@ namespace SharpEnd.Servers
 
             Running = true;
 
-            Console.WriteLine("SharpEnd is online.");
+            Log.Success("SharpEnd is online.");
         }
 
         public void Shutdown()
@@ -99,7 +99,7 @@ namespace SharpEnd.Servers
 
             Running = false;
 
-            Console.WriteLine("SharpEnd is offline.");
+            Log.Inform("SharpEnd is offline.");
         }
     }
 }

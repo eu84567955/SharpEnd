@@ -187,7 +187,7 @@ namespace SharpEnd.Packets
                 outPacket
                     .WriteByte(1)
                     .WriteByte()
-                    .WriteInt(3)
+                    .WriteInt(9)
                     .WriteInt()
                     .WriteInt(-1)
                     .WriteLong()

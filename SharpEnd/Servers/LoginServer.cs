@@ -29,7 +29,7 @@ namespace SharpEnd.Servers
         {
             var client = new Client(socket);
 
-            Console.WriteLine("Connection accepted from {0}.", client.Host);
+            Log.Inform("Connection accepted from {0}.", client.Host);
         }
     }
 }

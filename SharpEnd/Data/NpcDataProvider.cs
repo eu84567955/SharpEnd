@@ -30,7 +30,7 @@ namespace SharpEnd.Data
                 }
             }
 
-            Console.WriteLine($"Loaded {m_npcs.Count} npcs.");
+            Log.Inform($"Loaded {m_npcs.Count} npcs.");
         }
 
         public NpcData this[int identifier]

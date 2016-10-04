@@ -13,5 +13,11 @@ namespace SharpEnd.Handlers
 
             client.Send(LoginPackets.PrivateServerAuth(response));
         }
+
+        [PacketHandler(EHeader.CMSG_BUTTON_PRESS)]
+        public static void ButtonPress(Client client, InPacket inPacket)
+        {
+            // TODO: Handle button presses (useful against auto-clickers)
+        }
     }
 }
