@@ -27,6 +27,7 @@ namespace SharpEnd.Players
 
         public byte Level { get; private set; }
         public ushort Job { get; private set; }
+        public ushort SubJob { get; private set; }
         public ushort Strength { get; private set; }
         public ushort Dexterity { get; private set; }
         public ushort Intelligence { get; private set; }
@@ -59,6 +60,7 @@ namespace SharpEnd.Players
 
             Level = query.Get<byte>("level");
             Job = query.Get<ushort>("job");
+            SubJob = query.Get<ushort>("sub_job");
             Strength = query.Get<ushort>("strength");
             Dexterity = query.Get<ushort>("dexterity");
             Intelligence = query.Get<ushort>("intelligence");

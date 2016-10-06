@@ -16,7 +16,7 @@ namespace SharpEnd.Packets
                     .WriteBoolean(false) // NOTE: Unknown
                     .WriteByte(player.Stats.Level)
                     .WriteUShort(player.Stats.Job)
-                    .WriteUShort() // NOTE: Subcategory
+                    .WriteUShort(player.Stats.SubJob)
                     .WriteSByte(0x10) // NOTE: Battle rank
                     .WriteInt(player.Stats.Fame)
                     .WriteBoolean(false) // NOTE: Marriage

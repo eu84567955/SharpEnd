@@ -80,7 +80,7 @@ namespace SharpEnd.Players
 
             SpawnPoint = currentMap.Portals.GetNearestSpawnPoint(Position).Identifier;
 
-            Database.Execute("UPDATE player SET gender=@gender, skin=@skin, face=@face, hair=@hair, level=@level, job=@job, strength=@strength, dexterity=@dexterity, intelligence=@intelligence, luck=@luck, health=@health, max_health=@max_health, mana=@mana, max_mana=@max_mana, ability_points=@ability_points, skill_points=@skill_points, experience=@experience, fame=@fame, map_identifier=@map_identifier, map_spawn=@map_spawn, meso=@meso, equipment_slots=@equipment_slots, usable_slots=@usable_slots, etcetera_slots=@etcetera_slots, cash_slots=@cash_slots WHERE identifier=@identifier",
+            Database.Execute("UPDATE player SET gender=@gender, skin=@skin, face=@face, hair=@hair, level=@level, job=@job, sub_job=@sub_job, strength=@strength, dexterity=@dexterity, intelligence=@intelligence, luck=@luck, health=@health, max_health=@max_health, mana=@mana, max_mana=@max_mana, ability_points=@ability_points, skill_points=@skill_points, experience=@experience, fame=@fame, map_identifier=@map_identifier, map_spawn=@map_spawn, meso=@meso, equipment_slots=@equipment_slots, usable_slots=@usable_slots, etcetera_slots=@etcetera_slots, cash_slots=@cash_slots WHERE identifier=@identifier",
                                new MySqlParameter("identifier", Identifier),
                                new MySqlParameter("gender", Gender),
                                new MySqlParameter("skin", Skin),
@@ -88,6 +88,7 @@ namespace SharpEnd.Players
                                new MySqlParameter("hair", Hair),
                                new MySqlParameter("level", Stats.Level),
                                new MySqlParameter("job", Stats.Job),
+                               new MySqlParameter("sub_job", Stats.SubJob),
                                new MySqlParameter("strength", Stats.Strength),
                                new MySqlParameter("dexterity", Stats.Dexterity),
                                new MySqlParameter("intelligence", Stats.Intelligence),

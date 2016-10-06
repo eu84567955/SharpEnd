@@ -69,7 +69,7 @@ namespace SharpEnd.Packets
                             .WriteInt(player.Map)
                             .WriteSByte(player.SpawnPoint)
                             .WriteInt() // NOTE: Unknown
-                            .WriteShort() // NOTE: Subcategory
+                            .WriteUShort(player.Stats.SubJob)
                             .WriteByte() // NOTE: Fatigue
                             .WriteInt(); // NOTE: Date
 

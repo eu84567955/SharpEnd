@@ -261,7 +261,7 @@ namespace SharpEnd.Packets
                 .WriteInt(query.Get<int>("map_identifier"))
                 .WriteByte(query.Get<byte>("map_spawn"))
                 .WriteInt() // NOTE: Unknown
-                .WriteShort() // NOTE: Subcategory
+                .WriteUShort(query.Get<ushort>("sub_job"))
                 .WriteByte() // NOTE: Fatigue
                 .WriteInt(); // NOTE: Date
 

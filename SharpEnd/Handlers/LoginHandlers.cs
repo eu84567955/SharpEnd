@@ -177,7 +177,7 @@ namespace SharpEnd.Handlers
             inPacket.ReadInt(); // NOTE: Unknown, always -1
             int jobType = inPacket.ReadInt();
             ushort job = GetJobFromJobType(jobType);
-            inPacket.ReadShort(); // NOTE: Subcategory
+            ushort subJob = inPacket.ReadUShort();
             byte gender = inPacket.ReadByte();
             byte skin = inPacket.ReadByte();
 
@@ -230,7 +230,7 @@ namespace SharpEnd.Handlers
             }
 
             int identifier = Database.InsertAndReturnIdentifier("INSERT INTO player(account_identifier,name,gender,skin,face,hair,job,skill_points) " +
-                                                                "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job,@skill_points)",
+                                                                "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job,@sub_job,@skill_points)",
                                                                 new MySqlParameter("@account_identifier", client.Account.Identifier),
                                                                 new MySqlParameter("@name", name),
                                                                 new MySqlParameter("@gender", gender),
@@ -238,6 +238,7 @@ namespace SharpEnd.Handlers
                                                                 new MySqlParameter("@face", face),
                                                                 new MySqlParameter("@hair", hair),
                                                                 new MySqlParameter("@job", job),
+                                                                new MySqlParameter("@sub_job", subJob),
                                                                 new MySqlParameter("@skill_points", new byte[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, }));
 
             foreach (int item in items)
