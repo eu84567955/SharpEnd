@@ -11,7 +11,7 @@ namespace SharpEnd.Players
     {
         private Player m_player;
 
-        public ulong Meso { get; private set; }
+        public long Meso { get; private set; }
 
         public byte EquipmentSlots { get; set; }
         public byte UsableSlots { get; set; }
@@ -19,7 +19,7 @@ namespace SharpEnd.Players
         public byte EtceteraSlots { get; set; }
         public byte CashSlots { get; set; }
 
-        public PlayerItems(Player player, DatabaseQuery query, ulong meso, byte equipmentSlots, byte usableSlots, byte setupSlots, byte etceteraSlots, byte cashSlots)
+        public PlayerItems(Player player, DatabaseQuery query, long meso, byte equipmentSlots, byte usableSlots, byte setupSlots, byte etceteraSlots, byte cashSlots)
             : base()
         {
             m_player = player;
@@ -51,7 +51,7 @@ namespace SharpEnd.Players
         public void WriteInitial(OutPacket outPacket)
         {
             outPacket
-                .WriteULong(Meso)
+                .WriteLong(Meso)
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
@@ -185,6 +185,37 @@ namespace SharpEnd.Players
                 .WriteInt(hiddenLayer.GetOrDefault((byte)11, 0))
                 .WriteInt(visibleLayer.GetOrDefault((byte)11, 0))
                 .WriteInt(visibleLayer.GetOrDefault((byte)15, 0)); // TODO: Find the correct slot
+        }
+
+        public void SetMeso(int amount, bool sendPacket = false)
+        {
+
+        }
+
+        public bool ModifyMeso(int mod, bool sendPacket = false)
+        {
+            if (mod < 0)
+            {
+                if (-mod > Meso)
+                {
+                    return false;
+                }
+
+                Meso += mod;
+            }
+            else
+            {
+                if (Meso + mod < 0)
+                {
+                    return false;
+                }
+
+                Meso += mod;
+            }
+
+            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Meso, Meso, sendPacket));
+
+            return true;
         }
 
         public void Equip(short source, short destination)

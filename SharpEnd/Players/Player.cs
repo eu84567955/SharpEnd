@@ -47,7 +47,7 @@ namespace SharpEnd.Players
 
             using (DatabaseQuery itemQuery = Database.Query("SELECT * FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
             {
-                ulong meso = query.Get<ulong>("meso");
+                long meso = query.Get<long>("meso");
 
                 byte equipmentSlots = query.Get<byte>("equipment_slots");
                 byte usableSlots = query.Get<byte>("usable_slots");

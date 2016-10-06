@@ -64,6 +64,7 @@
     <Compile Include="Commands\Commands.cs" />
     <Compile Include="Commands\Gm\MapCommands.cs" />
     <Compile Include="Commands\Gm\StatCommands.cs" />
+    <Compile Include="Commands\Gm\TestCommands.cs" />
     <Compile Include="Commands\PlayerCommandAttribute.cs" />
     <Compile Include="Commands\GmCommandAttribute.cs" />
     <Compile Include="Commands\Gm\GeneralCommands.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Data\ItemDataProvider.cs" />
     <Compile Include="Data\ValidCharDataProvider.cs" />
     <Compile Include="Drawing\Point.cs" />
+    <Compile Include="Enums\EDropAnimation.cs" />
     <Compile Include="Extensions\NXExtensions.cs" />
     <Compile Include="Enums\ECommand.cs" />
     <Compile Include="Enums\EDropType.cs" />
@@ -103,9 +105,11 @@
     <Compile Include="Handlers\NpcHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
     <Compile Include="IO\Logger.cs" />
+    <Compile Include="Maps\Drop.cs" />
     <Compile Include="Maps\IControllable.cs" />
     <Compile Include="Maps\LifeEntity.cs" />
     <Compile Include="Maps\Map.cs" />
+    <Compile Include="Maps\MapDrops.cs" />
     <Compile Include="Maps\MapEntities.cs" />
     <Compile Include="Maps\MapEntity.cs" />
     <Compile Include="Maps\MapPlayers.cs" />
@@ -126,6 +130,7 @@
     <Compile Include="Network\InPacket.cs" />
     <Compile Include="Network\OutPacket.cs" />
     <Compile Include="Network\PacketHandlerAttribute.cs" />
+    <Compile Include="Packets\DropPackets.cs" />
     <Compile Include="Packets\HelpPackets.cs" />
     <Compile Include="Packets\InventoryPackets.cs" />
     <Compile Include="Packets\LoginPackets.cs" />

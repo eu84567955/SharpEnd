@@ -35,6 +35,11 @@ namespace SharpEnd.Maps
                 player.Send(NpcPackets.NpcSpawn(npc));
             }
 
+            foreach (Drop drop in Map.Drops.Values)
+            {
+                player.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
+            }
+
             foreach (Mob mob in Map.Mobs.Values)
             {
                 mob.AssignController();

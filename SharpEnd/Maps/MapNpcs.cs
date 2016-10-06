@@ -1,17 +1,23 @@
-﻿namespace SharpEnd.Maps
+﻿using SharpEnd.Packets;
+
+namespace SharpEnd.Maps
 {
     internal sealed class MapNpcs : MapEntities<Npc>
     {
         public MapNpcs(Map map) : base(map) { }
 
-        public override void Add(Npc entity)
+        public override void Add(Npc npc)
         {
-            base.Add(entity);
+            base.Add(npc);
+
+            Map.Send(NpcPackets.NpcSpawn(npc));
         }
 
-        public override void Remove(Npc entity)
+        public override void Remove(Npc npc)
         {
-            base.Remove(entity);
+            Map.Send(NpcPackets.NpcDespawn(npc.ObjectIdentifier));
+
+            base.Remove(npc);
         }
     }
 }

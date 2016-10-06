@@ -223,7 +223,7 @@ namespace SharpEnd.Players
 
         public void DamageHealth(int damage)
         {
-            Health = (ushort)(Math.Max(50, (Health - damage)));
+            Health = (uint)(Math.Max(0, (Health - damage)));
 
             m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Health, Health));
 

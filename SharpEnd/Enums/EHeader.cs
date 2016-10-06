@@ -60,8 +60,10 @@
         CMSG_INVENTORY_GATHER =                 0x00F0,
         CMSG_INVENTORY_OPERATION =              0x00F1,
         CMSG_PLAYER_LOAD =                      0x006E,
+        CMSG_INVENTORY_MESO_DROP =              0x0134,
         CMSG_MOB_MOVE =                         0x0339,
         CMSG_NPC_ACTION =                       0x0353,
+        CMSG_INVENTORY_PICKUP =                 0x0358,
 
         SMSG_INVENTORY_OPERATION =              0x0047,
         SMSG_INVENTORY_GROW =                   0x0048,
@@ -94,5 +96,7 @@
         SMSG_NPC_DESPAWN =                      0x03D9,
         SMSG_NPC_CONTROL =                      0x03DB,
         SMSG_NPC_ACTION =                       0x03DC,
+        SMSG_DROP_SPAWN =                       0x03F1,
+        SMSG_DROP_DESPAWN =                     0x03F3,
     }
 }

@@ -1,17 +1,23 @@
-﻿namespace SharpEnd.Maps
+﻿using SharpEnd.Packets;
+
+namespace SharpEnd.Maps
 {
     internal sealed class MapMobs : MapEntities<Mob>
     {
         public MapMobs(Map map) : base(map) { }
 
-        public override void Add(Mob entity)
+        public override void Add(Mob mob)
         {
-            base.Add(entity);
+            base.Add(mob);
+
+            Map.Send(MobPackets.MobSpawn(mob));
         }
 
-        public override void Remove(Mob entity)
+        public override void Remove(Mob mob)
         {
-            base.Remove(entity);
+            // TODO: Packet
+
+            base.Remove(mob);
         }
     }
 }
