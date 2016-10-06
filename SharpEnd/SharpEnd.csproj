@@ -79,6 +79,7 @@
     <Compile Include="Data\ItemDataProvider.cs" />
     <Compile Include="Data\ValidCharDataProvider.cs" />
     <Compile Include="Drawing\Point.cs" />
+    <Compile Include="Enums\ECommandType.cs" />
     <Compile Include="Enums\EDropAnimation.cs" />
     <Compile Include="Extensions\NXExtensions.cs" />
     <Compile Include="Enums\ECommand.cs" />

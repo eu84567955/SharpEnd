@@ -33,7 +33,7 @@ namespace SharpEnd.Utility
             return results;
         }
 
-        public static List<Command> FindAllGmCommands()
+        public static List<Command> FindCommands(ECommandType commandType)
         {
             List<Command> commands = new List<Command>();
 
@@ -52,19 +52,44 @@ namespace SharpEnd.Utility
 
                     foreach (var method in methods)
                     {
-                        GmCommandAttribute attribute = Attribute.GetCustomAttribute(method, typeof(GmCommandAttribute), false) as GmCommandAttribute;
-
-                        if (attribute == null)
+                        switch (commandType)
                         {
-                            continue;
+                            case ECommandType.Gm:
+                                {
+                                    GmCommandAttribute attribute = Attribute.GetCustomAttribute(method, typeof(GmCommandAttribute), false) as GmCommandAttribute;
+
+                                    if (attribute == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    string name = attribute.Name;
+                                    string description = attribute.Description;
+                                    MethodInfo methodInfo = method;
+                                    ParameterInfo[] parameters = method.GetParameters();
+
+                                    commands.Add(new Command(name, description, methodInfo, parameters));
+                                }
+                                break;
+
+                            case ECommandType.Player:
+                                {
+                                    PlayerCommandAttribute attribute = Attribute.GetCustomAttribute(method, typeof(PlayerCommandAttribute), false) as PlayerCommandAttribute;
+
+                                    if (attribute == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    string name = attribute.Name;
+                                    string description = attribute.Description;
+                                    MethodInfo methodInfo = method;
+                                    ParameterInfo[] parameters = method.GetParameters();
+
+                                    commands.Add(new Command(name, description, methodInfo, parameters));
+                                }
+                                break;
                         }
-
-                        string name = attribute.Name;
-                        string description = attribute.Description;
-                        MethodInfo methodInfo = method;
-                        ParameterInfo[] parameters = method.GetParameters();
-
-                        commands.Add(new Command(name, description, methodInfo, parameters));
                     }
                 }
             }

@@ -275,7 +275,11 @@ namespace SharpEnd.Handlers
             string text = inPacket.ReadString();
             bool shout = inPacket.ReadBoolean();
 
-            if (!MasterServer.Instance.Commands.Execute(player, text))
+            if (text.StartsWith("!") || text.StartsWith("@"))
+            {
+                MasterServer.Instance.Commands.Execute(player, text);
+            }
+            else
             {
                 MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerChat(player.Identifier, text, false, shout));
             }
@@ -299,7 +303,7 @@ namespace SharpEnd.Handlers
             if (worldIdentifier == -1)
             {
                 Player target = MasterServer.Instance.Maps[player.Map].Players.Find(p => p.Identifier == playerIdentifier);
-                
+
                 if (target == null)
                 {
                     return;

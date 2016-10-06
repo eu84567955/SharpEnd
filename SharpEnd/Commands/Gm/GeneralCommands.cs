@@ -8,11 +8,16 @@ namespace SharpEnd.Commands.Gm
         [GmCommand("help", "Displays a list of available commands.")]
         public static void Help(Player player)
         {
-            player.Notify("[Command] Available commands:");
+            player.Notify("[Help]");
 
-            foreach (Command command in MasterServer.Instance.Commands.Values)
+            foreach (var command in MasterServer.Instance.Commands[true ? ECommandType.Gm : ECommandType.Player])
             {
-                player.Notify(string.Format("    {0}: {1}", command.Syntax, command.Description));
+               if (command.Key == "help")
+                {
+                    continue;
+                }
+
+                player.Notify(string.Format("    {0}{1} - {2}", (true ? "!" : "@"), command.Value.Syntax, command.Value.Description));
             }
         }
 
