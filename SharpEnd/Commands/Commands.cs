@@ -34,11 +34,11 @@ namespace SharpEnd.Commands
             splitted[0] = splitted[0].ToLower();
             string commandName = "";
 
-            if (text.StartsWith("!"))
+            if (text.StartsWith(Application.CommandIndicator))
             {
                 commandName = splitted[0].TrimStart('!');
             }
-            else if (text.StartsWith("@"))
+            else if (text.StartsWith(Application.PlayerCommandIndicator))
             {
                 commandName = splitted[0].TrimStart('@');
             }
@@ -56,11 +56,11 @@ namespace SharpEnd.Commands
 
             Command command = null;
 
-            if (text.StartsWith("!") && true)
+            if (text.StartsWith(Application.CommandIndicator) && player.IsGm)
             {
                 command = this[ECommandType.Gm].GetOrDefault(commandName, null);
             }
-            else if (text.StartsWith("@"))
+            else if (text.StartsWith(Application.PlayerCommandIndicator))
             {
                 command = this[ECommandType.Player].GetOrDefault(commandName, null);
             }

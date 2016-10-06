@@ -30,6 +30,9 @@ namespace SharpEnd.Players
         public ControlledMobs ControlledMobs { get; private set; }
         public ControlledNpcs ControlledNpcs { get; private set; }
 
+        // TODO: Move else-where
+        public bool IsGm => m_client.Account.Level >= EAccountLevel.Gm;
+
         public Player(Client client, DatabaseQuery query)
         {
             m_client = client;
@@ -42,7 +45,27 @@ namespace SharpEnd.Players
             Hair = query.Get<int>("hair");
             Map = query.Get<int>("map_identifier");
             SpawnPoint = query.Get<sbyte>("map_spawn");
+            
+            if (IsGm)
+            {
+                Map = 180000000;
+                SpawnPoint = -1;
+            }
+            else if (false) // TODO: Check if the map has a forced return map
+            {
+                // TODO: Set map to forced return map
+                SpawnPoint = -1;
+            }
+            else if (!Stats.IsAlive)
+            {
+                // TODO: Set map to return map
+                SpawnPoint = -1;
+            }
 
+            Position = MasterServer.Instance.Maps[Map].Portals.GetSpawnPoint(SpawnPoint).Position;
+            Stance = 0;
+            Foothold = 0;
+            
             Stats = new PlayerStats(this, query);
 
             using (DatabaseQuery itemQuery = Database.Query("SELECT * FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
@@ -117,26 +140,6 @@ namespace SharpEnd.Players
 
         public void Initialize()
         {
-            if (false) // TODO: Check if the player is a Gm
-            {
-                Map = 180000000;
-                SpawnPoint = -1;
-            }
-            else if (false) // TODO: Check if the map has a forced return map
-            {
-                // TODO: Set map to forced return map
-                SpawnPoint = -1;
-            }
-            else if (!Stats.IsAlive)
-            {
-                // TODO: Set map to return map
-                SpawnPoint = -1;
-            }
-
-            Position = MasterServer.Instance.Maps[Map].Portals.GetSpawnPoint(SpawnPoint).Position;
-            Stance = 0;
-            Foothold = 0;
-
             Send(PlayerPackets.EventNameTag(new sbyte[5] { -1, -1, -1, -1, -1 }));
 
             Send(MapPackets.ChangeMap(this, true));

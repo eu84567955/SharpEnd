@@ -16,7 +16,7 @@ namespace SharpEnd.Data
 
         public void Load()
         {
-            using (NXFile file = new NXFile(Path.Combine(Application.NXPath, "Quest.nx")))
+            using (NXFile file = new NXFile(Path.Combine("nx", "Quest.nx")))
             {
 
             }

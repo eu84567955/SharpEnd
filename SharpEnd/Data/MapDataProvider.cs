@@ -24,7 +24,7 @@ namespace SharpEnd.Data
 
         public void Load()
         {
-            using (NXFile file = new NXFile(Path.Combine(Application.NXPath, "Map.nx")))
+            using (NXFile file = new NXFile(Path.Combine("nx", "Map.nx")))
             {
                 foreach (var category in file.BaseNode["Map"])
                 {

@@ -275,13 +275,13 @@ namespace SharpEnd.Handlers
             string text = inPacket.ReadString();
             bool shout = inPacket.ReadBoolean();
 
-            if (text.StartsWith("!") || text.StartsWith("@"))
+            if (text.StartsWith(Application.CommandIndicator) || text.StartsWith(Application.PlayerCommandIndicator))
             {
                 MasterServer.Instance.Commands.Execute(player, text);
             }
             else
             {
-                MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerChat(player.Identifier, text, false, shout));
+                MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerChat(player.Identifier, text, player.IsGm, shout));
             }
         }
 

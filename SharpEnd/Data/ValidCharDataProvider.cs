@@ -16,7 +16,7 @@ namespace SharpEnd.Data
 
         public void Load()
         {
-            using (NXFile file = new NXFile(Path.Combine(Application.NXPath, "Etc.nx")))
+            using (NXFile file = new NXFile(Path.Combine("nx", "Etc.nx")))
             {
                 foreach (var node in file.BaseNode["MakeCharInfo.img"])
                 {

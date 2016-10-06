@@ -10,7 +10,7 @@ namespace SharpEnd.Commands.Gm
         {
             player.Notify("[Help]");
 
-            foreach (var command in MasterServer.Instance.Commands[true ? ECommandType.Gm : ECommandType.Player])
+            foreach (var command in MasterServer.Instance.Commands[player.IsGm ? ECommandType.Gm : ECommandType.Player])
             {
                if (command.Key == "help")
                 {

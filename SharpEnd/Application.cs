@@ -7,7 +7,8 @@ namespace SharpEnd
 {
     internal static class Application
     {
-        public static string NXPath = "nx";
+        public const string CommandIndicator = "!";
+        public const string PlayerCommandIndicator = "@";
 
         private static Delay m_usageDelay;
 

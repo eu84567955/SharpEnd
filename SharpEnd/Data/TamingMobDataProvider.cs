@@ -16,7 +16,7 @@ namespace SharpEnd.Data
 
         public void Load()
         {
-            using (NXFile file = new NXFile(Path.Combine(Application.NXPath, "TamingMob.nx")))
+            using (NXFile file = new NXFile(Path.Combine("nx", "TamingMob.nx")))
             {
                 foreach (var node in file.BaseNode)
                 {
