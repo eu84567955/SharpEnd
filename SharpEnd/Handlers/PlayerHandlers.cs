@@ -3,6 +3,7 @@ using SharpEnd.Drawing;
 using SharpEnd.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
+using SharpEnd.Players;
 using SharpEnd.Servers;
 
 namespace SharpEnd.Handlers
@@ -284,6 +285,32 @@ namespace SharpEnd.Handlers
         public static void PlayerEmote(Client client, InPacket inPacket)
         {
 
+        }
+
+        [PacketHandler(EHeader.CMSG_PLAYER_DETAILS)]
+        public static void PlayerDetails(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            inPacket.ReadInt();
+            int playerIdentifier = inPacket.ReadInt();
+            sbyte worldIdentifier = inPacket.ReadSByte(); // NOTE: Used for cross-world operations
+
+            if (worldIdentifier == -1)
+            {
+                Player target = MasterServer.Instance.Maps[player.Map].Players.Find(p => p.Identifier == playerIdentifier);
+                
+                if (target == null)
+                {
+                    return;
+                }
+
+                client.Send(PlayersPackets.PlayerDetails(target, playerIdentifier == player.Identifier));
+            }
+            else
+            {
+                // TODO: Cross-world operations
+            }
         }
     }
 }
