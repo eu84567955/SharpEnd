@@ -137,7 +137,10 @@ namespace SharpEnd.Players
             Foothold = 0;
 
             Send(PlayerPackets.EventNameTag(new sbyte[5] { -1, -1, -1, -1, -1 }));
+
             Send(MapPackets.ChangeMap(this, true));
+
+            Notify("Welcome to SharpEnd!", EMessageType.Header);
 
             MasterServer.Instance.Maps[Map].Players.Add(this);
         }

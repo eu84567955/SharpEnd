@@ -91,6 +91,8 @@ namespace SharpEnd.Packets
                     outPacket
                         .WriteString(string.Empty)
                         .WriteSByte(activeEventNameTag[count]);
+
+                    count++;
                 } while (count < 5);
 
                 return outPacket.ToArray();
