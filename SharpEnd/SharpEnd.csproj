@@ -62,12 +62,14 @@
     <Compile Include="Application.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Commands\Gm\ItemCommands.cs" />
     <Compile Include="Commands\Gm\MapCommands.cs" />
     <Compile Include="Commands\Gm\StatCommands.cs" />
     <Compile Include="Commands\Gm\TestCommands.cs" />
     <Compile Include="Commands\PlayerCommandAttribute.cs" />
     <Compile Include="Commands\GmCommandAttribute.cs" />
     <Compile Include="Commands\Gm\GeneralCommands.cs" />
+    <Compile Include="Commands\Players\GeneralCommands.cs" />
     <Compile Include="Data\MapDataProvider.cs" />
     <Compile Include="Data\TamingMobDataProvider.cs" />
     <Compile Include="Data\SkillDataProvider.cs" />
@@ -176,7 +178,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\Player\" />
     <Folder Include="Scripting\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

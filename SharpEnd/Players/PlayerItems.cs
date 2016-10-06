@@ -34,7 +34,7 @@ namespace SharpEnd.Players
 
             while (query.NextRow())
             {
-                Add(new PlayerItem(m_player, query));
+                Add(new PlayerItem(query));
             }
         }
 
@@ -45,6 +45,32 @@ namespace SharpEnd.Players
             foreach (PlayerItem item in this)
             {
                 item.Save();
+            }
+        }
+
+        public new void Add(PlayerItem item)
+        {
+            if (item.Quantity > 0)
+            {
+                item.Parent = m_player;
+
+                if (item.Slot == 0)
+                {
+                    item.Slot = GetNextFreeSlot(item.Inventory);
+                }
+
+                base.Add(item);
+
+                if (m_player.IsInitialized)
+                {
+                    m_player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                    {
+                        Type = EInventoryOperation.AddItem,
+                        Item = item,
+                        OldSlot = 0,
+                        CurrentSlot = item.Slot
+                    }));
+                }
             }
         }
 
@@ -270,6 +296,19 @@ namespace SharpEnd.Players
                     OldSlot = destinationSlot
                 }));
             }
+        }
+
+        private short GetNextFreeSlot(EInventoryType inventory)
+        {
+            for (short i = 1; i <= 24; i++) // TODO: Change 24 to the max slots of the inventory type
+            {
+                if (this[inventory, i] == null)
+                {
+                    return i;
+                }
+            }
+
+            return -1; // TODO: Throw exception
         }
 
         public IEnumerable<PlayerItem> GetEquipped(EEquippedQueryMode mode = EEquippedQueryMode.Any)

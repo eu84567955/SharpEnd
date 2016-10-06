@@ -5,7 +5,7 @@ namespace SharpEnd.Players
 {
     internal sealed class PlayerItem
     {
-        private Player m_player;
+        public Player Parent { get; set; }
 
         public int Identifier { get; private set; }
 
@@ -38,10 +38,8 @@ namespace SharpEnd.Players
 
         public EInventoryType Inventory => GameLogicUtilities.GetInventory(Identifier);
 
-        public PlayerItem(Player player, DatabaseQuery query)
+        public PlayerItem(DatabaseQuery query)
         {
-            m_player = player;
-
             Identifier = query.Get<int>("item_identifier");
 
             Slot = query.Get<short>("inventory_slot");
@@ -69,11 +67,25 @@ namespace SharpEnd.Players
             Flags = query.Get<ushort>("flags");
         }
 
+        public PlayerItem(int identifier, ushort quantity = 1, bool equipped = false)
+        {
+            Identifier = identifier;
+
+            if (equipped)
+            {
+                Slot = 0; // TODO: Get the equipped slot based on the identifier
+            }
+
+            Quantity = quantity;
+
+            Owner = string.Empty;
+        }
+
         public void Save()
         {
             Database.Execute(@"INSERT INTO `player_item` 
                              VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @owner, @flags);",
-                             new MySqlParameter("player_identifier", m_player.Identifier),
+                             new MySqlParameter("player_identifier", Parent.Identifier),
                              new MySqlParameter("inventory_slot", Slot),
                              new MySqlParameter("item_identifier", Identifier),
                              new MySqlParameter("quantity", Quantity),

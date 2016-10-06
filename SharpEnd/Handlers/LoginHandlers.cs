@@ -229,7 +229,7 @@ namespace SharpEnd.Handlers
                 items.Add(objects[j]);
             }
 
-            int identifier = Database.InsertAndReturnIdentifier("INSERT INTO player(account_identifier,name,gender,skin,face,hair,job,skill_points) " +
+            int identifier = Database.InsertAndReturnIdentifier("INSERT INTO player(account_identifier,name,gender,skin,face,hair,job,sub_job,skill_points) " +
                                                                 "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job,@sub_job,@skill_points)",
                                                                 new MySqlParameter("@account_identifier", client.Account.Identifier),
                                                                 new MySqlParameter("@name", name),
@@ -243,11 +243,12 @@ namespace SharpEnd.Handlers
 
             foreach (int item in items)
             {
-                Database.Execute("INSERT INTO player_item(player_identifier,item_identifier,inventory_slot) " +
+                Database.Execute("INSERT INTO player_item(player_identifier,item_identifier,inventory_slot,quantity) " +
                                  "VALUES(@player_identifier,@item_identifier,@inventory_slot)",
                                  new MySqlParameter("player_identifier", identifier),
                                  new MySqlParameter("item_identifier", item),
-                                 new MySqlParameter("inventory_slot", GetSlot(item)));
+                                 new MySqlParameter("inventory_slot", GetSlot(item)),
+                                 new MySqlParameter("quantity", (ushort)1));
             }
 
             using (DatabaseQuery query = Database.Query("SELECT * FROM player WHERE identifier=@identifier", new MySqlParameter("identifier", identifier)))

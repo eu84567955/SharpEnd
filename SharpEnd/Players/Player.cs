@@ -13,6 +13,8 @@ namespace SharpEnd.Players
     {
         private Client m_client;
 
+        public bool IsInitialized { get; private set; }
+
         public int Identifier { get; private set; }
         public string Name { get; private set; }
         public byte Gender { get; private set; }
@@ -147,6 +149,8 @@ namespace SharpEnd.Players
             Notify("Welcome to SharpEnd!", EMessageType.Header);
 
             MasterServer.Instance.Maps[Map].Players.Add(this);
+
+            IsInitialized = true;
         }
 
         public void Send(byte[] buffer)
