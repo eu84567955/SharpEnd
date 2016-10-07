@@ -21,7 +21,7 @@ namespace SharpEnd.Commands.Players
             }
         }
 
-        [GmCommand("save", "Saves your progress.")]
+        [PlayerCommand("save", "Saves your progress.")]
         public static void SaveCommand(Player player)
         {
             player.Save();
