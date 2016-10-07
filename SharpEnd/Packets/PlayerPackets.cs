@@ -6,7 +6,7 @@ namespace SharpEnd.Packets
 {
     internal static class PlayerPackets
     {
-        public static byte[] PlayerStatUpdate(EStatisticType updateBits, long value, bool itemReaction = false)
+        public static byte[] PlayerStatUpdate(EStatisticType updateBits = EStatisticType.None, long value = 0, bool itemReaction = false)
         {
             using (OutPacket outPacket = new OutPacket())
             {

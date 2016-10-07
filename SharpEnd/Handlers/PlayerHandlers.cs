@@ -301,7 +301,7 @@ namespace SharpEnd.Handlers
 
             EStatisticType type = (EStatisticType)inPacket.ReadUInt();
 
-            client.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.None, 0, true));
+            player.Release();
 
             player.Stats.AddAbility(type);
         }
@@ -324,7 +324,7 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            client.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.None, 0, true));
+            player.Release();
 
             player.Stats.AddAbility(primaryType, primaryAmount);
             player.Stats.AddAbility(secondaryType, secondaryAmount);

@@ -171,6 +171,11 @@ namespace SharpEnd.Players
             Client.Send(buffer);
         }
 
+        public void Release()
+        {
+            Client.Send(PlayerPackets.PlayerStatUpdate());
+        }
+
         public void Notify(string text, EMessageType type = EMessageType.Pink)
         {
             Client.Send(MessagePackets.Notification(text, type));
