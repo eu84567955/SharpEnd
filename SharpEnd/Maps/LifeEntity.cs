@@ -8,7 +8,7 @@ namespace SharpEnd.Maps
         public bool Flip { get; private set; }
         public bool Hide { get; private set; }
 
-        protected LifeEntity(int identifier, Point position, ushort foothold, bool flip, bool hide)
+        protected LifeEntity(int identifier, Point position, ushort foothold, bool flip = false, bool hide = false)
             : base()
         {
             Identifier = identifier;

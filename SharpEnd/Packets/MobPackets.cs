@@ -77,5 +77,18 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] MobDespawn(int objectIdentifier, byte effect)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_MOB_DESPAWN)
+                    .WriteInt(objectIdentifier)
+                    .WriteByte(effect);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

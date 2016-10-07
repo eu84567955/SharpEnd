@@ -15,6 +15,8 @@ namespace SharpEnd.Maps
             RespawnTime = respawnTime;
         }
 
+        public Mob(int identifier, Point position, ushort foothold) : base(identifier, position, foothold) { }
+
         public void AssignController()
         {
             if (Controller == null)
@@ -38,6 +40,11 @@ namespace SharpEnd.Maps
                     newController.ControlledMobs.Add(this);
                 }
             }
+        }
+
+        public void Die()
+        {
+            Map.Mobs.Remove(this);
         }
     }
 }

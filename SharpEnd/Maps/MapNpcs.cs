@@ -11,6 +11,8 @@ namespace SharpEnd.Maps
             base.Add(npc);
 
             Map.Send(NpcPackets.NpcSpawn(npc));
+
+            npc.AssignController();
         }
 
         public override void Remove(Npc npc)

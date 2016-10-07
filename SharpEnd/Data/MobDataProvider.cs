@@ -36,6 +36,11 @@ namespace SharpEnd.Data
             }
         }
 
+        public bool Contains(int identifier)
+        {
+            return m_mobs.ContainsKey(identifier);
+        }
+
         public MobData this[int identifier]
         {
             get

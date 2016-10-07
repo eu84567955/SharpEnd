@@ -65,6 +65,7 @@
     <Compile Include="Commands\Gm\InfoCommands.cs" />
     <Compile Include="Commands\Gm\ItemCommands.cs" />
     <Compile Include="Commands\Gm\MapCommands.cs" />
+    <Compile Include="Commands\Gm\MobCommands.cs" />
     <Compile Include="Commands\Gm\StatCommands.cs" />
     <Compile Include="Commands\Gm\TestCommands.cs" />
     <Compile Include="Commands\PlayerCommandAttribute.cs" />
