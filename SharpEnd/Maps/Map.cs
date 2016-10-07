@@ -8,6 +8,7 @@ namespace SharpEnd.Maps
 
         public int Identifier { get; private set; }
 
+        public MapFootholds Footholds { get; private set; }
         public MapPlayers Players { get; private set; }
         public MapPortals Portals { get; private set; }
         public MapMobs Mobs { get; private set; }
@@ -20,6 +21,7 @@ namespace SharpEnd.Maps
             Identifier = identifier;
 
             Players = new MapPlayers(this);
+            Footholds = new MapFootholds(this);
             Portals = new MapPortals(this);
             Mobs = new MapMobs(this);
             Npcs = new MapNpcs(this);
@@ -34,7 +36,7 @@ namespace SharpEnd.Maps
 
         public void Send(byte[] buffer, Player ignored = null)
         {
-            foreach (Player player in Players)
+            foreach (Player player in Players.Values)
             {
                 if (player != ignored)
                 {

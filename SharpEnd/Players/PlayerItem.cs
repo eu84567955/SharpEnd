@@ -1,9 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
+using SharpEnd.Maps;
 using SharpEnd.Utility;
 
 namespace SharpEnd.Players
 {
-    internal sealed class PlayerItem
+    internal sealed class PlayerItem : Drop
     {
         public Player Parent { get; set; }
 

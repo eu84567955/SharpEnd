@@ -1,28 +1,33 @@
-﻿using SharpEnd.Players;
+﻿using SharpEnd.Drawing;
+using SharpEnd.Players;
+using SharpEnd.Utility;
 
 namespace SharpEnd.Maps
 {
-    internal sealed class Drop : MapEntity
+    internal abstract class Drop : MapEntity
     {
-        public EDropType Type { get; private set; }
+        private MapEntity dropper;
 
-        public int Meso { get; private set; }
-        public bool IsMeso => Meso > 0;
+        public Player Owner { get; set; }
+        public Player Picker { get; set; }
+        public Point Origin { get; set; }
+        public Delay Expiry { get; set; }
 
-        public PlayerItem Item { get; private set; }
-
-        public Drop(EDropType type, PlayerItem item)
+        public MapEntity Dropper
         {
-            Type = type;
+            get
+            {
+                return dropper;
+            }
+            set
+            {
+                Origin = value.Position;
+                Position = value.Map.Footholds.FindBelow(value.Position);
 
-            Item = item;
+                dropper = value;
+            }
         }
 
-        public Drop(EDropType type, int meso)
-        {
-            Type = type;
-
-            Meso = meso;
-        }
+        public Drop() : base() { }
     }
 }

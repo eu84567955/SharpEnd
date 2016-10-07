@@ -23,7 +23,7 @@ namespace SharpEnd.Maps
 
                 Player newController = null;
 
-                foreach (Player player in Map.Players)
+                foreach (Player player in Map.Players.Values)
                 {
                     if (player.ControlledMobs.Count < leastControlled)
                     {

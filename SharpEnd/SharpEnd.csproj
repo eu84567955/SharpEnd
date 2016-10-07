@@ -121,11 +121,13 @@
     <Compile Include="Maps\MapDrops.cs" />
     <Compile Include="Maps\MapEntities.cs" />
     <Compile Include="Maps\MapEntity.cs" />
+    <Compile Include="Maps\MapFootholds.cs" />
     <Compile Include="Maps\MapPlayers.cs" />
     <Compile Include="Maps\MapPortals.cs" />
     <Compile Include="Maps\MapReactors.cs" />
     <Compile Include="Maps\MapNpcs.cs" />
     <Compile Include="Maps\MapMobs.cs" />
+    <Compile Include="Maps\Meso.cs" />
     <Compile Include="Maps\Mob.cs" />
     <Compile Include="Maps\MovableLife.cs" />
     <Compile Include="Maps\Npc.cs" />

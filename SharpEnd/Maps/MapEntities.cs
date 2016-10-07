@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SharpEnd.Players;
+using System.Collections.Generic;
 
 namespace SharpEnd.Maps
 {
@@ -16,7 +17,10 @@ namespace SharpEnd.Maps
         {
             entity.Map = Map;
 
-            entity.ObjectIdentifier = Map.AssignObjectIdentifier();
+            if (!(entity is Player))
+            {
+                entity.ObjectIdentifier = Map.AssignObjectIdentifier();
+            }
 
             Add(entity.ObjectIdentifier, entity);
         }
@@ -27,7 +31,10 @@ namespace SharpEnd.Maps
 
             entity.Map = null;
 
-            entity.ObjectIdentifier = -1;
+            if (!(entity is Player))
+            {
+                entity.ObjectIdentifier = -1;
+            }
         }
     }
 }

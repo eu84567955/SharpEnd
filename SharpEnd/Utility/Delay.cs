@@ -15,11 +15,16 @@ namespace SharpEnd.Utility
         private bool m_repeat;
         private bool m_running;
 
-        public Delay(int millisecondsDelay, ThreadStart action, bool repeat = false)
+        public Delay(int millisecondsDelay, ThreadStart action, bool repeat = false, bool start = true)
         {
             m_millisecondsDelay = millisecondsDelay;
             m_action = action;
             m_repeat = repeat;
+
+            if (!m_repeat && start)
+            {
+                Start();
+            }
         }
 
         public async void Start()

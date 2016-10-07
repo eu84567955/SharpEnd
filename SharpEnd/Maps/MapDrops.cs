@@ -1,22 +1,35 @@
 ﻿using SharpEnd.Packets;
+using SharpEnd.Utility;
 
 namespace SharpEnd.Maps
 {
     internal sealed class MapDrops : MapEntities<Drop>
     {
+        private const int ExpirationTime = 60 * 1000;
+
         public MapDrops(Map map) : base(map) { }
 
         public override void Add(Drop drop)
         {
             base.Add(drop);
 
+            drop.Expiry = new Delay(ExpirationTime, () =>
+            {
+                Remove(drop);
+            });
+
             Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Pop));
             Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.New));
         }
 
-        public void Remove(Drop drop, sbyte animation)
+        public override void Remove(Drop drop)
         {
-            Map.Send(DropPackets.DespawnDrop(animation, drop.ObjectIdentifier, 1));
+            if (drop.Expiry != null)
+            {
+                // TODO: Dispose
+            }
+
+            Map.Send(DropPackets.DespawnDrop(drop.ObjectIdentifier, drop.Picker));
 
             base.Remove(drop);
         }

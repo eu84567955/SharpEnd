@@ -177,6 +177,11 @@ namespace SharpEnd.Data
         }
     }
 
+    internal sealed class FootholdData
+    {
+        
+    }
+
     internal sealed class PortalData
     {
         public sbyte Identifier { get; set; }

@@ -4,6 +4,6 @@
     {
         public Map Map { get; set; }
 
-        public int ObjectIdentifier { get; set; }
+        public virtual int ObjectIdentifier { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using SharpEnd.Utility;
 
 namespace SharpEnd.Players
 {
-    internal sealed class Player : MovableLife
+    internal sealed class Player : MapEntity
     {
         private Client m_client;
 
@@ -21,7 +21,7 @@ namespace SharpEnd.Players
         public byte Skin { get; private set; }
         public int Face { get; private set; }
         public int Hair { get; private set; }
-        public int Map { get; set; }
+        public int MapIdentifier { get; set; }
         public sbyte SpawnPoint { get; set; }
         public byte PortalCount { get; set; }
 
@@ -35,6 +35,18 @@ namespace SharpEnd.Players
         // TODO: Move else-where
         public bool IsGm => m_client.Account.Level >= EAccountLevel.Gm;
 
+        public override int ObjectIdentifier
+        {
+            get
+            {
+                return Identifier;
+            }
+            set
+            {
+                return;
+            }
+        }
+
         public Player(Client client, DatabaseQuery query)
         {
             m_client = client;
@@ -45,12 +57,12 @@ namespace SharpEnd.Players
             Skin = query.Get<byte>("skin");
             Face = query.Get<int>("face");
             Hair = query.Get<int>("hair");
-            Map = query.Get<int>("map_identifier");
+            MapIdentifier = query.Get<int>("map_identifier");
             SpawnPoint = query.Get<sbyte>("map_spawn");
-            
+
             if (IsGm)
             {
-                Map = 180000000;
+                MapIdentifier = 180000000;
                 SpawnPoint = -1;
             }
             else if (false) // TODO: Check if the map has a forced return map
@@ -64,10 +76,11 @@ namespace SharpEnd.Players
                 SpawnPoint = -1;
             }
 
-            Position = MasterServer.Instance.Maps[Map].Portals.GetSpawnPoint(SpawnPoint).Position;
+            Map = MasterServer.Instance.Maps[MapIdentifier];
+            Position = MasterServer.Instance.Maps[MapIdentifier].Portals.GetSpawnPoint(SpawnPoint).Position;
             Stance = 0;
             Foothold = 0;
-            
+
             Stats = new PlayerStats(this, query);
 
             using (DatabaseQuery itemQuery = Database.Query("SELECT * FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
@@ -99,7 +112,7 @@ namespace SharpEnd.Players
 
         public void Save()
         {
-            Map currentMap = MasterServer.Instance.Maps[Map];
+            Map currentMap = MasterServer.Instance.Maps[MapIdentifier];
 
             currentMap.Players.Remove(this);
 
@@ -126,7 +139,7 @@ namespace SharpEnd.Players
                                new MySqlParameter("skill_points", Stats.SkillPoints),
                                new MySqlParameter("experience", Stats.Experience),
                                new MySqlParameter("fame", Stats.Fame),
-                               new MySqlParameter("map_identifier", Map),
+                               new MySqlParameter("map_identifier", MapIdentifier),
                                new MySqlParameter("map_spawn", SpawnPoint),
                                new MySqlParameter("meso", Items.Meso),
                                new MySqlParameter("equipment_slots", Items.EquipmentSlots),
@@ -148,7 +161,7 @@ namespace SharpEnd.Players
 
             Notify("Welcome to SharpEnd!", EMessageType.Header);
 
-            MasterServer.Instance.Maps[Map].Players.Add(this);
+            Map.Players.Add(this);
 
             IsInitialized = true;
         }
@@ -175,7 +188,6 @@ namespace SharpEnd.Players
                 return;
             }
 
-            Map oldMap = MasterServer.Instance.Maps[Map];
             Map newMap = MasterServer.Instance.Maps[mapIdentifier];
 
             if (portal == null)
@@ -193,12 +205,11 @@ namespace SharpEnd.Players
 
         private void InternalSetMap(int mapIdentifier, sbyte portalIdentifier, bool spawnByPosition, Point position)
         {
-            Map oldMap = MasterServer.Instance.Maps[Map];
             Map newMap = MasterServer.Instance.Maps[mapIdentifier];
 
-            oldMap.Players.Remove(this);
+            Map.Players.Remove(this);
 
-            Map = mapIdentifier;
+            MapIdentifier = mapIdentifier;
             SpawnPoint = portalIdentifier;
 
             Position = position;
@@ -216,7 +227,7 @@ namespace SharpEnd.Players
 
             if (wheel)
             {
-                returnMapIdentifier = Map;
+                returnMapIdentifier = MapIdentifier;
             }
 
             Stats.SetHealth(50, false);

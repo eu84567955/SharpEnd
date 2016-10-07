@@ -50,7 +50,7 @@ namespace SharpEnd.Handlers
                         inPacket.Skip(4); // NOTE: Unknown
                         string label = inPacket.ReadString();
 
-                        PortalData portal = MasterServer.Instance.Maps[player.Map].Portals[label];
+                        PortalData portal = player.Map.Portals[label];
 
                         if (portal == null)
                         {
@@ -98,7 +98,7 @@ namespace SharpEnd.Handlers
 
             inPacket.Position = rewindOffset;
 
-            MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerMove(player.Identifier, origin, inPacket.ReadLeftoverBytes()), player);
+            player.Map.Send(PlayersPackets.PlayerMove(player.Identifier, origin, inPacket.ReadLeftoverBytes()), player);
         }
 
         // TODO: Move else-where
@@ -282,7 +282,7 @@ namespace SharpEnd.Handlers
             }
             else
             {
-                MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerChat(player.Identifier, text, player.IsGm, shout));
+                player.Map.Send(PlayersPackets.PlayerChat(player.Identifier, text, player.IsGm, shout));
             }
         }
 
@@ -303,9 +303,13 @@ namespace SharpEnd.Handlers
 
             if (worldIdentifier == -1)
             {
-                Player target = MasterServer.Instance.Maps[player.Map].Players.Find(p => p.Identifier == playerIdentifier);
+                Player target;
 
-                if (target == null)
+                try
+                {
+                    target = player.Map.Players[playerIdentifier];
+                }
+                catch (KeyNotFoundException)
                 {
                     return;
                 }
@@ -336,7 +340,7 @@ namespace SharpEnd.Handlers
 
             try
             {
-                portal = MasterServer.Instance.Maps[player.Map].Portals[label];
+                portal = player.Map.Portals[label];
             }
             catch (KeyNotFoundException)
             {
@@ -348,7 +352,7 @@ namespace SharpEnd.Handlers
             // TODO: Check portal distance relative to the player
             // TODO: Check portal data to verify the destination
 
-            MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerMove(player.Identifier, destination, null), player);
+            player.Map.Send(PlayersPackets.PlayerMove(player.Identifier, destination, null), player);
         }
 
         [PacketHandler(EHeader.CMSG_QUEST)]

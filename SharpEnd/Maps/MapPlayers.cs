@@ -4,21 +4,15 @@ using System.Collections.Generic;
 
 namespace SharpEnd.Maps
 {
-    internal sealed class MapPlayers : List<Player>
+    internal sealed class MapPlayers : MapEntities<Player>
     {
-        public Map Map { get; private set; }
+        public MapPlayers(Map map) : base(map) { }
 
-        public MapPlayers(Map map)
-            : base()
-        {
-            Map = map;
-        }
-
-        public new void Add(Player player)
+        public override void Add(Player player)
         {
             Map.Send(PlayerPackets.PlayerSpawn(player));
 
-            foreach (Player loopPlayer in this)
+            foreach (Player loopPlayer in this.Values)
             {
                 player.Send(PlayerPackets.PlayerSpawn(loopPlayer));
             }
@@ -35,7 +29,7 @@ namespace SharpEnd.Maps
                 player.Send(NpcPackets.NpcSpawn(npc));
             }
 
-            foreach(Reactor reactor in Map.Reactors.Values)
+            foreach (Reactor reactor in Map.Reactors.Values)
             {
                 player.Send(ReactorPackets.ReactorSpawn(reactor));
             }
@@ -56,7 +50,7 @@ namespace SharpEnd.Maps
             }
         }
 
-        public new void Remove(Player player)
+        public override void Remove(Player player)
         {
             player.ControlledMobs.Clear();
             player.ControlledNpcs.Clear();

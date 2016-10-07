@@ -1,6 +1,7 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Maps;
 using SharpEnd.Network;
+using SharpEnd.Players;
 using SharpEnd.Servers;
 using System.Collections.Generic;
 
@@ -64,10 +65,13 @@ namespace SharpEnd.Handlers
 
             player.Items.ModifyMeso(-amount, true);
 
-            MasterServer.Instance.Maps[player.Map].Drops.Add(new Drop(EDropType.Normal, amount)
+            Meso meso = new Meso(amount)
             {
-                Position = player.Position
-            });
+                Dropper = player,
+                Owner = null
+            };
+
+            player.Map.Drops.Add(meso);
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_PICKUP)]
@@ -84,23 +88,31 @@ namespace SharpEnd.Handlers
 
             try
             {
-                drop = MasterServer.Instance.Maps[player.Map].Drops[objectIdentifier];
+                drop = player.Map.Drops[objectIdentifier];
             }
             catch (KeyNotFoundException)
             {
                 return;
             }
 
-            // TODO: Check if the drop is a part of a quest
-            // TODO: Check if the drop owner matches
-            // TODO: Check for the drop type (party, etcetera)
-            // TODO: Check for the drop distance relative to the player
-
-            if (drop.IsMeso)
+            if (drop.Picker == null)
             {
-                player.Items.ModifyMeso(drop.Meso, true);
+                drop.Picker = player;
 
-                MasterServer.Instance.Maps[player.Map].Drops.Remove(drop, 2);
+                if (drop is Meso)
+                {
+                    player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
+                }
+                else if (drop is PlayerItem)
+                {
+                    ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
+
+                    player.Items.Add((PlayerItem)drop);
+                }
+
+                player.Map.Drops.Remove(drop);
+
+                // TODO: Show gain packet.
             }
         }
     }

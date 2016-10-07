@@ -298,7 +298,7 @@ namespace SharpEnd.Players
             }
         }
 
-        private short GetNextFreeSlot(EInventoryType inventory)
+        public short GetNextFreeSlot(EInventoryType inventory)
         {
             for (short i = 1; i <= 24; i++) // TODO: Change 24 to the max slots of the inventory type
             {

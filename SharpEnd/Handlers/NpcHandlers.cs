@@ -28,7 +28,7 @@ namespace SharpEnd.Handlers
 
             byte[] data = inPacket.ReadLeftoverBytes();
 
-            MasterServer.Instance.Maps[player.Map].Send(NpcPackets.NpcAction(npc.ObjectIdentifier, data));
+            player.Map.Send(NpcPackets.NpcAction(npc.ObjectIdentifier, data));
         }
     }
 }
