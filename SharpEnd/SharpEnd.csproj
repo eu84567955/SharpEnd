@@ -173,7 +173,7 @@
     <Compile Include="Utility\Database.cs" />
     <Compile Include="Utility\DatabaseQuery.cs" />
     <Compile Include="Utility\DatabaseUpdater.cs" />
-    <Compile Include="Utility\Delay.cs" />
+    <Compile Include="Threading\Delay.cs" />
     <Compile Include="Utility\Doublet.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Utility\GameLogicUtilities.cs" />

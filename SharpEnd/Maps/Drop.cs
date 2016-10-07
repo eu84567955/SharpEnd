@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Players;
-using SharpEnd.Utility;
+using SharpEnd.Threading;
 
 namespace SharpEnd.Maps
 {
@@ -22,7 +22,7 @@ namespace SharpEnd.Maps
             set
             {
                 Origin = value.Position;
-                Position = value.Map.Footholds.FindBelow(value.Position);
+                Position = value.Map.Footholds.FindBelow(value.Position, -20);
 
                 dropper = value;
             }

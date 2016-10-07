@@ -1,5 +1,6 @@
 ﻿using SharpEnd.Players;
 using SharpEnd.Servers;
+using SharpEnd.Threading;
 using SharpEnd.Utility;
 using System;
 
@@ -30,7 +31,7 @@ namespace SharpEnd
 
             try
             {
-                m_usageDelay.Start();
+                m_usageDelay.Execute();
 
                 Database.Initialize();
 
@@ -46,10 +47,7 @@ namespace SharpEnd
                 Console.Read();
             }
 
-            // Dispose
-
-            m_usageDelay.Stop();
-            m_usageDelay = null;
+            // TODO: Dispose
 
             Log.SkipLine();
 

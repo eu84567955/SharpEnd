@@ -43,6 +43,11 @@ namespace SharpEnd.Data
 
                         // TODO: Fetch info from infoNode
 
+                        if (node.ContainsChild("foothold"))
+                        {
+                            LoadFoothold(map, node["foothold"]);
+                        }
+
                         if (node.ContainsChild("life"))
                         {
                             LoadLife(map, node["life"]);
@@ -59,6 +64,28 @@ namespace SharpEnd.Data
                         }
 
                         m_maps.Add(identifier, map);
+                    }
+                }
+            }
+        }
+
+        private void LoadFoothold(Map map, NXNode footholdNode)
+        {
+            foreach (var layer in footholdNode)
+            {
+                foreach (var category in layer)
+                {
+                    foreach (var node in category)
+                    {
+                        FootholdData foothold = new FootholdData();
+
+                        foothold.Identifier = node.GetIdentifier<short>();
+                        foothold.Next = node.GetShort("next");
+                        foothold.Previous = node.GetShort("prev");
+                        foothold.Point1 = new Point(node.GetShort("x1"), node.GetShort("y1"));
+                        foothold.Point2 = new Point(node.GetShort("x2"), node.GetShort("y2"));
+
+                        map.Footholds.Add(foothold);
                     }
                 }
             }
@@ -179,7 +206,19 @@ namespace SharpEnd.Data
 
     internal sealed class FootholdData
     {
-        
+        public short Identifier { get; set; }
+        public short Previous { get; set; }
+        public short Next { get; set; }
+        public Point Point1 { get; set; }
+        public Point Point2 { get; set; }
+
+        public bool IsWall
+        {
+            get
+            {
+                return Point1.X == Point2.X;
+            }
+        }
     }
 
     internal sealed class PortalData

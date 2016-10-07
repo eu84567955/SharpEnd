@@ -1,5 +1,5 @@
 ﻿using SharpEnd.Packets;
-using SharpEnd.Utility;
+using SharpEnd.Threading;
 
 namespace SharpEnd.Maps
 {
@@ -15,7 +15,10 @@ namespace SharpEnd.Maps
 
             drop.Expiry = new Delay(ExpirationTime, () =>
             {
-                Remove(drop);
+                if (drop.Map != Map)
+                {
+                    Remove(drop);
+                }
             });
 
             Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Pop));
@@ -26,7 +29,7 @@ namespace SharpEnd.Maps
         {
             if (drop.Expiry != null)
             {
-                // TODO: Dispose
+                drop.Expiry.Cancel();
             }
 
             Map.Send(DropPackets.DespawnDrop(drop.ObjectIdentifier, drop.Picker));
