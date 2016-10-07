@@ -9,12 +9,12 @@ namespace SharpEnd.Commands.Gm
         [GmCommand("search", "Searches")]
         public static void SearchCommand(Player player, string category, string name)
         {
-            player.Notify("[Results]");
-
             switch (category)
             {
                 case "map":
                     {
+                        player.Notify("[Results]");
+
                         Dictionary<string, int> results = MasterServer.Instance.Strings.GetMaps(name);
 
                         if (results.Count > 0)
@@ -33,7 +33,7 @@ namespace SharpEnd.Commands.Gm
 
                 default:
                     {
-
+                        player.Notify("[Command] Invalid category.");
                     }
                     break;
             }

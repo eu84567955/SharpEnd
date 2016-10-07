@@ -60,6 +60,11 @@ namespace SharpEnd.Data
                 return m_items.GetOrDefault(identifier, null);
             }
         }
+
+        public bool Contains(int identifier)
+        {
+            return m_items.ContainsKey(identifier);
+        }
     }
 
     internal sealed class ItemData

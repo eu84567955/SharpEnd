@@ -83,6 +83,11 @@ namespace SharpEnd.Data
                 return m_equips.GetOrDefault(identifier, null);
             }
         }
+
+        public bool Contains(int identifier)
+        {
+            return m_equips.ContainsKey(identifier);
+        }
     }
 
     internal sealed class EquipData

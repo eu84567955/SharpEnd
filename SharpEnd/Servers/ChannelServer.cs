@@ -1,4 +1,5 @@
-﻿using SharpEnd.Network;
+﻿using SharpEnd.Data;
+using SharpEnd.Network;
 using System;
 using System.Net.Sockets;
 
@@ -10,6 +11,8 @@ namespace SharpEnd.Servers
 
         private Acceptor m_acceptor;
 
+        public MapDataProvider Maps { get; private set; }
+
         public ChannelServer(byte identifier, ushort port)
         {
             Identifier = identifier;
@@ -17,6 +20,8 @@ namespace SharpEnd.Servers
             m_acceptor = new Acceptor(port);
 
             m_acceptor.OnClientAccepted = OnClientAccepted;
+
+            Maps = new MapDataProvider();
         }
 
         public void Run()

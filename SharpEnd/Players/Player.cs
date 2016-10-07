@@ -11,7 +11,7 @@ namespace SharpEnd.Players
 {
     internal sealed class Player : MapEntity
     {
-        private Client m_client;
+        public Client Client { get; private set; }
 
         public bool IsInitialized { get; private set; }
 
@@ -33,7 +33,7 @@ namespace SharpEnd.Players
         public ControlledNpcs ControlledNpcs { get; private set; }
 
         // TODO: Move else-where
-        public bool IsGm => m_client.Account.Level >= EAccountLevel.Gm;
+        public bool IsGm => Client.Account.Level >= EAccountLevel.Gm;
 
         public override int ObjectIdentifier
         {
@@ -49,7 +49,7 @@ namespace SharpEnd.Players
 
         public Player(Client client, DatabaseQuery query)
         {
-            m_client = client;
+            Client = client;
 
             Identifier = query.Get<int>("identifier");
             Name = query.Get<string>("name");
@@ -76,8 +76,8 @@ namespace SharpEnd.Players
                 SpawnPoint = -1;
             }
 
-            Map = MasterServer.Instance.Maps[MapIdentifier];
-            Position = MasterServer.Instance.Maps[MapIdentifier].Portals.GetSpawnPoint(SpawnPoint).Position;
+            Map = MasterServer.Instance.GetMaps(Client.ChannelIdentifier)[MapIdentifier];
+            Position = MasterServer.Instance.GetMaps(Client.ChannelIdentifier)[MapIdentifier].Portals.GetSpawnPoint(SpawnPoint).Position;
             Stance = 0;
             Foothold = 0;
 
@@ -112,7 +112,7 @@ namespace SharpEnd.Players
 
         public void Save()
         {
-            Map currentMap = MasterServer.Instance.Maps[MapIdentifier];
+            Map currentMap = MasterServer.Instance.GetMaps(Client.ChannelIdentifier)[MapIdentifier];
 
             currentMap.Players.Remove(this);
 
@@ -168,12 +168,12 @@ namespace SharpEnd.Players
 
         public void Send(byte[] buffer)
         {
-            m_client.Send(buffer);
+            Client.Send(buffer);
         }
 
         public void Notify(string text, EMessageType type = EMessageType.Pink)
         {
-            m_client.Send(MessagePackets.Notification(text, type));
+            Client.Send(MessagePackets.Notification(text, type));
         }
 
         public void SetMap(int mapIdentifier, sbyte portalIdentifier, Point position)
@@ -183,12 +183,12 @@ namespace SharpEnd.Players
 
         public void SetMap(int mapIdentifier, PortalData portal = null, bool isInstance = false)
         {
-            if (!MasterServer.Instance.Maps.Contains(mapIdentifier))
+            if (!MasterServer.Instance.GetMaps(Client.ChannelIdentifier).Contains(mapIdentifier))
             {
                 return;
             }
 
-            Map newMap = MasterServer.Instance.Maps[mapIdentifier];
+            Map newMap = MasterServer.Instance.GetMaps(Client.ChannelIdentifier)[mapIdentifier];
 
             if (portal == null)
             {
@@ -205,7 +205,7 @@ namespace SharpEnd.Players
 
         private void InternalSetMap(int mapIdentifier, sbyte portalIdentifier, bool spawnByPosition, Point position)
         {
-            Map newMap = MasterServer.Instance.Maps[mapIdentifier];
+            Map newMap = MasterServer.Instance.GetMaps(Client.ChannelIdentifier)[mapIdentifier];
 
             Map.Players.Remove(this);
 

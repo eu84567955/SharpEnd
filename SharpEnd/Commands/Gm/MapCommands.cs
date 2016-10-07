@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Players;
+using SharpEnd.Servers;
 
 namespace SharpEnd.Commands.Gm
 {
@@ -7,7 +8,14 @@ namespace SharpEnd.Commands.Gm
         [GmCommand("map", "Teleports you to the desired map.")]
         public static void MapCommand(Player player, int mapIdentifier)
         {
-            player.SetMap(mapIdentifier);
+            if (!MasterServer.Instance.GetMaps(player.Client.ChannelIdentifier).Contains(mapIdentifier))
+            {
+                player.Notify("[Command] Invalid map.");
+            }
+            else
+            {
+                player.SetMap(mapIdentifier);
+            }
         }
     }
 }

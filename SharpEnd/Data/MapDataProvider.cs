@@ -22,51 +22,45 @@ namespace SharpEnd.Data
             "AdditionalInfo_JP.img", "AreaCode.img", "FieldGenerator.img", "Graph.img"
         };
 
-        public void Load()
+        private void LoadMap(int identifier)
         {
+            Map map = new Map(identifier);
+
             using (NXFile file = new NXFile(Path.Combine("nx", "Map.nx")))
             {
-                foreach (var category in file.BaseNode["Map"])
+                var node = file.BaseNode["Map"][GetMapCategory(identifier)][string.Format("{0}.img", identifier)];
+
+                var infoNode = node["info"];
+
+                // TODO: Fetch info from infoNode
+
+                if (node.ContainsChild("foothold"))
                 {
-                    if (skippedCategories.Contains(category.Name))
-                    {
-                        continue;
-                    }
-
-                    foreach (var node in category)
-                    {
-                        int identifier = node.GetIdentifier<int>();
-
-                        Map map = new Map(identifier);
-
-                        var infoNode = node["info"];
-
-                        // TODO: Fetch info from infoNode
-
-                        if (node.ContainsChild("foothold"))
-                        {
-                            LoadFoothold(map, node["foothold"]);
-                        }
-
-                        if (node.ContainsChild("life"))
-                        {
-                            LoadLife(map, node["life"]);
-                        }
-
-                        if (node.ContainsChild("portal"))
-                        {
-                            LoadPortals(map, node["portal"]);
-                        }
-
-                        if (node.ContainsChild("reactor"))
-                        {
-                            LoadReactors(map, node["reactor"]);
-                        }
-
-                        m_maps.Add(identifier, map);
-                    }
+                    LoadFoothold(map, node["foothold"]);
                 }
+
+                if (node.ContainsChild("life"))
+                {
+                    LoadLife(map, node["life"]);
+                }
+
+                if (node.ContainsChild("portal"))
+                {
+                    LoadPortals(map, node["portal"]);
+                }
+
+                if (node.ContainsChild("reactor"))
+                {
+                    LoadReactors(map, node["reactor"]);
+                }
+
+                m_maps.Add(identifier, map);
             }
+        }
+
+        private string GetMapCategory(int identifier)
+        {
+            return string.Format("Map{0}", identifier / 100000000);
         }
 
         private void LoadFoothold(Map map, NXNode footholdNode)
@@ -199,7 +193,12 @@ namespace SharpEnd.Data
         {
             get
             {
-                return m_maps.GetOrDefault(identifier, null);
+                if (!m_maps.ContainsKey(identifier))
+                {
+                    LoadMap(identifier);
+                }
+
+                return m_maps[identifier];
             }
         }
     }

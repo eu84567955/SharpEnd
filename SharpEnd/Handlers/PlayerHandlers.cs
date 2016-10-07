@@ -57,7 +57,7 @@ namespace SharpEnd.Handlers
                             return;
                         }
 
-                        PortalData destinationPortal = MasterServer.Instance.Maps[portal.DestinationMap].Portals[portal.DestinationLabel];
+                        PortalData destinationPortal = MasterServer.Instance.GetMaps(client.ChannelIdentifier)[portal.DestinationMap].Portals[portal.DestinationLabel];
 
                         player.SetMap(portal.DestinationMap, destinationPortal);
                     }
@@ -146,7 +146,7 @@ namespace SharpEnd.Handlers
                 mobIdentifier = inPacket.ReadInt();
                 uniqueIdentifier = inPacket.ReadInt();
 
-                Mob mob = MasterServer.Instance.Maps[player.Map].Mobs[uniqueIdentifier];
+                Mob mob = MasterServer.Instance.GetMapsclient.ChannelIdentifier][player.Map].Mobs[uniqueIdentifier];
 
                 if (mob == null || mob.Identifier != mobIdentifier)
                 {
