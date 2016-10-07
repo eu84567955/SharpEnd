@@ -158,7 +158,7 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerList(byte count, DatabaseQuery query)
+        public static byte[] PlayerList(byte count, DatabaseQuery query, EPICState picState)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -185,7 +185,7 @@ namespace SharpEnd.Packets
                 }
 
                 outPacket
-                    .WriteByte(1)
+                    .WriteByte((byte)picState)
                     .WriteByte()
                     .WriteInt(9)
                     .WriteInt()

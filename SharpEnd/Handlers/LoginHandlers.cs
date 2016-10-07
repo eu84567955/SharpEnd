@@ -2,6 +2,7 @@
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
+using SharpEnd.Security;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
 using System;
@@ -65,7 +66,7 @@ namespace SharpEnd.Handlers
                 account = new Account(query);
             }
 
-            if (password != account.Password)
+            if (ShaCryptograph.Encrypt(EShaMode.SHA512, password) != account.Password)
             {
                 client.Send(LoginPackets.LoginError(4));
 
@@ -127,7 +128,7 @@ namespace SharpEnd.Handlers
 
             using (DatabaseQuery query = Database.Query("SELECT * FROM player WHERE account_identifier=@account_identifier", new MySqlParameter("account_identifier", client.Account.Identifier)))
             {
-                client.Send(LoginPackets.PlayerList(count, query));
+                client.Send(LoginPackets.PlayerList(count, query, client.Account.PICState));
             }
         }
 
@@ -266,11 +267,9 @@ namespace SharpEnd.Handlers
         {
             string pic = inPacket.ReadString();
 
-            if (false) // TODO: Validate PIC
+            if (ShaCryptograph.Encrypt(EShaMode.SHA512, pic) != client.Account.PIC)
             {
-                // TODO: Invalid PIC packet
-
-                return;
+                // TODO: Send invalid pic packet.
             }
 
             int playerIdentifier = inPacket.ReadInt();

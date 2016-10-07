@@ -86,7 +86,9 @@
     <Compile Include="Enums\EAccountLevel.cs" />
     <Compile Include="Enums\ECommandType.cs" />
     <Compile Include="Enums\EDropAnimation.cs" />
+    <Compile Include="Enums\EPICState.cs" />
     <Compile Include="Enums\EQuestAction.cs" />
+    <Compile Include="Enums\EShaMode.cs" />
     <Compile Include="Extensions\NXExtensions.cs" />
     <Compile Include="Enums\ECommand.cs" />
     <Compile Include="Enums\EDropType.cs" />
@@ -165,6 +167,7 @@
     <Compile Include="Players\PlayerStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AesCryptograph.cs" />
+    <Compile Include="Security\ShaCryptograph.cs" />
     <Compile Include="Servers\ChannelServer.cs" />
     <Compile Include="Servers\LoginServer.cs" />
     <Compile Include="Servers\MasterServer.cs" />
