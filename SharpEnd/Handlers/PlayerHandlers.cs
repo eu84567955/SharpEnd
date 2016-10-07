@@ -333,7 +333,15 @@ namespace SharpEnd.Handlers
         [PacketHandler(EHeader.CMSG_PLAYER_HEAL)]
         public static void PlayerHealHandler(Client client, InPacket inPacket)
         {
+            var player = client.Player;
 
+            inPacket.Skip(4); // NOTE: Ticks.
+
+            uint health = inPacket.ReadUInt();
+            uint mana = inPacket.ReadUInt();
+
+            player.Stats.ModifyHealth(health);
+            player.Stats.ModifyMana(mana);
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_DETAILS)]
