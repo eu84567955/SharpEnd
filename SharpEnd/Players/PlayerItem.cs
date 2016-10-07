@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using SharpEnd.Maps;
 using SharpEnd.Packets;
+using SharpEnd.Servers;
 using SharpEnd.Utility;
 using System;
 
@@ -21,24 +22,22 @@ namespace SharpEnd.Players
 
         public byte Slots { get; private set; }
         public byte Scrolls { get; private set; }
-        public ushort Strength { get; private set; }
-        public ushort Dexterity { get; private set; }
-        public ushort Intelligence { get; private set; }
-        public ushort Luck { get; private set; }
-        public ushort Health { get; private set; }
-        public ushort MaxHealth { get; private set; }
-        public ushort Mana { get; private set; }
-        public ushort MaxMana { get; private set; }
-        public ushort WeaponAttack { get; private set; }
-        public ushort MagicAttack { get; private set; }
-        public ushort WeaponDefense { get; private set; }
-        public ushort MagicDefense { get; private set; }
-        public ushort Accuracy { get; private set; }
-        public ushort Avoidability { get; private set; }
-        public ushort Hands { get; private set; }
-        public ushort Speed { get; private set; }
-        public ushort Jump { get; private set; }
-        public string Owner { get; private set; }
+        public short Strength { get; private set; }
+        public short Dexterity { get; private set; }
+        public short Intelligence { get; private set; }
+        public short Luck { get; private set; }
+        public short Health { get; private set; }
+        public short Mana { get; private set; }
+        public short WeaponAttack { get; private set; }
+        public short MagicAttack { get; private set; }
+        public short WeaponDefense { get; private set; }
+        public short MagicDefense { get; private set; }
+        public short Accuracy { get; private set; }
+        public short Avoidability { get; private set; }
+        public short Hands { get; private set; }
+        public short Speed { get; private set; }
+        public short Jump { get; private set; }
+        public string Creator { get; private set; }
         public ushort Flags { get; private set; }
 
         public EInventoryType Inventory => GameLogicUtilities.GetInventory(Identifier);
@@ -53,22 +52,22 @@ namespace SharpEnd.Players
 
             Slots = query.Get<byte>("slots");
             Scrolls = query.Get<byte>("scrolls");
-            Strength = query.Get<ushort>("strength");
-            Dexterity = query.Get<ushort>("dexterity");
-            Intelligence = query.Get<ushort>("intelligence");
-            Luck = query.Get<ushort>("luck");
-            Health = query.Get<ushort>("health");
-            Mana = query.Get<ushort>("mana");
-            WeaponAttack = query.Get<ushort>("weapon_attack");
-            MagicAttack = query.Get<ushort>("magic_attack");
-            WeaponDefense = query.Get<ushort>("weapon_defense");
-            MagicDefense = query.Get<ushort>("magic_defense");
-            Accuracy = query.Get<ushort>("accuracy");
-            Avoidability = query.Get<ushort>("avoidability");
-            Hands = query.Get<ushort>("hands");
-            Speed = query.Get<ushort>("speed");
-            Jump = query.Get<ushort>("jump");
-            Owner = query.Get<string>("owner");
+            Strength = query.Get<short>("strength");
+            Dexterity = query.Get<short>("dexterity");
+            Intelligence = query.Get<short>("intelligence");
+            Luck = query.Get<short>("luck");
+            Health = query.Get<short>("health");
+            Mana = query.Get<short>("mana");
+            WeaponAttack = query.Get<short>("weapon_attack");
+            MagicAttack = query.Get<short>("magic_attack");
+            WeaponDefense = query.Get<short>("weapon_defense");
+            MagicDefense = query.Get<short>("magic_defense");
+            Accuracy = query.Get<short>("accuracy");
+            Avoidability = query.Get<short>("avoidability");
+            Hands = query.Get<short>("hands");
+            Speed = query.Get<short>("speed");
+            Jump = query.Get<short>("jump");
+            Creator = query.Get<string>("creator");
             Flags = query.Get<ushort>("flags");
         }
 
@@ -78,18 +77,43 @@ namespace SharpEnd.Players
 
             if (equipped)
             {
-                Slot = 0; // TODO: Get the equipped slot based on the identifier
+                Slot = GetEquippedSlot();
             }
 
             Quantity = quantity;
 
-            Owner = string.Empty;
+            Creator = string.Empty;
+
+            Flags = 0;
+
+            if (Inventory == EInventoryType.Equipment)
+            {
+                var data = MasterServer.Instance.Equips[Identifier];
+
+                Slots = data.Slots;
+                Scrolls = 0;
+                Strength = data.Strength;
+                Dexterity = data.Dexterity;
+                Intelligence = data.Intelligence;
+                Luck = data.Luck;
+                Health = data.Health;
+                Mana = data.Mana;
+                WeaponAttack = data.WeaponAttack;
+                MagicAttack = data.MagicAttack;
+                WeaponDefense = data.WeaponDefense;
+                MagicDefense = data.MagicDefense;
+                Accuracy = data.Accuracy;
+                Avoidability = data.Avoidability;
+                Hands = data.Hands;
+                Speed = data.Speed;
+                Jump = data.Jump;
+            }
         }
 
         public void Save()
         {
             Database.Execute(@"INSERT INTO `player_item` 
-                             VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @owner, @flags);",
+                             VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @creator, @flags);",
                              new MySqlParameter("player_identifier", Player.Identifier),
                              new MySqlParameter("inventory_slot", Slot),
                              new MySqlParameter("item_identifier", Identifier),
@@ -111,7 +135,7 @@ namespace SharpEnd.Players
                              new MySqlParameter("hands", Hands),
                              new MySqlParameter("speed", Speed),
                              new MySqlParameter("jump", Jump),
-                             new MySqlParameter("owner", Owner),
+                             new MySqlParameter("creator", Creator),
                              new MySqlParameter("flags", Flags));
         }
 
@@ -205,7 +229,7 @@ namespace SharpEnd.Players
             if (quantity == Quantity)
             {
                 Dropper = Player;
-                base.Owner = null;
+                Owner = null;
 
                 Player.Map.Drops.Add(this);
 

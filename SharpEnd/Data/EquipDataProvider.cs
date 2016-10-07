@@ -34,17 +34,43 @@ namespace SharpEnd.Data
                     {
                         int identifier = node.GetIdentifier<int>();
 
-                        EquipData item = new EquipData();
+                        EquipData equip = new EquipData();
 
-                        item.Identifier = identifier;
+                        if (node.ContainsChild("info"))
+                        {
+                            var infoNode = node["info"];
 
-                        // NOTE: Equip 1102380 is duplicated
+                            equip.Slots = infoNode.GetByte("tuc");
+                            equip.Strength = infoNode.GetShort("incSTR");
+                            equip.Dexterity = infoNode.GetShort("incDEX");
+                            equip.Intelligence = infoNode.GetShort("incINT");
+                            equip.Luck = infoNode.GetShort("incLUK");
+                            equip.Health = infoNode.GetShort("incHP");
+                            equip.Mana = infoNode.GetShort("incMP");
+                            equip.WeaponAttack = infoNode.GetShort("incPAD");
+                            equip.MagicAttack = infoNode.GetShort("incMAD");
+                            equip.WeaponDefense = infoNode.GetShort("incPDD");
+                            equip.MagicDefense = infoNode.GetShort("incMDD");
+                            equip.Accuracy = infoNode.GetShort("incACC");
+                            equip.Avoidability = infoNode.GetShort("incEVA");
+                            equip.Hands = infoNode.GetShort("incHands");
+                            equip.Jump = infoNode.GetShort("incJump");
+                            equip.Speed = infoNode.GetShort("incSpeed");
+                            equip.RequiredLevel = infoNode.GetByte("reqLevel");
+                            equip.RequiredStrength = infoNode.GetShort("reqSTR");
+                            equip.RequiredDexterity = infoNode.GetShort("reqDEX");
+                            equip.RequiredIntelligence = infoNode.GetShort("reqINT");
+                            equip.RequiredLuck = infoNode.GetShort("reqLUK");
+                            equip.RequiredFame = infoNode.GetShort("reqPOP");
+                        }
+
+                        // NOTE: Equip 1102380 is duplicated.
                         if (m_equips.ContainsKey(identifier))
                         {
                             continue;
                         }
 
-                        m_equips.Add(identifier, item);
+                        m_equips.Add(identifier, equip);
                     }
                 }
             }
@@ -61,6 +87,27 @@ namespace SharpEnd.Data
 
     internal sealed class EquipData
     {
-        public int Identifier { get; set; }
+        public byte Slots;
+        public short Strength;
+        public short Dexterity;
+        public short Intelligence;
+        public short Luck;
+        public short Health;
+        public short Mana;
+        public short WeaponAttack;
+        public short MagicAttack;
+        public short WeaponDefense;
+        public short MagicDefense;
+        public short Accuracy;
+        public short Avoidability;
+        public short Hands;
+        public short Jump;
+        public short Speed;
+        public byte RequiredLevel;
+        public short RequiredStrength;
+        public short RequiredDexterity;
+        public short RequiredIntelligence;
+        public short RequiredLuck;
+        public short RequiredFame;
     }
 }
