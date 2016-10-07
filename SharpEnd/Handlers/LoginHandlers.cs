@@ -12,7 +12,7 @@ namespace SharpEnd.Handlers
     internal static class LoginHandlers
     {
         [PacketHandler(EHeader.CMSG_VERSION_INFORMATION)]
-        public static void VersionInformation(Client client, InPacket inPacket)
+        public static void VersionInformationHandler(Client client, InPacket inPacket)
         {
             byte localisation = inPacket.ReadByte();
             ushort version = inPacket.ReadUShort();
@@ -25,25 +25,25 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_AUTH_SERVER)]
-        public static void AuthServer(Client client, InPacket inPacket)
+        public static void AuthServerHandler(Client client, InPacket inPacket)
         {
             client.Send(LoginPackets.AuthServer(false));
         }
 
         [PacketHandler(EHeader.CMSG_CLIENT_START)]
-        public static void Start(Client client, InPacket inPacket)
+        public static void StartHandler(Client client, InPacket inPacket)
         {
             client.Send(LoginPackets.Start());
         }
 
         [PacketHandler(EHeader.CMSG_STRANGE_DATA)]
-        public static void StrangeData(Client client, InPacket inPacket)
+        public static void StrangeDataHandler(Client client, InPacket inPacket)
         {
             // NOTE: Intentionally left blank
         }
 
         [PacketHandler(EHeader.CMSG_AUTHENTICATION)]
-        public static void Authentication(Client client, InPacket inPacket)
+        public static void AuthenticationHandler(Client client, InPacket inPacket)
         {
             inPacket.ReadByte();
             string password = inPacket.ReadString();
@@ -83,7 +83,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_WORLD_LIST)]
-        public static void WorldList(Client client, InPacket inPacket)
+        public static void WorldListHandler(Client client, InPacket inPacket)
         {
             foreach (WorldServer world in MasterServer.Instance.Worlds)
             {
@@ -94,7 +94,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_WORLD_STATUS)]
-        public static void WorldStatus(Client client, InPacket inPacket)
+        public static void WorldStatusHandler(Client client, InPacket inPacket)
         {
             byte identifier = inPacket.ReadByte();
 
@@ -109,7 +109,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_LIST)]
-        public static void PlayerList(Client client, InPacket inPacket)
+        public static void PlayerListHandler(Client client, InPacket inPacket)
         {
             inPacket.ReadByte(); // NOTE: Connection method
             byte worldIdentifier = inPacket.ReadByte();
@@ -130,7 +130,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_NAME_CHECK)]
-        public static void PlayerNameCheck(Client client, InPacket inPacket)
+        public static void PlayerNameCheckHandler(Client client, InPacket inPacket)
         {
             string name = inPacket.ReadString();
 
@@ -170,7 +170,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_CREATE)]
-        public static void PlayerCreate(Client client, InPacket inPacket)
+        public static void PlayerCreateHandler(Client client, InPacket inPacket)
         {
             string name = inPacket.ReadString();
             inPacket.ReadInt(); // NOTE: Keyboard
@@ -260,7 +260,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_SELECT)]
-        public static void PlayerSelect(Client client, InPacket inPacket)
+        public static void PlayerSelectHandler(Client client, InPacket inPacket)
         {
             string pic = inPacket.ReadString();
 

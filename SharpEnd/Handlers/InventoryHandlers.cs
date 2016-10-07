@@ -9,19 +9,19 @@ namespace SharpEnd.Handlers
     internal static class InventoryHandlers
     {
         [PacketHandler(EHeader.CMSG_INVENTORY_SORT)]
-        public static void Sort(Client client, InPacket inPacket)
+        public static void SortHandler(Client client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: Ticks
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_GATHER)]
-        public static void Gather(Client client, InPacket inPacket)
+        public static void GatherHandler(Client client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: Ticks
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_OPERATION)]
-        public static void Operation(Client client, InPacket inPacket)
+        public static void OperationHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -50,7 +50,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_MESO_DROP)]
-        public static void MesoDrop(Client client, InPacket inPacket)
+        public static void MesoDropHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -71,7 +71,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_PICKUP)]
-        public static void Pickup(Client client, InPacket inPacket)
+        public static void PickupHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 

@@ -9,7 +9,7 @@ namespace SharpEnd.Handlers
     internal static class MobHandlers
     {
         [PacketHandler(EHeader.CMSG_MOB_MOVE)]
-        public static void Move(Client client, InPacket inPacket)
+        public static void MoveHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 

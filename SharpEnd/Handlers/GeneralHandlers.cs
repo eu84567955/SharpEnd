@@ -7,7 +7,7 @@ namespace SharpEnd.Handlers
     internal static class GeneralHandlers
     {
         [PacketHandler(EHeader.CMSG_PRIVATE_SERVER_AUTH)]
-        public static void PrivateServerAuth(Client client, InPacket inPacket)
+        public static void PrivateServerAuthHandler(Client client, InPacket inPacket)
         {
             int request = inPacket.ReadInt();
             int response = request ^ (int)EHeader.SMSG_PRIVATE_SERVER_AUTH;
@@ -16,7 +16,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_CLIENT_ERROR)]
-        public static void ClientError(Client client, InPacket inPacket)
+        public static void ClientErrorHandler(Client client, InPacket inPacket)
         {
             ushort type = inPacket.ReadUShort();
             int error = inPacket.ReadInt();
@@ -40,7 +40,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_BUTTON_PRESS)]
-        public static void ButtonPress(Client client, InPacket inPacket)
+        public static void ButtonPressHandler(Client client, InPacket inPacket)
         {
             // TODO: Handle button presses (useful against auto-clickers)
         }

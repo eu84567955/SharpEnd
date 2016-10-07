@@ -1,4 +1,4 @@
-﻿namespace SharpEnd
+﻿namespace SharpEnd.Network
 {
     internal enum EHeader : ushort
     {
@@ -63,6 +63,8 @@
         CMSG_INVENTORY_MESO_DROP =              0x0134,
         CMSG_PLAYER_DETAILS =                   0x0137,
         CMSG_INSTANT_WARP =                     0x013C,
+        CMSG_QUEST =                            0x0144,
+        CMSG_SPECIAL_STAT =                     0x015C,
         CMSG_PARTY_ALLOW_INVITE =               0x0186,
         CMSG_MOB_MOVE =                         0x0339,
         CMSG_NPC_ACTION =                       0x0353,
@@ -75,8 +77,10 @@
         SMSG_BUFF_CANCEL =                      0x004B,
         SMSG_TEMPORARY_STATS =                  0x004C,
         SMSG_TEMPORARY_STATS_RESET =            0x004D,
+        SMSG_SHOW_LOG =                         0x0059,
         SMSG_PLAYER_DETAILS =                   0x0071,
         SMSG_NOTIFICATION =                     0x0082,
+        SMSG_SPECIAL_STAT =                     0x00C6,
         SMSG_EVENT_NAME_TAG_INFO =              0x0118,
         SMSG_CHANGE_MAP =                       0x01AC,
         SMSG_PLAYER_SPAWN =                     0x0204,
@@ -88,6 +92,7 @@
         SMSG_ATTACK_RANGED =                    0x027B,
         SMSG_ATTACK_MAGIC =                     0x027C,
         SMSG_ATTACK_ENERGY_CHARGE =             0x027D,
+        SMSG_QUEST =                            0x02B4,
         SMSG_MOB_SPAWN =                        0x038C,
         SMSG_MOB_DESPAWN =                      0x038D,
         SMSG_MOB_CONTROL =                      0x038E,

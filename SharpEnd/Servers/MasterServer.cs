@@ -28,6 +28,7 @@ namespace SharpEnd.Servers
         public SkillDataProvider Skills { get; private set; }
         public TamingMobDataProvider TamingMobs { get; private set; }
         public ValidCharDataProvider ValidCharData { get; private set; }
+        public StringDataProvider Strings { get; private set; }
         public Commands.Commands Commands { get; private set; }
 
         private MasterServer()
@@ -55,6 +56,7 @@ namespace SharpEnd.Servers
             Skills = new SkillDataProvider();
             TamingMobs = new TamingMobDataProvider();
             ValidCharData = new ValidCharDataProvider();
+            Strings = new StringDataProvider();
             Commands = new Commands.Commands();
         }
 
@@ -73,6 +75,7 @@ namespace SharpEnd.Servers
             Skills.Load();
             TamingMobs.Load();
             //ValidCharData.Load();
+            Strings.Load();
             Commands.Load();
 
             Log.Inform("Maple data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);

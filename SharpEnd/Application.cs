@@ -10,6 +10,13 @@ namespace SharpEnd
         public const string CommandIndicator = "!";
         public const string PlayerCommandIndicator = "@";
 
+        public static readonly MapleVersion Version = new MapleVersion()
+        {
+            Version = 176,
+            Patch = "3",
+            Localisation = ELocalisation.Global
+        };
+
         private static Delay m_usageDelay;
 
         static Application()

@@ -9,7 +9,7 @@ namespace SharpEnd.Handlers
     internal static class NpcHandlers
     {
         [PacketHandler(EHeader.CMSG_NPC_ACTION)]
-        public static void Action(Client client, InPacket inPacket)
+        public static void ActionHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 

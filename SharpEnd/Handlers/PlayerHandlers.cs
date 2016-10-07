@@ -12,7 +12,7 @@ namespace SharpEnd.Handlers
     internal static class PlayerHandlers
     {
         [PacketHandler(EHeader.CMSG_CHANGE_MAP)]
-        public static void ChangeMap(Client client, InPacket inPacket)
+        public static void ChangeMapHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -72,7 +72,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_MOVE)]
-        public static void PlayerMove(Client client, InPacket inPacket)
+        public static void PlayerMoveHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -112,7 +112,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_HIT)]
-        public static void PlayerHit(Client client, InPacket inPacket)
+        public static void PlayerHitHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -268,7 +268,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_CHAT)]
-        public static void PlayerChat(Client client, InPacket inPacket)
+        public static void PlayerChatHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -287,13 +287,13 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_EMOTE)]
-        public static void PlayerEmote(Client client, InPacket inPacket)
+        public static void PlayerEmoteHandler(Client client, InPacket inPacket)
         {
 
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_DETAILS)]
-        public static void PlayerDetails(Client client, InPacket inPacket)
+        public static void PlayerDetailsHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -319,7 +319,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_INSTANT_WARP)]
-        public static void InstantWarp(Client client, InPacket inPacket)
+        public static void InstantWarpHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -349,6 +349,77 @@ namespace SharpEnd.Handlers
             // TODO: Check portal data to verify the destination
 
             MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerMove(player.Identifier, destination, null), player);
+        }
+
+        [PacketHandler(EHeader.CMSG_QUEST)]
+        public static void QuestHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            EQuestAction action = (EQuestAction)inPacket.ReadSByte();
+            ushort questIdentifier = (ushort)inPacket.ReadInt();
+
+            switch (action)
+            {
+                case EQuestAction.RestoreLostItem:
+                    {
+
+                    }
+                    break;
+
+                case EQuestAction.Start:
+                    {
+                        int npcIdentifier = inPacket.ReadInt();
+
+                        player.Quests.Start(questIdentifier, npcIdentifier);
+                    }
+                    break;
+
+                case EQuestAction.End:
+                    {
+
+                    }
+                    break;
+
+                case EQuestAction.Forfeit:
+                    {
+
+                    }
+                    break;
+
+                case EQuestAction.ScriptStart:
+                    {
+
+                    }
+                    break;
+
+                case EQuestAction.ScriptEnd:
+                    {
+
+                    }
+                    break;
+            }
+        }
+
+        [PacketHandler(EHeader.CMSG_SPECIAL_STAT)]
+        public static void SpecialStatHandler(Client client, InPacket inPacket)
+        {
+            string type = inPacket.ReadString();
+            int array = inPacket.ReadInt();
+            int mode = inPacket.ReadInt();
+
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_SPECIAL_STAT)
+                    .WriteString(type)
+                    .WriteInt(array)
+                    .WriteInt(mode)
+                    .WriteBoolean(true)
+                    .WriteInt();
+
+                client.Send(outPacket.ToArray());
+            }
         }
     }
 }

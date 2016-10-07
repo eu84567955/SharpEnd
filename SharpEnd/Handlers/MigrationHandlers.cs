@@ -10,7 +10,7 @@ namespace SharpEnd.Handlers
     internal static class MigrationHandlers
     {
         [PacketHandler(EHeader.CMSG_PLAYER_LOAD)]
-        public static void PlayerLoad(Client client, InPacket inPacket)
+        public static void PlayerLoadHandler(Client client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: Alliance identifier
             int accountIdentifier;
@@ -38,6 +38,12 @@ namespace SharpEnd.Handlers
             }
 
             client.Player.Initialize();
+        }
+
+        [PacketHandler(EHeader.CMSG_CASH_SHOP)]
+        public static void CashShopHandler(Client client, InPacket inPacket)
+        {
+
         }
     }
 }
