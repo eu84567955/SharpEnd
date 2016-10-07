@@ -9,7 +9,7 @@ namespace SharpEnd.Players
 {
     internal sealed class PlayerItems : List<PlayerItem>
     {
-        private Player m_player;
+        public Player Parent { get; private set; }
 
         public long Meso { get; private set; }
 
@@ -22,7 +22,7 @@ namespace SharpEnd.Players
         public PlayerItems(Player player, DatabaseQuery query, long meso, byte equipmentSlots, byte usableSlots, byte setupSlots, byte etceteraSlots, byte cashSlots)
             : base()
         {
-            m_player = player;
+            Parent = player;
 
             Meso = meso;
 
@@ -40,7 +40,7 @@ namespace SharpEnd.Players
 
         public void Save()
         {
-            Database.Execute("DELETE FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", m_player.Identifier));
+            Database.Execute("DELETE FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.Identifier));
 
             foreach (PlayerItem item in this)
             {
@@ -52,7 +52,7 @@ namespace SharpEnd.Players
         {
             if (item.Quantity > 0)
             {
-                item.Parent = m_player;
+                item.Parent = this;
 
                 if (item.Slot == 0)
                 {
@@ -61,9 +61,9 @@ namespace SharpEnd.Players
 
                 base.Add(item);
 
-                if (m_player.IsInitialized)
+                if (Parent.IsInitialized)
                 {
-                    m_player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                    Parent.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
                     {
                         Type = EInventoryOperation.AddItem,
                         Item = item,
@@ -74,6 +74,25 @@ namespace SharpEnd.Players
             }
         }
 
+        public new void Remove(PlayerItem item)
+        {
+            Parent.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+            {
+                Type = EInventoryOperation.RemoveItem,
+                Item = item,
+                CurrentSlot = item.Slot
+            }));
+
+            bool wasEquipped = item.IsEquipped;
+
+            base.Remove(item);
+
+            if (wasEquipped)
+            {
+                // TODO: Update look
+            }
+        }
+
         public void WriteInitial(OutPacket outPacket)
         {
             outPacket
@@ -81,7 +100,7 @@ namespace SharpEnd.Players
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
-                .WriteInt(m_player.Identifier)
+                .WriteInt(Parent.Identifier)
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
@@ -239,63 +258,9 @@ namespace SharpEnd.Players
                 Meso += mod;
             }
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Meso, Meso, sendPacket));
+            Parent.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Meso, Meso, sendPacket));
 
             return true;
-        }
-
-        public void Equip(short source, short destination)
-        {
-
-        }
-
-        public void Unequip(short sourceSlot, short destinationSlot)
-        {
-            PlayerItem source = this[EInventoryType.Equipment, sourceSlot];
-            PlayerItem destination = this[EInventoryType.Equipment, destinationSlot];
-
-            if (source == null)
-            {
-                return;
-            }
-
-            if (destination != null)
-            {
-
-            }
-        }
-
-        public void Swap(EInventoryType inventory, short sourceSlot, short destinationSlot)
-        {
-            PlayerItem source = this[inventory, sourceSlot];
-            PlayerItem destination = this[inventory, destinationSlot];
-
-            if (source == null)
-            {
-                return;
-            }
-
-            if (destination != null && source.Identifier == destination.Identifier && GameLogicUtilities.IsStackable(source.Identifier))
-            {
-                // TODO: Stack items
-            }
-            else
-            {
-                source.Slot = destinationSlot;
-
-                if (destination != null)
-                {
-                    destination.Slot = sourceSlot;
-                }
-
-                m_player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
-                {
-                    Type = EInventoryOperation.ModifySlot,
-                    Item = source,
-                    CurrentSlot = sourceSlot,
-                    OldSlot = destinationSlot
-                }));
-            }
         }
 
         public short GetNextFreeSlot(EInventoryType inventory)

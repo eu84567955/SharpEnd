@@ -28,25 +28,32 @@ namespace SharpEnd.Handlers
 
             inPacket.ReadInt(); // NOTE: Ticks
             EInventoryType inventory = (EInventoryType)inPacket.ReadByte();
-            short source = inPacket.ReadShort();
-            short destination = inPacket.ReadShort();
+            short sourceSlot = inPacket.ReadShort();
+            short destinationSlot = inPacket.ReadShort();
             ushort quantity = inPacket.ReadUShort();
 
-            if (source < 0 && destination > 0)
+            PlayerItem item = player.Items[inventory, sourceSlot];
+
+            if (item == null)
             {
-                player.Items.Unequip(source, destination);
+                return;
             }
-            else if (destination < 0)
+
+            if (destinationSlot < 0)
             {
-                player.Items.Equip(source, destination);
+                item.Equip();
             }
-            else if (destination == 0)
+            else if (sourceSlot < 0 && destinationSlot > 0)
             {
-                // TODO: Drop
+                item.Unequip(destinationSlot);
+            }
+            else if (destinationSlot == 0)
+            {
+                item.Drop(quantity);
             }
             else
             {
-                player.Items.Swap(inventory, source, destination);
+                item.Move(destinationSlot);
             }
         }
 

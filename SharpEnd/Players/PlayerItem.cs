@@ -1,12 +1,16 @@
 ﻿using MySql.Data.MySqlClient;
 using SharpEnd.Maps;
+using SharpEnd.Packets;
 using SharpEnd.Utility;
+using System;
 
 namespace SharpEnd.Players
 {
     internal sealed class PlayerItem : Drop
     {
-        public Player Parent { get; set; }
+        public Player Player => Parent.Parent;
+
+        public PlayerItems Parent { get; set; }
 
         public int Identifier { get; private set; }
 
@@ -86,7 +90,7 @@ namespace SharpEnd.Players
         {
             Database.Execute(@"INSERT INTO `player_item` 
                              VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @owner, @flags);",
-                             new MySqlParameter("player_identifier", Parent.Identifier),
+                             new MySqlParameter("player_identifier", Player.Identifier),
                              new MySqlParameter("inventory_slot", Slot),
                              new MySqlParameter("item_identifier", Identifier),
                              new MySqlParameter("quantity", Quantity),
@@ -109,6 +113,177 @@ namespace SharpEnd.Players
                              new MySqlParameter("jump", Jump),
                              new MySqlParameter("owner", Owner),
                              new MySqlParameter("flags", Flags));
+        }
+
+        public void Equip()
+        {
+            if (Inventory != EInventoryType.Equipment)
+            {
+                throw new InvalidOperationException("Can only equip equipment items.");
+            }
+
+            // TODO: Check requirements.
+            // TODO: Check stripped slots.
+
+            short sourceSlot = Slot;
+            short destinationSlot = GetEquippedSlot();
+
+            PlayerItem destination = Parent[Inventory, destinationSlot];
+
+            if (destination != null)
+            {
+                destination.Slot = sourceSlot;
+            }
+
+            Slot = destinationSlot;
+
+            Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+            {
+                Type = EInventoryOperation.ModifySlot,
+                Item = this,
+                CurrentSlot = sourceSlot,
+                OldSlot = destinationSlot
+            }));
+        }
+
+        public void Unequip(short destinationSlot = 0)
+        {
+            if (Inventory != EInventoryType.Equipment)
+            {
+                throw new InvalidOperationException("Can only unequip equipment items.");
+            }
+
+            short sourceSlot = Slot;
+
+            if (destinationSlot == 0)
+            {
+                destinationSlot = Parent.GetNextFreeSlot(EInventoryType.Equipment);
+            }
+
+            Slot = destinationSlot;
+
+            Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+            {
+                Type = EInventoryOperation.ModifySlot,
+                Item = this,
+                CurrentSlot = sourceSlot,
+                OldSlot = destinationSlot
+            }));
+        }
+
+        public void Move(short destinationSlot)
+        {
+            short sourceSlot = Slot;
+
+            PlayerItem destination = Parent[Inventory, destinationSlot];
+
+            if (destination != null && false)
+            {
+                // TODO: Stack both items.
+            }
+            else
+            {
+                if (destination != null)
+                {
+                    destination.Slot = sourceSlot;
+                }
+
+                Slot = destinationSlot;
+
+                Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                {
+                    Type = EInventoryOperation.ModifySlot,
+                    Item = this,
+                    CurrentSlot = sourceSlot,
+                    OldSlot = destinationSlot
+                }));
+            }
+        }
+
+        public void Drop(ushort quantity)
+        {
+            if (quantity == Quantity)
+            {
+                Dropper = Player;
+                base.Owner = null;
+
+                Player.Map.Drops.Add(this);
+
+                Parent.Remove(this);
+            }
+            else if (quantity < Quantity)
+            {
+                // TODO: Stack items.
+            }
+        }
+
+        private short GetEquippedSlot()
+        {
+            short slot = 0;
+
+            if (Identifier >= 1000000 && Identifier < 1010000)
+            {
+                slot -= 1;
+            }
+            else if (Identifier >= 1010000 && Identifier < 1020000)
+            {
+                slot -= 2;
+            }
+            else if (Identifier >= 1020000 && Identifier < 1030000)
+            {
+                slot -= 3;
+            }
+            else if (Identifier >= 1030000 && Identifier < 1040000)
+            {
+                slot -= 4;
+            }
+            else if (Identifier >= 1040000 && Identifier < 1060000)
+            {
+                slot -= 5;
+            }
+            else if (Identifier >= 1060000 && Identifier < 1070000)
+            {
+                slot -= 6;
+            }
+            else if (Identifier >= 1070000 && Identifier < 1080000)
+            {
+                slot -= 7;
+            }
+            else if (Identifier >= 1080000 && Identifier < 1090000)
+            {
+                slot -= 8;
+            }
+            else if (Identifier >= 1102000 && Identifier < 1103000)
+            {
+                slot -= 9;
+            }
+            else if (Identifier >= 1092000 && Identifier < 1100000)
+            {
+                slot -= 10;
+            }
+            else if (Identifier >= 1300000 && Identifier < 1800000)
+            {
+                slot -= 11;
+            }
+            else if (Identifier >= 1112000 && Identifier < 1120000)
+            {
+                slot -= 12;
+            }
+            else if (Identifier >= 1122000 && Identifier < 1123000)
+            {
+                slot -= 17;
+            }
+            else if (Identifier >= 1900000 && Identifier < 2000000)
+            {
+                slot -= 18;
+            }
+
+            if (false) // TODO: Cash.
+            {
+                slot -= 100;
+            }
+
+            return slot;
         }
     }
 }

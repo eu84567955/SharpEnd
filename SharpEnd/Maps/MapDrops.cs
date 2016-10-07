@@ -11,6 +11,8 @@ namespace SharpEnd.Maps
 
         public override void Add(Drop drop)
         {
+            drop.Picker = null;
+
             base.Add(drop);
 
             drop.Expiry = new Delay(ExpirationTime, () =>
