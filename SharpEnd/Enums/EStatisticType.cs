@@ -2,6 +2,7 @@
 {
     public enum EStatisticType : ulong
     {
+        None = 0x00,
         Skin = 0x1,
         Face = 0x2,
         Hair = 0x4,

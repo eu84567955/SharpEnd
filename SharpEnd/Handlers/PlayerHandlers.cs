@@ -292,6 +292,50 @@ namespace SharpEnd.Handlers
 
         }
 
+        [PacketHandler(EHeader.CMSG_STAT_ADD)]
+        public static void StatAddHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            inPacket.ReadInt(); // NOTE: Ticks.
+
+            EStatisticType type = (EStatisticType)inPacket.ReadUInt();
+
+            client.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.None, 0, true));
+
+            player.Stats.AddAbility(type);
+        }
+
+        [PacketHandler(EHeader.CMSG_STAT_ADD_MULTI)]
+        public static void AbilityPointsAutoAddHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            inPacket.Skip(4); // NOTE: Ticks.
+            inPacket.Skip(4); // NOTE: Unknown.
+
+            EStatisticType primaryType = (EStatisticType)inPacket.ReadULong();
+            ushort primaryAmount = (ushort)inPacket.ReadUInt();
+            EStatisticType secondaryType = (EStatisticType)inPacket.ReadULong();
+            ushort secondaryAmount = (ushort)inPacket.ReadUInt();
+
+            if ((primaryAmount + secondaryAmount) < player.Stats.AbilityPoints)
+            {
+                return;
+            }
+
+            client.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.None, 0, true));
+
+            player.Stats.AddAbility(primaryType, primaryAmount);
+            player.Stats.AddAbility(secondaryType, secondaryAmount);
+        }
+
+        [PacketHandler(EHeader.CMSG_PLAYER_HEAL)]
+        public static void PlayerHealHandler(Client client, InPacket inPacket)
+        {
+
+        }
+
         [PacketHandler(EHeader.CMSG_PLAYER_DETAILS)]
         public static void PlayerDetailsHandler(Client client, InPacket inPacket)
         {

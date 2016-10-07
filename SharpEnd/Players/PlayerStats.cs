@@ -408,6 +408,63 @@ namespace SharpEnd.Players
             }*/
         }
 
+        public void AddAbility(EStatisticType type, ushort mod = 1, bool reset = false)
+        {
+            switch (type)
+            {
+                case EStatisticType.Strength:
+                    {
+                        if (Strength >= 999)
+                        {
+                            return;
+                        }
+
+                        SetStrength((ushort)(Strength + mod));
+                    }
+                    break;
+
+                case EStatisticType.Dexterity:
+                    {
+                        if (Dexterity >= 999)
+                        {
+                            return;
+                        }
+
+                        SetDexterity((ushort)(Dexterity + mod));
+                    }
+                    break;
+
+                case EStatisticType.Intelligence:
+                    {
+                        if (Intelligence >= 999)
+                        {
+                            return;
+                        }
+
+                        SetIntelligence((ushort)(Intelligence + mod));
+                    }
+                    break;
+
+                case EStatisticType.Luck:
+                    {
+                        if (Luck >= 999)
+                        {
+                            return;
+                        }
+
+                        SetLuck((ushort)(Luck + mod));
+                    }
+                    break;
+            }
+
+            if (!reset)
+            {
+                SetAbilityPoints((ushort)(AbilityPoints - mod));
+            }
+
+            UpdateBonuses();
+        }
+
         public void GiveExperience(ulong experience, bool inChat, bool white)
         {
             /*byte level = Level;
@@ -503,71 +560,6 @@ namespace SharpEnd.Players
 
             // NOTE: By this point, the experience should be a valid experience in the range of 0 to max
             SetExperience((uint)currentExperience);
-            */
-        }
-
-        public void AddAbility(EStatisticType type, short mod, bool isReset = false)
-        {
-            /*
-            ushort maxStat = 999; // TODO: Configuration for this
-            bool isSubstract = mod < 0;
-
-            switch (type)
-            {
-                case EStatisticType.Str:
-                    if (Strength >= maxStat)
-                    {
-                        return;
-                    }
-
-                    SetStrength((ushort)(Strength + mod));
-                    break;
-
-                case EStatisticType.Dex:
-                    if (Dexterity >= maxStat)
-                    {
-                        return;
-                    }
-
-                    SetDexterity((ushort)(Dexterity + mod));
-                    break;
-
-                case EStatisticType.Int:
-                    if (Intelligence >= maxStat)
-                    {
-                        return;
-                    }
-
-                    SetIntelligence((ushort)(Intelligence + mod));
-                    break;
-
-                case EStatisticType.Luk:
-                    if (Luck >= maxStat)
-                    {
-                        return;
-                    }
-
-                    SetLuck((ushort)(Luck + mod));
-                    break;
-
-                case EStatisticType.MaxHp:
-                case EStatisticType.MaxMp:
-                    {
-                        // TODO: Health/Mana wash!
-                    }
-                    break;
-
-                default:
-                    // NOTE: Hacking, one assumes
-                    break;
-            }
-
-            if (!isReset)
-            {
-                SetAbilityPoints((ushort)(AbilityPoints - mod));
-            }
-
-            UpdateBonuses();
             */
         }
 
