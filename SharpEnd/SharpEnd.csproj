@@ -107,6 +107,7 @@
     <Compile Include="Handlers\MigrationHandlers.cs" />
     <Compile Include="Handlers\MobHandlers.cs" />
     <Compile Include="Handlers\NpcHandlers.cs" />
+    <Compile Include="Handlers\PartyHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Maps\Drop.cs" />

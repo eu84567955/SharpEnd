@@ -1,5 +1,6 @@
 ﻿using SharpEnd.Network;
 using SharpEnd.Packets;
+using System;
 
 namespace SharpEnd.Handlers
 {
@@ -24,10 +25,17 @@ namespace SharpEnd.Handlers
             {
                 inPacket.ReadUShort(); // NOTE: Packet length
                 inPacket.Skip(4); // NOTE: Unknown
-                EHeader header = (EHeader)inPacket.ReadUShort();
+                ushort header = inPacket.ReadUShort();
                 inPacket.ReadLeftoverBytes(); // NOTE: Packet data
 
-                Log.Error("Client {0} crashed with error 38 by header {1}.", client.Host, header.ToString());
+                if (Enum.IsDefined(typeof(EHeader), inPacket.Header))
+                {
+                    Log.Error("Client {0} crashed with error 38 by header {1}.", client.Host, ((EHeader)header).ToString());
+                }
+                else
+                {
+                    Log.Error("Client {0} crashed with error 38 by header 0x{1:X4}.", client.Host, header);
+                }
             }
         }
 

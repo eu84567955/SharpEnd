@@ -1,12 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SharpEnd.Maps;
+using SharpEnd.Network;
 
 namespace SharpEnd.Packets
 {
-    class ReactorPackets
+    internal static class ReactorPackets
     {
+        public static byte[] ReactorSpawn(Reactor reactor)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_REACTOR_SPAWN)
+                    .WriteInt(reactor.ObjectIdentifier)
+                    .WriteInt(reactor.Identifier)
+                    .WriteSByte(reactor.State)
+                    .WritePoint(reactor.Position)
+                    .WriteSByte(reactor.Stance)
+                    .WriteString(reactor.Label);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

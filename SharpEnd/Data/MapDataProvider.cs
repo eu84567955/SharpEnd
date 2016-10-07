@@ -53,6 +53,11 @@ namespace SharpEnd.Data
                             LoadPortals(map, node["portal"]);
                         }
 
+                        if (node.ContainsChild("reactor"))
+                        {
+                            LoadReactors(map, node["reactor"]);
+                        }
+
                         m_maps.Add(identifier, map);
                     }
                 }
@@ -139,6 +144,22 @@ namespace SharpEnd.Data
                     // NOTE: Some maps include way too many portals. We'll deal with them later.
                     // For now, we're skipping them.
                 }
+            }
+        }
+
+        private void LoadReactors(Map map, NXNode reactorNode)
+        {
+            foreach (var node in reactorNode)
+            {
+                int identifier = int.Parse(node.GetString("id")); // NOTE: Reactor identifiers are string
+                string label = node.GetString("name");
+                int time = node.GetInt("reactorTime");
+                Point position = new Point(node.GetShort("x"), node.GetShort("cy"));
+                bool flip = node.GetBoolean("f");
+
+                Reactor reactor = new Reactor(identifier, label, time, position, 0, flip, false);
+
+                map.Reactors.Add(reactor);
             }
         }
 

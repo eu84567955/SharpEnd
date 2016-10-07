@@ -35,6 +35,11 @@ namespace SharpEnd.Maps
                 player.Send(NpcPackets.NpcSpawn(npc));
             }
 
+            foreach(Reactor reactor in Map.Reactors.Values)
+            {
+                player.Send(ReactorPackets.ReactorSpawn(reactor));
+            }
+
             foreach (Drop drop in Map.Drops.Values)
             {
                 player.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));

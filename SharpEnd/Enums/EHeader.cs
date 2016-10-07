@@ -62,6 +62,8 @@
         CMSG_PLAYER_LOAD =                      0x006E,
         CMSG_INVENTORY_MESO_DROP =              0x0134,
         CMSG_PLAYER_DETAILS =                   0x0137,
+        CMSG_INSTANT_WARP =                     0x013C,
+        CMSG_PARTY_ALLOW_INVITE =               0x0186,
         CMSG_MOB_MOVE =                         0x0339,
         CMSG_NPC_ACTION =                       0x0353,
         CMSG_INVENTORY_PICKUP =                 0x0358,
@@ -100,5 +102,9 @@
         SMSG_NPC_ACTION =                       0x03DC,
         SMSG_DROP_SPAWN =                       0x03F1,
         SMSG_DROP_DESPAWN =                     0x03F3,
+        SMSG_REACTOR_TRIGGER =                  0x0402,
+        SMSG_REACTOR_MOVE =                     0x0403,
+        SMSG_REACTOR_SPAWN =                    0x0404,
+        SMSG_REACTOR_DESPAWN =                  0x0405,
     }
 }

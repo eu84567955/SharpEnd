@@ -5,6 +5,7 @@ using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Servers;
+using System.Collections.Generic;
 
 namespace SharpEnd.Handlers
 {
@@ -315,6 +316,39 @@ namespace SharpEnd.Handlers
             {
                 // TODO: Cross-world operations
             }
+        }
+
+        [PacketHandler(EHeader.CMSG_INSTANT_WARP)]
+        public static void InstantWarp(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            byte portalCount = inPacket.ReadByte();
+
+            if (player.PortalCount != portalCount)
+            {
+                return;
+            }
+
+            string label = inPacket.ReadString();
+
+            PortalData portal;
+
+            try
+            {
+                portal = MasterServer.Instance.Maps[player.Map].Portals[label];
+            }
+            catch (KeyNotFoundException)
+            {
+                return;
+            }
+
+            Point destination = inPacket.ReadPoint();
+
+            // TODO: Check portal distance relative to the player
+            // TODO: Check portal data to verify the destination
+
+            MasterServer.Instance.Maps[player.Map].Send(PlayersPackets.PlayerMove(player.Identifier, destination, null), player);
         }
     }
 }

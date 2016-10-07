@@ -25,7 +25,7 @@ namespace SharpEnd.Packets
                     .WriteString(string.Empty) // NOTE: Alliance name
                     .WriteHexString("FF 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 D7 AE 00 00 0F 00 50 72 6F 66 69 6C 65 20 70 69 63 74 75 72 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 1E 00 00 00 00 00 00 00");
 
-                    return outPacket.ToArray();
+                return outPacket.ToArray();
             }
         }
 
@@ -46,7 +46,7 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerMove(int playerIdentifier, Point origin, byte[] buffer)
+        public static byte[] PlayerMove(int playerIdentifier, Point position, byte[] buffer)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -54,10 +54,14 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_PLAYER_MOVE)
                     .WriteInt(playerIdentifier)
                     .WriteInt() // NOTE: Unknown
-                    .WritePoint(origin)
+                    .WritePoint(position)
                     .WriteShort() // NOTE: Unknown
-                    .WriteShort() // NOTE: Unknown
-                    .WriteBytes(buffer);
+                    .WriteShort(); // NOTE: Unknown
+
+                if (buffer != null)
+                {
+                    outPacket.WriteBytes(buffer);
+                }
 
                 return outPacket.ToArray();
             }
