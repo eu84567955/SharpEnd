@@ -15,11 +15,11 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteUShort(15)
-                    .WriteUShort(176)
-                    .WriteString("3")
+                    .WriteUShort(Application.Version.Version)
+                    .WriteString(Application.Version.Patch)
                     .WriteBytes(riv)
                     .WriteBytes(siv)
-                    .WriteByte(8)
+                    .WriteByte((byte)Application.Version.Localisation)
                     .WriteByte();
 
                 return outPacket.ToArray();

@@ -14,11 +14,13 @@ namespace SharpEnd.Handlers
         [PacketHandler(EHeader.CMSG_VERSION_INFORMATION)]
         public static void VersionInformationHandler(Client client, InPacket inPacket)
         {
-            byte localisation = inPacket.ReadByte();
+            ELocalisation localisation = (ELocalisation)inPacket.ReadByte();
             ushort version = inPacket.ReadUShort();
-            ushort patch = inPacket.ReadUShort();
+            string patch = inPacket.ReadUShort().ToString();
 
-            if (localisation != 8 || version != 176 || patch != 3)
+            if (localisation != Application.Version.Localisation ||
+                version != Application.Version.Version ||
+                patch != Application.Version.Patch)
             {
                 client.Close();
             }
