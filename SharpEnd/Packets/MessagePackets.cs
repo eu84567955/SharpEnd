@@ -27,5 +27,17 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] YellowMessage(string text)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_YELLOW_MESSAGE)
+                    .WriteString(text);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

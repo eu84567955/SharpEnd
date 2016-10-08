@@ -29,6 +29,7 @@ namespace SharpEnd.Players
         public PlayerItems Items { get; private set; }
         public PlayerSkills Skills { get; private set; }
         public PlayerQuests Quests { get; private set; }
+        public PlayerSPTable SPTable { get; private set; }
         public ControlledMobs ControlledMobs { get; private set; }
         public ControlledNpcs ControlledNpcs { get; private set; }
 
@@ -98,12 +99,17 @@ namespace SharpEnd.Players
 
             using (DatabaseQuery skillQuery = Database.Query("SELECT * FROM player_skill WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
             {
-                Skills = new PlayerSkills(this, query);
+                Skills = new PlayerSkills(this, skillQuery);
             }
 
             using (DatabaseQuery questQuery = Database.Query("SELECT * FROM player_quest WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
             {
-                Quests = new PlayerQuests(this, query);
+                Quests = new PlayerQuests(this, questQuery);
+            }
+
+            using (DatabaseQuery spTableQuery = Database.Query("SELECT * FROM player_sp_table WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
+            {
+                SPTable = new PlayerSPTable(this, spTableQuery);
             }
 
             ControlledMobs = new ControlledMobs(this);
@@ -151,6 +157,7 @@ namespace SharpEnd.Players
             Items.Save();
             Skills.Save();
             Quests.Save();
+            SPTable.Save();
         }
 
         public void Initialize()
@@ -173,7 +180,7 @@ namespace SharpEnd.Players
 
         public void Release()
         {
-            Client.Send(PlayerPackets.PlayerStatUpdate(itemReaction: true));
+            Client.Send(PlayerPackets.PlayerUpdate(this, EPlayerUpdate.None, true));
         }
 
         public void Notify(string text, EMessageType type = EMessageType.Pink)

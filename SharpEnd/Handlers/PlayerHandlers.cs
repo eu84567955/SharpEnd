@@ -319,7 +319,7 @@ namespace SharpEnd.Handlers
 
             inPacket.ReadInt(); // NOTE: Ticks.
 
-            EStatisticType type = (EStatisticType)inPacket.ReadUInt();
+            EPlayerUpdate type = (EPlayerUpdate)inPacket.ReadUInt();
 
             player.Release();
 
@@ -334,9 +334,9 @@ namespace SharpEnd.Handlers
             inPacket.Skip(4); // NOTE: Ticks.
             inPacket.Skip(4); // NOTE: Unknown.
 
-            EStatisticType primaryType = (EStatisticType)inPacket.ReadULong();
+            EPlayerUpdate primaryType = (EPlayerUpdate)inPacket.ReadULong();
             ushort primaryAmount = (ushort)inPacket.ReadUInt();
-            EStatisticType secondaryType = (EStatisticType)inPacket.ReadULong();
+            EPlayerUpdate secondaryType = (EPlayerUpdate)inPacket.ReadULong();
             ushort secondaryAmount = (ushort)inPacket.ReadUInt();
 
             if ((primaryAmount + secondaryAmount) < player.Stats.AbilityPoints)

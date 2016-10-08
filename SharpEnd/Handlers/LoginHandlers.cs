@@ -232,8 +232,8 @@ namespace SharpEnd.Handlers
                 items.Add(objects[j]);
             }
 
-            int identifier = Database.InsertAndReturnIdentifier("INSERT INTO player(account_identifier,name,gender,skin,face,hair,job,sub_job,skill_points) " +
-                                                                "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job,@sub_job,@skill_points)",
+            int identifier = Database.InsertAndReturnIdentifier("INSERT INTO player(account_identifier,name,gender,skin,face,hair,job,sub_job) " +
+                                                                "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job,@sub_job)",
                                                                 new MySqlParameter("@account_identifier", client.Account.Identifier),
                                                                 new MySqlParameter("@name", name),
                                                                 new MySqlParameter("@gender", gender),
@@ -241,13 +241,12 @@ namespace SharpEnd.Handlers
                                                                 new MySqlParameter("@face", face),
                                                                 new MySqlParameter("@hair", hair),
                                                                 new MySqlParameter("@job", job),
-                                                                new MySqlParameter("@sub_job", subJob),
-                                                                new MySqlParameter("@skill_points", new byte[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, }));
+                                                                new MySqlParameter("@sub_job", subJob));
 
             foreach (int item in items)
             {
                 Database.Execute("INSERT INTO player_item(player_identifier,item_identifier,inventory_slot,quantity) " +
-                                 "VALUES(@player_identifier,@item_identifier,@inventory_slot)",
+                                 "VALUES(@player_identifier,@item_identifier,@inventory_slot,@quantity)",
                                  new MySqlParameter("player_identifier", identifier),
                                  new MySqlParameter("item_identifier", item),
                                  new MySqlParameter("inventory_slot", GetSlot(item)),

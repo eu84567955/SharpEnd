@@ -12,7 +12,7 @@ namespace SharpEnd.Handlers
         [PacketHandler(EHeader.CMSG_PLAYER_LOAD)]
         public static void PlayerLoadHandler(Client client, InPacket inPacket)
         {
-            inPacket.ReadInt(); // NOTE: Alliance identifier
+            inPacket.ReadInt(); // NOTE: World alliance identifier.
             int accountIdentifier;
             int playerIdentifier = inPacket.ReadInt();
 

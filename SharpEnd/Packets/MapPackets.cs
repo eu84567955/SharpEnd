@@ -117,7 +117,7 @@ namespace SharpEnd.Packets
 
                     outPacket.WriteByte(50); // NOTE: Buddy capcity
 
-                    player.Skills.WriteInitialBlessings(outPacket);
+                    player.Skills.WriteBlessings(outPacket);
                     player.Items.WriteInitial(outPacket);
                     player.Skills.WriteInitial(outPacket);
                     player.Quests.WriteInitial(outPacket);

@@ -1,20 +1,51 @@
 ﻿using SharpEnd.Network;
+using SharpEnd.Packets;
 using SharpEnd.Utility;
+using System.Collections.Generic;
 
 namespace SharpEnd.Players
 {
-    internal sealed class PlayerSkills
+    internal sealed class PlayerSkills : List<PlayerSkill>
     {
-        private Player m_player;
+        public Player Parent { get; private set; }
 
-        public PlayerSkills(Player player, DatabaseQuery query)
+        public PlayerSkills(Player parent, DatabaseQuery query)
         {
-            m_player = player;
+            Parent = parent;
+
+            while (query.NextRow())
+            {
+                Add(new PlayerSkill(query));
+            }
+        }
+
+        public new void Add(PlayerSkill skill)
+        {
+            skill.Parent = this;
+
+            base.Add(skill);
+
+            if (Parent.IsInitialized)
+            {
+                Parent.Send(SkillPackets.AddSkill(skill));
+            }
+        }
+
+        public new void Remove(PlayerSkill skill)
+        {
+            // TODO: Packet.
+
+            skill.Parent = null;
+
+            base.Remove(skill);
         }
 
         public void Save()
         {
-
+            foreach (PlayerSkill skill in this)
+            {
+                skill.Save();
+            }
         }
 
         public void WriteInitial(OutPacket outPacket)
@@ -23,7 +54,14 @@ namespace SharpEnd.Players
             {
                 outPacket
                     .WriteBoolean(true)
-                    .WriteShort()
+                    .WriteShort((short)Count);
+
+                foreach (PlayerSkill skill in this)
+                {
+                    skill.WriteGeneral(outPacket);
+                }
+
+                outPacket
                     .WriteShort();
             }
 
@@ -32,7 +70,7 @@ namespace SharpEnd.Players
                 .WriteShort();
         }
 
-        public void WriteInitialBlessings(OutPacket outPacket)
+        public void WriteBlessings(OutPacket outPacket)
         {
             outPacket
                 .WriteBoolean(false) // NOTE: Blessing of fairy

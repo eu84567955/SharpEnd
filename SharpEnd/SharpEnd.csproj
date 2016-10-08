@@ -116,6 +116,7 @@
     <Compile Include="Handlers\NpcHandlers.cs" />
     <Compile Include="Handlers\PartyHandlers.cs" />
     <Compile Include="Handlers\PlayerHandlers.cs" />
+    <Compile Include="Handlers\SkillHandlers.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="MapleVersion.cs" />
     <Compile Include="Maps\Drop.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Packets\PlayerPackets.cs" />
     <Compile Include="Packets\PlayersPackets.cs" />
     <Compile Include="Packets\ReactorPackets.cs" />
+    <Compile Include="Packets\SkillPackets.cs" />
     <Compile Include="Players\Account.cs" />
     <Compile Include="Players\ControlledMobs.cs" />
     <Compile Include="Players\ControlledNpcs.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Players\PlayerQuests.cs" />
     <Compile Include="Players\PlayerSkill.cs" />
     <Compile Include="Players\PlayerSkills.cs" />
+    <Compile Include="Players\PlayerSPTable.cs" />
     <Compile Include="Players\PlayerStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AesCryptograph.cs" />

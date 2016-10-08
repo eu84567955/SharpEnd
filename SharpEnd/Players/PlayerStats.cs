@@ -37,7 +37,7 @@ namespace SharpEnd.Players
         public uint Mana { get; private set; }
         public uint MaxMana { get; private set; }
         public ushort AbilityPoints { get; private set; }
-        public byte[] SkillPoints { get; private set; }
+        public ushort SkillPoints { get; private set; }
         public ulong Experience { get; private set; }
         public int Fame { get; private set; }
 
@@ -70,7 +70,7 @@ namespace SharpEnd.Players
             Mana = query.Get<uint>("mana");
             MaxMana = query.Get<uint>("max_mana");
             AbilityPoints = query.Get<ushort>("ability_points");
-            SkillPoints = query.Get<byte[]>("skill_points");
+            SkillPoints = query.Get<ushort>("skill_points");
             Experience = query.Get<ulong>("experience");
             Fame = query.Get<int>("fame");
 
@@ -101,28 +101,11 @@ namespace SharpEnd.Players
 
             if (GameLogicUtilities.HasSeparatedSkillPoints(Job))
             {
-                List<int> points = new List<int>();
-
-                for (int i = 0; i < SkillPoints.Length; i++)
-                {
-                    if (SkillPoints[i] != 0)
-                    {
-                        points.Add(SkillPoints[i]);
-                    }
-                }
-
-                outPacket.WriteByte((byte)points.Count);
-
-                foreach (var p in points)
-                {
-                    outPacket
-                        .WriteByte()
-                        .WriteInt(p);
-                }
+                m_player.SPTable.WriteGeneral(outPacket);
             }
             else
             {
-                outPacket.WriteUShort(SkillPoints[0]);
+                outPacket.WriteUShort(SkillPoints);
             }
 
             outPacket
@@ -195,7 +178,7 @@ namespace SharpEnd.Players
         {
             Level = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Level, Level));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Level));
             //m_player.SendMap(LevelsPackets.LevelUp(m_player.Identifier));
         }
 
@@ -205,7 +188,7 @@ namespace SharpEnd.Players
 
             if (sendPacket)
             {
-                m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Health, Health));
+                m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
             }
         }
 
@@ -217,7 +200,7 @@ namespace SharpEnd.Players
 
             if (sendPacket)
             {
-                m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Health, Health));
+                m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
             }
 
             ModifiedHealth();
@@ -227,7 +210,7 @@ namespace SharpEnd.Players
         {
             Health = (uint)(Math.Max(0, (Health - damage)));
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Health, Health));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
 
             ModifiedHealth();
         }
@@ -257,7 +240,7 @@ namespace SharpEnd.Players
 
             Mana = value; // TODO: Check constrain range
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Mana, Mana));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
         }
 
         public void ModifyMana(uint mod, bool sendPacket = false)
@@ -268,7 +251,7 @@ namespace SharpEnd.Players
 
             Mana = (ushort)tempMana;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Mana, Mana, sendPacket));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
         }
 
         public void DamageMana(int damage)
@@ -277,28 +260,28 @@ namespace SharpEnd.Players
 
             Mana = (ushort)(Math.Max(50, (Mana - damage)));
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Mana, Mana));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
         }
 
         public void SetAbilityPoints(ushort value)
         {
             AbilityPoints = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.AbilityPoints, AbilityPoints));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.AbilityPoints));
         }
 
-        /*public void SetSkillPoints(ushort value)
+        public void SetSkillPoints(ushort value)
         {
             SkillPoints = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Sp, SkillPoints));
-        }*/
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.SkillPoints));
+        }
 
         public void SetJob(ushort value)
         {
             Job = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Job, Job));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Job));
             //m_player.SendMap(LevelsPackets.JobChange(m_player.Identifier));
         }
 
@@ -306,35 +289,35 @@ namespace SharpEnd.Players
         {
             Strength = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Strength, Strength));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Strength));
         }
 
         public void SetDexterity(ushort value)
         {
             Dexterity = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Dexterity, Dexterity));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Dexterity));
         }
 
         public void SetIntelligence(ushort value)
         {
             Intelligence = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Intelligence, Intelligence));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Intelligence));
         }
 
         public void SetLuck(ushort value)
         {
             Luck = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Luck, Luck));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Luck));
         }
 
         public void SetMaxHealth(ushort value)
         {
             MaxHealth = value; // TODO: Check constrain range
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.MaxHealth, MaxHealth));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxHealth));
 
             ModifiedHealth();
         }
@@ -343,35 +326,35 @@ namespace SharpEnd.Players
         {
             MaxMana = value; // TODO: Check constrain range
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.MaxMana, MaxMana));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
         }
 
         public void ModifyMaxHealth(ushort mod)
         {
             MaxHealth = (ushort)(Math.Min((MaxHealth + mod), 500000));
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.MaxHealth, MaxHealth));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxHealth));
         }
 
         public void ModifyMaxMana(ushort mod)
         {
             MaxMana = (ushort)(Math.Min((MaxMana + mod), 500000));
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.MaxMana, MaxMana));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
         }
 
         public void SetExperience(uint value)
         {
             Experience = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Experience, (int)Experience));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Experience));
         }
 
         public void SetFame(short value)
         {
             Fame = value;
 
-            m_player.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Fame, Fame));
+            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Fame));
         }
 
         public void LoseExperience()
@@ -408,11 +391,11 @@ namespace SharpEnd.Players
             }*/
         }
 
-        public void AddAbility(EStatisticType type, ushort mod = 1, bool reset = false)
+        public void AddAbility(EPlayerUpdate type, ushort mod = 1, bool reset = false)
         {
             switch (type)
             {
-                case EStatisticType.Strength:
+                case EPlayerUpdate.Strength:
                     {
                         if (Strength >= 999)
                         {
@@ -423,7 +406,7 @@ namespace SharpEnd.Players
                     }
                     break;
 
-                case EStatisticType.Dexterity:
+                case EPlayerUpdate.Dexterity:
                     {
                         if (Dexterity >= 999)
                         {
@@ -434,7 +417,7 @@ namespace SharpEnd.Players
                     }
                     break;
 
-                case EStatisticType.Intelligence:
+                case EPlayerUpdate.Intelligence:
                     {
                         if (Intelligence >= 999)
                         {
@@ -445,7 +428,7 @@ namespace SharpEnd.Players
                     }
                     break;
 
-                case EStatisticType.Luck:
+                case EPlayerUpdate.Luck:
                     {
                         if (Luck >= 999)
                         {

@@ -37,6 +37,11 @@ namespace SharpEnd.Utility
         public static bool IsBeginnerSkill(int skillIdentifier) => (skillIdentifier / 1000000) == (skillIdentifier < 10000000 ? 0 : 10);
         public static bool IsFourthJobSkill(int skillIdentifier) => (skillIdentifier / 10000) % 10 == 2;
         public static sbyte GetMasteryDisplay(byte level) => (sbyte)((level + 1) / 2);
+        public static byte GetAdvancementFromSkill(int skillIdentifier)
+        {
+            int job = skillIdentifier / 10000;
+            return (byte)((short)job % 100 == 0 ? 1 : ((short)job % 10) + 2);
+        }
 
         // Mob skills
 

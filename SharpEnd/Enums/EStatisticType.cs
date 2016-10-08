@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    public enum EStatisticType : ulong
+    public enum EPlayerUpdate : ulong
     {
         None = 0x00,
         Skin = 0x1,

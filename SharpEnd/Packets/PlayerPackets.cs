@@ -6,64 +6,57 @@ namespace SharpEnd.Packets
 {
     internal static class PlayerPackets
     {
-        public static byte[] PlayerStatUpdate(EStatisticType updateBits = EStatisticType.None, long value = 0, bool itemReaction = false)
+        public static byte[] PlayerUpdate(Player player, EPlayerUpdate bits = EPlayerUpdate.None, bool itemReaction = false)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EHeader.SMSG_PLAYER_STAT_UPDATE)
+                    .WriteHeader(EHeader.SMSG_PLAYER_UPDATE)
                     .WriteBoolean(itemReaction)
-                    .WriteULong((ulong)updateBits);
+                    .WriteULong((ulong)bits);
 
-                // NOTE: For now it only accepts updateBits as a single unit
-                // Might be a collection later when we need it
-                switch (updateBits)
+                // NOTE: For now it only accepts updateBits as a single unit.
+                // Might be a collection later when we need it.
+                switch (bits)
                 {
-                    case EStatisticType.Skin:
-                    case EStatisticType.Level:
-                        outPacket.WriteByte((byte)value);
-                        break;
-
-                    case EStatisticType.Job:
-                    case EStatisticType.Strength:
-                    case EStatisticType.Dexterity:
-                    case EStatisticType.Intelligence:
-                    case EStatisticType.Luck:
-                    case EStatisticType.AbilityPoints:
+                    case EPlayerUpdate.Skin: outPacket.WriteByte(player.Skin); break;
+                    case EPlayerUpdate.Face: outPacket.WriteInt(player.Face); break;
+                    case EPlayerUpdate.Hair: outPacket.WriteInt(player.Hair); break;
+                    case EPlayerUpdate.Level: outPacket.WriteByte(player.Stats.Level); break;
+                    case EPlayerUpdate.Job:
                         {
-                            outPacket.WriteUShort((ushort)value);
-
-                            if (updateBits == EStatisticType.Job)
+                            outPacket
+                                .WriteUShort(player.Stats.Job)
+                                .WriteUShort(player.Stats.SubJob);
+                        }
+                        break;
+                    case EPlayerUpdate.Strength: outPacket.WriteUShort(player.Stats.Strength); break;
+                    case EPlayerUpdate.Dexterity: outPacket.WriteUShort(player.Stats.Dexterity); break;
+                    case EPlayerUpdate.Intelligence: outPacket.WriteUShort(player.Stats.Intelligence); break;
+                    case EPlayerUpdate.Luck: outPacket.WriteUShort(player.Stats.Luck); break;
+                    case EPlayerUpdate.Health: outPacket.WriteUInt(player.Stats.Health); break;
+                    case EPlayerUpdate.MaxHealth: outPacket.WriteUInt(player.Stats.MaxHealth); break;
+                    case EPlayerUpdate.Mana: outPacket.WriteUInt(player.Stats.Mana); break;
+                    case EPlayerUpdate.MaxMana: outPacket.WriteUInt(player.Stats.MaxMana); break;
+                    case EPlayerUpdate.AbilityPoints: outPacket.WriteUShort(player.Stats.AbilityPoints); break;
+                    case EPlayerUpdate.SkillPoints:
+                        {
+                            if (GameLogicUtilities.HasSeparatedSkillPoints(player.Stats.Job))
                             {
-                                outPacket.WriteUShort(); // NOTE: Subcategory.
+                                player.SPTable.WriteGeneral(outPacket);
+                            }
+                            else
+                            {
+                                outPacket.WriteUShort(player.Stats.SkillPoints);
                             }
                         }
                         break;
-
-                    case EStatisticType.Face:
-                    case EStatisticType.Hair:
-                    case EStatisticType.Health:
-                    case EStatisticType.MaxHealth:
-                    case EStatisticType.Mana:
-                    case EStatisticType.MaxMana:
-                    case EStatisticType.Fame:
-                        outPacket.WriteInt((int)value);
-                        break;
-
-                    case EStatisticType.Experience:
-                    case EStatisticType.Meso:
-                        outPacket.WriteULong((ulong)value);
-                        break;
-
-                    case EStatisticType.SkillPoints:
+                    case EPlayerUpdate.Experience: outPacket.WriteULong(player.Stats.Experience); break;
+                    case EPlayerUpdate.Fame: outPacket.WriteInt(player.Stats.Fame); break;
+                    case EPlayerUpdate.Meso: outPacket.WriteLong(player.Items.Meso); break;
+                    case EPlayerUpdate.Pet:
                         {
-                            // TODO: Skill points special case
-                        }
-                        break;
-
-                    case EStatisticType.Pet:
-                        {
-                            // TODO: Pet special case
+                            // TODO: Handle special case.
                         }
                         break;
                 }

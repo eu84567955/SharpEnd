@@ -258,7 +258,7 @@ namespace SharpEnd.Players
                 Meso += mod;
             }
 
-            Parent.Send(PlayerPackets.PlayerStatUpdate(EStatisticType.Meso, Meso, sendPacket));
+            Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
 
             return true;
         }

@@ -27,9 +27,7 @@ namespace SharpEnd.Servers
 
         private void OnClientAccepted(Socket socket)
         {
-            var client = new Client(socket);
-
-            Log.Inform("Connection accepted from {0}.", client.Host);
+            new Client(socket);
         }
     }
 }
