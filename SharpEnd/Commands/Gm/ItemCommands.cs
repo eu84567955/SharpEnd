@@ -6,20 +6,31 @@ namespace SharpEnd.Commands.Gm
 {
     internal static class ItemCommands
     {
+        // TODO: Combine the item validation checks into one.
         [GmCommand("item", "Gives you the desired item.")]
         public static void ItemCommand(Player player, int itemIdentifier, ushort quantity = 1)
         {
-            if (GameLogicUtilities.GetInventory(itemIdentifier) == EInventoryType.Equipment && !MasterServer.Instance.Equips.Contains(itemIdentifier))
+            if (GameLogicUtilities.GetInventory(itemIdentifier) == EInventoryType.Equipment)
             {
-                player.Notify("[Command] Invalid item.");
-            }
-            else if (!MasterServer.Instance.Items.Contains(itemIdentifier))
-            {
-                player.Notify("[Command] Invalid item.");
+                if (MasterServer.Instance.Equips.Contains(itemIdentifier))
+                {
+                    player.Items.Add(new PlayerItem(itemIdentifier, quantity));
+                }
+                else
+                {
+                    player.Notify("[Command] Invalid item.");
+                }
             }
             else
             {
-                player.Items.Add(new PlayerItem(itemIdentifier, quantity));
+                if (MasterServer.Instance.Items.Contains(itemIdentifier))
+                {
+                    player.Items.Add(new PlayerItem(itemIdentifier, quantity));
+                }
+                else
+                {
+                    player.Notify("[Command] Invalid item.");
+                }
             }
         }
     }

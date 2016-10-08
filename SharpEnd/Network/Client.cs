@@ -141,7 +141,9 @@ namespace SharpEnd.Network
                     }
                     else
                     {
+#if DEBUG
                         Log.Inform("Unhandled packet 0x{0:X4}.", header);
+#endif
                     }
                 }
 
@@ -232,8 +234,6 @@ namespace SharpEnd.Network
                 {
                     Player.Save();
                 }
-
-                Log.Inform("Connection lost from {0}.", Host);
             }
         }
     }

@@ -173,7 +173,7 @@ namespace SharpEnd.Players
 
         public void Release()
         {
-            Client.Send(PlayerPackets.PlayerStatUpdate());
+            Client.Send(PlayerPackets.PlayerStatUpdate(itemReaction: true));
         }
 
         public void Notify(string text, EMessageType type = EMessageType.Pink)

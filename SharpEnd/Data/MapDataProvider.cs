@@ -10,6 +10,11 @@ namespace SharpEnd.Data
 {
     internal sealed class MapDataProvider
     {
+        private static List<string> skippedCategories = new List<string>()
+        {
+            "AdditionalInfo_JP.img", "AreaCode.img", "FieldGenerator.img", "Graph.img"
+        };
+
         private Dictionary<int, Map> m_maps;
 
         public MapDataProvider()
@@ -17,10 +22,26 @@ namespace SharpEnd.Data
             m_maps = new Dictionary<int, Map>();
         }
 
-        private static List<string> skippedCategories = new List<string>()
+        public bool Contains(int identifier)
         {
-            "AdditionalInfo_JP.img", "AreaCode.img", "FieldGenerator.img", "Graph.img"
-        };
+            using (NXFile file = new NXFile(Path.Combine("nx", "Map.nx")))
+            {
+                return file.BaseNode["Map"][string.Format("Map{0}", identifier / 100000000)].ContainsChild(string.Format("{0}.img", identifier));
+            }
+        }
+
+        public Map this[int identifier]
+        {
+            get
+            {
+                if (!m_maps.ContainsKey(identifier))
+                {
+                    LoadMap(identifier);
+                }
+
+                return m_maps[identifier];
+            }
+        }
 
         private void LoadMap(int identifier)
         {
@@ -28,7 +49,7 @@ namespace SharpEnd.Data
 
             using (NXFile file = new NXFile(Path.Combine("nx", "Map.nx")))
             {
-                var node = file.BaseNode["Map"][GetMapCategory(identifier)][string.Format("{0}.img", identifier)];
+                var node = file.BaseNode["Map"][string.Format("Map{0}", identifier / 100000000)][string.Format("{0}.img", identifier)];
 
                 var infoNode = node["info"];
 
@@ -54,13 +75,13 @@ namespace SharpEnd.Data
                     LoadReactors(map, node["reactor"]);
                 }
 
+                if (node.ContainsChild("seat"))
+                {
+                    LoadSeats(map, node["seat"]);
+                }
+
                 m_maps.Add(identifier, map);
             }
-        }
-
-        private string GetMapCategory(int identifier)
-        {
-            return string.Format("Map{0}", identifier / 100000000);
         }
 
         private void LoadFoothold(Map map, NXNode footholdNode)
@@ -150,6 +171,7 @@ namespace SharpEnd.Data
                     portal.DestinationMap = node.GetInt("tm");
                     portal.DestinationLabel = node.GetString("tn");
                     portal.Position = new Point(node.GetShort("x"), node.GetShort("y"));
+                    portal.Script = node.GetString("script");
 
                     if (portal.Label == "sp")
                     {
@@ -184,21 +206,16 @@ namespace SharpEnd.Data
             }
         }
 
-        public bool Contains(int identifier)
+        private void LoadSeats(Map map, NXNode seatNode)
         {
-            return m_maps.ContainsKey(identifier);
-        }
-
-        public Map this[int identifier]
-        {
-            get
+            foreach (var node in seatNode)
             {
-                if (!m_maps.ContainsKey(identifier))
-                {
-                    LoadMap(identifier);
-                }
+                SeatData seat = new SeatData();
 
-                return m_maps[identifier];
+                seat.Identifier = node.GetIdentifier<short>();
+                seat.Position = new Point(0, 0); // TODO: NXValuedNode<Point>, somehow.
+
+                map.Seats.Add(seat);
             }
         }
     }
@@ -226,6 +243,13 @@ namespace SharpEnd.Data
         public string Label { get; set; }
         public int DestinationMap { get; set; }
         public string DestinationLabel { get; set; }
+        public Point Position { get; set; }
+        public string Script { get; set; }
+    }
+
+    internal sealed class SeatData
+    {
+        public short Identifier { get; set; }
         public Point Position { get; set; }
     }
 }

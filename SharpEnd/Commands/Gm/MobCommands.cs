@@ -10,14 +10,16 @@ namespace SharpEnd.Commands.Gm
         [GmCommand("spawn", "Spawns the desired mob.")]
         public static void SpawnCommand(Player player, int mobIdentifier, int amount = 1)
         {
-            if (!MasterServer.Instance.Mobs.Contains(mobIdentifier))
+            if (MasterServer.Instance.Mobs.Contains(mobIdentifier))
+            {
+                while (amount-- > 0)
+                {
+                    player.Map.Mobs.Add(new Mob(mobIdentifier, player.Position, player.Foothold));
+                }
+            }
+            else
             {
                 player.Notify("[Command] Invalid mob.");
-            }
-
-            while (amount-- > 0)
-            {
-                player.Map.Mobs.Add(new Mob(mobIdentifier, player.Position, player.Foothold));
             }
         }
 

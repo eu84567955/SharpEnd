@@ -105,7 +105,7 @@ namespace SharpEnd.Servers
             Log.Inform("SharpEnd is offline.");
         }
 
-        public MapDataProvider GetMaps(byte channelIdentifier)
+        public Maps GetMaps(byte channelIdentifier)
         {
             return MasterServer.Instance.Worlds[0].Channels[channelIdentifier].Maps;
         }

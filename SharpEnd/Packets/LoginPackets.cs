@@ -78,6 +78,19 @@ namespace SharpEnd.Packets
             }
         }
 
+        private enum PrivateStatusIDFlag : uint
+        {
+            PS_PrimaryTrace = 0x1,
+            PS_SecondaryTrace = 0x2,
+            PS_AdminClient = 0x4,
+            PS_MobMoveObserve = 0x8,
+            PS_ManagerAccount = 0x10,
+            PS_OutSourceSuperGM = 0x20,
+            PS_UserGM = 0x80,
+            PS_TesterAccount = 0x100,
+            PS_SubTesterAccount = 0x200,
+        }
+
         public static byte[] LoginSuccess(Client client)
         {
             using (OutPacket outPacket = new OutPacket())
@@ -88,8 +101,27 @@ namespace SharpEnd.Packets
                     .WriteByte()
                     .WriteByte()
                     .WriteString(client.Account.Username)
-                    .WriteInt(client.Account.Identifier)
-                    .WriteZero(11)
+                    .WriteInt(client.Account.Identifier);
+
+                byte admin = 1, tradeBlock = 0;
+
+                byte gradeCode = (byte)(admin << 1 | tradeBlock << 4 | 0);
+
+                outPacket.WriteByte(gradeCode);
+
+                bool manager = true, tester = true, subTester = true;
+
+                uint privateStatusFlag = 0;
+
+                if (admin == 1) privateStatusFlag += (uint)PrivateStatusIDFlag.PS_AdminClient;
+                if (manager) privateStatusFlag += (uint)PrivateStatusIDFlag.PS_ManagerAccount;
+                if (tester) privateStatusFlag += (uint)PrivateStatusIDFlag.PS_TesterAccount;
+                if (subTester) privateStatusFlag += (uint)PrivateStatusIDFlag.PS_SubTesterAccount;
+
+                outPacket.WriteUInt(privateStatusFlag);
+
+                outPacket
+                    .WriteZero(6)
                     .WriteString(client.Account.Username)
                     .WriteHexString("03 00 00 00 00 00 00 00 00 00 30 58 67 CF E4 F3 CA 01 3D 00 00 00 01 08 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 00 01 00 01 01 00 01 01 00 01 01 00 01 01 00 00 01 00 00 01 00 01 01 00 00 FF FF FF FF 01 04")
                     .WriteLong(client.Identifier);
@@ -117,9 +149,10 @@ namespace SharpEnd.Packets
                 {
                     outPacket
                         .WriteString($"{"Scania"}-{i}")
-                        .WriteInt()
+                        .WriteInt(1)
                         .WriteByte(world.Identifier)
-                        .WriteShort(i);
+                        .WriteByte(i)
+                        .WriteBoolean(false); // NOTE: Adult channel.
                 }
 
                 outPacket

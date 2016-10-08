@@ -90,6 +90,7 @@
     <Compile Include="Enums\EPICState.cs" />
     <Compile Include="Enums\EQuestAction.cs" />
     <Compile Include="Enums\EShaMode.cs" />
+    <Compile Include="Enums\EStance.cs" />
     <Compile Include="Extensions\NXExtensions.cs" />
     <Compile Include="Enums\ECommand.cs" />
     <Compile Include="Enums\EDropType.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Maps\MapReactors.cs" />
     <Compile Include="Maps\MapNpcs.cs" />
     <Compile Include="Maps\MapMobs.cs" />
+    <Compile Include="Maps\MapSeats.cs" />
     <Compile Include="Maps\Meso.cs" />
     <Compile Include="Maps\Mob.cs" />
     <Compile Include="Maps\MovableLife.cs" />

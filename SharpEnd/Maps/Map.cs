@@ -15,6 +15,7 @@ namespace SharpEnd.Maps
         public MapNpcs Npcs { get; private set; }
         public MapReactors Reactors { get; private set; }
         public MapDrops Drops { get; private set; }
+        public MapSeats Seats { get; private set; }
 
         public Map(int identifier)
         {
@@ -27,6 +28,7 @@ namespace SharpEnd.Maps
             Npcs = new MapNpcs(this);
             Reactors = new MapReactors(this);
             Drops = new MapDrops(this);
+            Seats = new MapSeats(this);
         }
 
         public int AssignObjectIdentifier()

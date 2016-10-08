@@ -276,5 +276,32 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] MapSeat(int playerIdentifier, short seatIdentifier)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_SIT)
+                    .WriteInt(playerIdentifier)
+                    .WriteBoolean(true)
+                    .WriteShort(seatIdentifier);
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] MapSeatCancel(int playerIdentifier)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_SIT)
+                    .WriteInt(playerIdentifier)
+                    .WriteBoolean(false);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

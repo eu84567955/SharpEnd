@@ -101,6 +101,26 @@ namespace SharpEnd.Handlers
             player.Map.Send(PlayersPackets.PlayerMove(player.Identifier, origin, inPacket.ReadLeftoverBytes()), player);
         }
 
+        [PacketHandler(EHeader.CMSG_SIT)]
+        public static void SitHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            short seatIdentifier = inPacket.ReadShort();
+
+            // TODO: Validate the seat identifier.
+            // TODO: Check distance of seat relative to the player.
+
+            if (seatIdentifier != -1)
+            {
+                player.Map.Send(MapPackets.MapSeat(player.Identifier, seatIdentifier));
+            }
+            else
+            {
+                player.Map.Send(MapPackets.MapSeatCancel(player.Identifier));
+            }
+        }
+
         // TODO: Move else-where
         public sealed class ReturnDamageData
         {
@@ -372,6 +392,35 @@ namespace SharpEnd.Handlers
             {
                 // TODO: Cross-world operations
             }
+        }
+
+        [PacketHandler(EHeader.CMSG_CHANGE_MAP_SCRIPTED)]
+        public static void ChangeMapScriptedHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            byte portalCount = inPacket.ReadByte();
+
+            if (portalCount != player.PortalCount)
+            {
+                return;
+            }
+
+            string label = inPacket.ReadString();
+
+            PortalData portal = player.Map.Portals[label];
+
+            if (portal == null)
+            {
+                return;
+            }
+
+            // TODO: Check portal distance relative to the player.
+            // TODO: Execute scripted portal.
+
+            Log.Warn("Unscripted portal '{0}'.", portal.Script);
+
+            player.Release();
         }
 
         [PacketHandler(EHeader.CMSG_INSTANT_WARP)]
