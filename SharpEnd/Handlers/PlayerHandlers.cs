@@ -4,6 +4,7 @@ using SharpEnd.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
+using SharpEnd.Scripting;
 using SharpEnd.Servers;
 using System;
 using System.Collections.Generic;
@@ -476,12 +477,27 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            // TODO: Check portal distance relative to the player.
-            // TODO: Execute scripted portal.
-
-            Log.Warn("Unscripted portal '{0}'.", portal.Script);
-
             player.Release();
+
+            // TODO: Check portal distance relative to the player.
+
+            if (File.Exists(string.Format("scripts/portals/{0}.py", portal.Script)))
+            {
+                PortalScript script = new PortalScript(player, portal.Script);
+
+                try
+                {
+                    script.Execute();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Error while executing portal script '{0}': {1}", portal.Script, e.Message);
+                }
+            }
+            else
+            {
+                Log.Warn("Unscripted portal '{0}'.", portal.Script);
+            }
         }
 
         [PacketHandler(EHeader.CMSG_INSTANT_WARP)]
