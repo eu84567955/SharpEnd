@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Network;
+using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Utility
@@ -15,9 +16,9 @@ namespace SharpEnd.Utility
 
         public void Load()
         {
-            List<Doublet<PacketHandlerAttribute, PacketProcessor>> handlers = Reflector.FindAllMethods<PacketHandlerAttribute, PacketProcessor>();
+            List<Tuple<PacketHandlerAttribute, PacketProcessor>> handlers = Reflector.FindAllMethods<PacketHandlerAttribute, PacketProcessor>();
 
-            handlers.ForEach(d => { d.First.Processor = d.Second; Add(d.First.Opcode, d.First); });
+            handlers.ForEach(h => { h.Item1.Processor = h.Item2; Add(h.Item1.Opcode, h.Item1); });
         }
     }
 }

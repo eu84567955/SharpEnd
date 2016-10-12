@@ -1,4 +1,5 @@
-﻿using SharpEnd.Drawing;
+﻿using SharpEnd.Data;
+using SharpEnd.Drawing;
 using SharpEnd.Maps;
 using SharpEnd.Network;
 using SharpEnd.Players;
@@ -54,6 +55,53 @@ namespace SharpEnd.Handlers
             else
             {
                 item.Move(destinationSlot);
+            }
+        }
+
+        [PacketHandler(EHeader.CMSG_INVENTORY_CONSUME)]
+        public static void InventoryConsumeHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            inPacket.Skip(4); // NOTE: Ticks.
+            short slot = inPacket.ReadShort();
+            int itemIdentifier = inPacket.ReadInt();
+
+            PlayerItem item = player.Items[EInventoryType.Use, slot];
+
+            if (item == null || itemIdentifier != item.Slot)
+            {
+                return;
+            }
+
+            ItemConsumeData consume = MasterServer.Instance.Items[itemIdentifier] as ItemConsumeData;
+
+            if (!false) // TODO: Check if the player's map has potion limit.
+            {
+                if (consume.Hp != 0)
+                {
+
+                }
+
+                if (consume.Mp != 0)
+                {
+
+                }
+
+                if (consume.HpR != 0)
+                {
+
+                }
+
+                if (consume.MpR != 0)
+                {
+
+                }
+            }
+
+            if (consume.MoveTo != 0 && !false) // TODO: Check if the player's map has return scroll limit.
+            {
+                player.SetMap(consume.MoveTo);
             }
         }
 

@@ -30,7 +30,7 @@ namespace SharpEnd.Players
             Identifier = identifier;
             Level = level;
             MaxLevel = 0; // TODO: Get from SkillDataProvider.
-            Expiration = DateTime.FromBinary(150842304000000000);
+            Expiration = DateTime.FromFileTimeUtc((long)EExpirationTime.Permanent);
         }
 
         public void Save()
@@ -55,7 +55,7 @@ namespace SharpEnd.Players
             outPacket
                 .WriteInt(Identifier)
                 .WriteInt(Level)
-                .WriteLong(Expiration.ToBinary());
+                .WriteDateTime(Expiration);
         }
     }
 }

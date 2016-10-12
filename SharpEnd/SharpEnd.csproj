@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Enums\EExpirationTime.cs" />
     <Compile Include="Game\Commands\Command.cs" />
     <Compile Include="Game\Commands\Commands.cs" />
     <Compile Include="Game\Commands\Gm\InfoCommands.cs" />
@@ -133,6 +134,9 @@
     <Compile Include="Enums\EWorldRibbon.cs" />
     <Compile Include="Enums\EWorldStatus.cs" />
     <Compile Include="Extensions\PacketExtensions.cs" />
+    <Compile Include="Game\Scripting\ItemScript.cs" />
+    <Compile Include="Game\Scripting\MapScript.cs" />
+    <Compile Include="Game\Scripting\ReactorScript.cs" />
     <Compile Include="Network\Handlers\GeneralHandlers.cs" />
     <Compile Include="Network\Handlers\InventoryHandlers.cs" />
     <Compile Include="Network\Handlers\LoginHandlers.cs" />
@@ -176,6 +180,7 @@
     <Compile Include="Network\OutPacket.cs" />
     <Compile Include="Network\PacketHandlerAttribute.cs" />
     <Compile Include="Network\Packets\DropPackets.cs" />
+    <Compile Include="Network\Packets\EffectPackets.cs" />
     <Compile Include="Network\Packets\HelpPackets.cs" />
     <Compile Include="Network\Packets\InventoryPackets.cs" />
     <Compile Include="Network\Packets\LoginPackets.cs" />
@@ -219,7 +224,6 @@
     <Compile Include="Utility\DatabaseQuery.cs" />
     <Compile Include="Utility\DatabaseUpdater.cs" />
     <Compile Include="Threading\Delay.cs" />
-    <Compile Include="Utility\Doublet.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Utility\GameLogicUtilities.cs" />
     <Compile Include="Utility\HandlerStore.cs" />

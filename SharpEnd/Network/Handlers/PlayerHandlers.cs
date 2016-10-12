@@ -14,7 +14,7 @@ namespace SharpEnd.Handlers
 {
     internal static class PlayerHandlers
     {
-        [PacketHandler(EHeader.CMSG_CHANGE_MAP)]
+        [PacketHandler(EHeader.CMSG_MAP_CHANGE)]
         public static void ChangeMapHandler(Client client, InPacket inPacket)
         {
             var player = client.Player;

@@ -17,7 +17,7 @@ namespace SharpEnd.Packets
                     .WriteInt(skill.Identifier)
                     .WriteInt(skill.Level)
                     .WriteInt(skill.MaxLevel)
-                    .WriteLong(skill.Expiration.ToBinary())
+                    .WriteDateTime(skill.Expiration)
                     .WriteByte(7); // NOTE: Unknown.
 
                 return outPacket.ToArray();

@@ -42,7 +42,7 @@ namespace SharpEnd.Packets
             }
 
             outPacket
-                .WriteLong(150842304000000000) // NOTE: Expiration
+                .WriteDateTime(item.Expiration)
                 .WriteInt(-1); // NOTE: Bag
 
             if (item.Inventory == EInventoryType.Equipment)

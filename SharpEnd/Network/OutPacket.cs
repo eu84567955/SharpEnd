@@ -95,6 +95,13 @@ namespace SharpEnd.Network
             return this;
         }
 
+        public OutPacket WriteDateTime(DateTime value)
+        {
+            m_writer.Write(value.ToFileTimeUtc());
+
+            return this;
+        }
+
         public OutPacket WriteString(string value, int count = 0)
         {
             if (count == 0)

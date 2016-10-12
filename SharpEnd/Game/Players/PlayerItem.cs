@@ -21,6 +21,8 @@ namespace SharpEnd.Players
 
         public ushort Quantity { get; set; }
 
+        public DateTime Expiration { get; private set; }
+
         public byte Slots { get; private set; }
         public byte Scrolls { get; private set; }
         public short Strength { get; private set; }
@@ -50,6 +52,8 @@ namespace SharpEnd.Players
             Slot = query.Get<short>("inventory_slot");
 
             Quantity = query.Get<ushort>("quantity");
+
+            Expiration = query.Get<DateTime>("expiration");
 
             Slots = query.Get<byte>("slots");
             Scrolls = query.Get<byte>("scrolls");
@@ -84,6 +88,8 @@ namespace SharpEnd.Players
 
             Quantity = quantity;
 
+            Expiration = DateTime.FromFileTimeUtc((long)EExpirationTime.Permanent);
+
             Creator = string.Empty;
 
             Flags = 0;
@@ -114,11 +120,12 @@ namespace SharpEnd.Players
         public void Save()
         {
             Database.Execute(@"INSERT INTO `player_item` 
-                             VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @creator, @flags);",
+                             VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @expiration, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @creator, @flags);",
                              new MySqlParameter("player_identifier", Player.Identifier),
                              new MySqlParameter("inventory_slot", Slot),
                              new MySqlParameter("item_identifier", Identifier),
                              new MySqlParameter("quantity", Quantity),
+                             new MySqlParameter("expiration", Expiration),
                              new MySqlParameter("slots", Slots),
                              new MySqlParameter("scrolls", Scrolls),
                              new MySqlParameter("strength", Strength),
