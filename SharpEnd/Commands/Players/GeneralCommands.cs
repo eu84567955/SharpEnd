@@ -17,7 +17,7 @@ namespace SharpEnd.Commands.Players
                     continue;
                 }
 
-                player.Notify(string.Format("    {1} - {2}", command.Value.Syntax, command.Value.Description));
+                player.Notify(string.Format("    {0} - {1}", command.Value.Syntax, command.Value.Description));
             }
         }
 

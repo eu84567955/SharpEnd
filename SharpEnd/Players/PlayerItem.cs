@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using SharpEnd.Data;
 using SharpEnd.Maps;
 using SharpEnd.Packets;
 using SharpEnd.Servers;
@@ -72,6 +73,7 @@ namespace SharpEnd.Players
         }
 
         public PlayerItem(int identifier, ushort quantity = 1, bool equipped = false)
+            : base()
         {
             Identifier = identifier;
 
@@ -88,16 +90,15 @@ namespace SharpEnd.Players
 
             if (Inventory == EInventoryType.Equipment)
             {
-                var data = MasterServer.Instance.Equips[Identifier];
+                ItemEquipData data = MasterServer.Instance.Items[Identifier] as ItemEquipData;
 
                 Slots = data.Slots;
-                Scrolls = 0;
                 Strength = data.Strength;
                 Dexterity = data.Dexterity;
                 Intelligence = data.Intelligence;
                 Luck = data.Luck;
-                Health = data.Health;
-                Mana = data.Mana;
+                Health = data.MaxHealth;
+                Mana = data.MaxMana;
                 WeaponAttack = data.WeaponAttack;
                 MagicAttack = data.MagicAttack;
                 WeaponDefense = data.WeaponDefense;

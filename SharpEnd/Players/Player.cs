@@ -29,6 +29,7 @@ namespace SharpEnd.Players
         public PlayerItems Items { get; private set; }
         public PlayerSkills Skills { get; private set; }
         public PlayerQuests Quests { get; private set; }
+        public PlayerKeymap Keymap { get; private set; }
         public PlayerSPTable SPTable { get; private set; }
         public ControlledMobs ControlledMobs { get; private set; }
         public ControlledNpcs ControlledNpcs { get; private set; }
@@ -107,6 +108,11 @@ namespace SharpEnd.Players
                 Quests = new PlayerQuests(this, questQuery);
             }
 
+            using (DatabaseQuery keymapQuery = Database.Query("SELECT * FROM player_keymap WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
+            {
+                Keymap = new PlayerKeymap(this, keymapQuery);
+            }
+
             using (DatabaseQuery spTableQuery = Database.Query("SELECT * FROM player_sp_table WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
             {
                 SPTable = new PlayerSPTable(this, spTableQuery);
@@ -157,16 +163,16 @@ namespace SharpEnd.Players
             Items.Save();
             Skills.Save();
             Quests.Save();
+            Keymap.Save();
             SPTable.Save();
         }
 
         public void Initialize()
         {
             Send(PlayerPackets.EventNameTag(new sbyte[5] { -1, -1, -1, -1, -1 }));
-
+            Send(ServerPackets.EventList());
             Send(MapPackets.ChangeMap(this, true));
-
-            Notify("Welcome to SharpEnd!", EMessageType.Header);
+            Send(PlayerPackets.Keymap(Keymap));
 
             Map.Players.Add(this);
 

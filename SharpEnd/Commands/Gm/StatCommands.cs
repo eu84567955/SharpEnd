@@ -39,5 +39,36 @@ namespace SharpEnd.Commands.Gm
         {
             player.Stats.SetLuck(value);
         }
+
+        [GmCommand("hp", "Sets your max health to the desired value.")]
+        public static void HpCommand(Player player, ushort value)
+        {
+            player.Stats.SetMaxHealth(value);
+        }
+
+        [GmCommand("mp", "Sets your max mana to the desired value.")]
+        public static void MpCommand(Player player, ushort value)
+        {
+            player.Stats.SetMaxMana(value);
+        }
+
+        [GmCommand("heal", "Heals you.")]
+        public static void HealCommand(Player player)
+        {
+            player.Stats.SetHealth(player.Stats.MaxHealth);
+            player.Stats.SetMana(player.Stats.MaxMana);
+        }
+
+        [GmCommand("ap", "Sets your ability points to the desired value.")]
+        public static void ApCommand(Player player, ushort value)
+        {
+            player.Stats.SetAbilityPoints(value);
+        }
+
+        [GmCommand("sp", "Sets your skill points to the desired value.")]
+        public static void SpCommand(Player player, ushort value)
+        {
+            player.Stats.SetSkillPoints(value);
+        }
     }
 }

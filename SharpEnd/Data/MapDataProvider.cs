@@ -37,6 +37,11 @@ namespace SharpEnd.Data
                 if (!m_maps.ContainsKey(identifier))
                 {
                     LoadMap(identifier);
+
+                    foreach (SpawnPoint spawnPoint in m_maps[identifier].SpawnPoints)
+                    {
+                        spawnPoint.Spawn();
+                    }
                 }
 
                 return m_maps[identifier];
@@ -141,9 +146,9 @@ namespace SharpEnd.Data
                         {
                             int respawnTime = node.GetInt("mobTime");
 
-                            Mob mob = new Mob(identifier, respawnTime, position, foothold, flip, hide);
+                            SpawnPoint spawnPoint = new SpawnPoint(identifier, position, foothold, flip, hide);
 
-                            map.Mobs.Add(mob);
+                            map.SpawnPoints.Add(spawnPoint);
                         }
                         break;
 

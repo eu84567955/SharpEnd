@@ -5,7 +5,7 @@ namespace SharpEnd.Packets
 {
     internal static class MobPackets
     {
-        public static byte[] MobSpawn(Mob mob)
+        public static byte[] MobSpawn(Mob mob, sbyte spawnType)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -20,7 +20,8 @@ namespace SharpEnd.Packets
                     .WriteSByte(mob.Stance)
                     .WriteUShort(mob.Foothold)
                     .WriteUShort(mob.Foothold)
-                    .WriteHexString("FF FF FF 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF 00 00 00 00 00 00 00 00 00 64 00 00 00 FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00");
+                    .WriteSByte(spawnType)
+                    .WriteHexString("FF FF 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF 00 00 00 00 00 00 00 00 00 64 00 00 00 FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00");
 
                 return outPacket.ToArray();
             }
@@ -86,6 +87,19 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_MOB_DESPAWN)
                     .WriteInt(objectIdentifier)
                     .WriteByte(effect);
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] MobHealth(int objectIdentifier, byte percent)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_MOB_HEALTH)
+                    .WriteInt(objectIdentifier)
+                    .WriteByte(percent);
 
                 return outPacket.ToArray();
             }

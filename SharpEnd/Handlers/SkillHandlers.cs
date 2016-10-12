@@ -30,12 +30,22 @@ namespace SharpEnd.Handlers
             }
             else
             {
-
+                player.Stats.SetSkillPoints((ushort)(player.Stats.SkillPoints - amount));
             }
 
-            // TODO: Validate amount.
-
             player.Skills.Add(new PlayerSkill(skillIdentifier, amount));
+        }
+
+        [PacketHandler(EHeader.CMSG_SKILL_USE)]
+        public static void SkillUseHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            inPacket.Skip(4); // NOTE: Ticks.
+            int skillIdentifier = inPacket.ReadInt();
+            int skillLevel = inPacket.ReadInt();
+
+            player.Release();
         }
     }
 }

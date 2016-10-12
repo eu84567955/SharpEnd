@@ -21,7 +21,7 @@ namespace SharpEnd.Maps
 
             foreach (Mob mob in Map.Mobs.Values)
             {
-                player.Send(MobPackets.MobSpawn(mob));
+                player.Send(MobPackets.MobSpawn(mob, -1));
             }
 
             foreach (Npc npc in Map.Npcs.Values)

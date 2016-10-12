@@ -197,7 +197,7 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_LIST)
-                    .WriteByte()
+                    .WriteByte() // TODO: Result.
                     .WriteString("normal")
                     .WriteInt()
                     .WriteByte(1)
@@ -212,9 +212,22 @@ namespace SharpEnd.Packets
                 {
                     AddPlayerEntry(outPacket, query);
 
-                    outPacket
-                        .WriteByte()
-                        .WriteBoolean(false); // NOTE: Rankings
+                    outPacket.WriteByte();
+
+                    bool test = false;
+
+                    bool rankings = query.Get<byte>("level") > 30;
+
+                    outPacket.WriteBoolean(rankings);
+
+                    if (rankings)
+                    {
+                        outPacket
+                            .WriteInt()
+                            .WriteInt()
+                            .WriteInt()
+                            .WriteInt();
+                    }
                 }
 
                 outPacket
@@ -410,15 +423,18 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerCreate(DatabaseQuery query)
+        public static byte[] PlayerCreate(bool error, DatabaseQuery query = null)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_CREATE)
-                    .WriteBoolean(false);
+                    .WriteBoolean(error);
 
-                AddPlayerEntry(outPacket, query);
+                if (query != null)
+                {
+                    AddPlayerEntry(outPacket, query);
+                }
 
                 return outPacket.ToArray();
             }

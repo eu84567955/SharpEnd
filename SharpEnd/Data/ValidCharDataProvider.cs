@@ -71,7 +71,7 @@ namespace SharpEnd.Data
             }
         }
 
-        public bool Validate(ushort job, List<int> objects)
+        public bool Validate(EJob job, List<int> objects)
         {
             return true;
         }

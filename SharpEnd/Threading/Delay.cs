@@ -1,47 +1,49 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace SharpEnd.Threading
 {
     internal sealed class Delay
     {
-        private int m_delay;
-        private Action m_action;
-        private bool m_repeat;
-        private bool m_running = true;
-
-        public static void Execute(int delay, Action action) => new Delay(delay, action).Execute();
-
-        public Delay(int delay, Action action, bool repeat = false)
+        public static void Execute(double delay, Action action)
         {
-            m_delay = delay;
-            m_action = action;
-            m_repeat = repeat;
+            new Delay(delay, action).Execute();
         }
 
-        public async void Execute()
+        private Timer m_timer;
+
+        public Delay(double delay, Action action, bool repeat = false)
         {
-            if (m_repeat)
+            m_timer = new Timer(delay);
+
+            m_timer.Elapsed += new ElapsedEventHandler((o, e) =>
             {
-                while (m_running)
+                action();
+
+                if (!repeat)
                 {
-                    await Task.Delay(m_delay);
-
-                    m_action();
+                    Cancel();
                 }
-            }
-            else
-            {
-                await Task.Delay(m_delay);
+            });
 
-                m_action();
-            }
+            m_timer.Start();
+        }
+
+        public void Execute()
+        {
+            m_timer.Start();
         }
 
         public void Cancel()
         {
-            m_running = false;
+            if (m_timer != null)
+            {
+                m_timer.Stop();
+                m_timer.Dispose();
+            }
+
+            m_timer = null;
         }
     }
 }

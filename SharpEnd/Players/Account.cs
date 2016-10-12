@@ -14,17 +14,17 @@ namespace SharpEnd.Players
         {
             get
             {
-                if (false)
+                if (false) // TODO: When we have configuration - change this to the actual configuration setting.
                 {
                     return EPICState.Disable;
                 }
                 else if (string.IsNullOrEmpty(PIC))
                 {
-                    return EPICState.None;
+                    return EPICState.Register;
                 }
                 else
                 {
-                    return EPICState.Exists;
+                    return EPICState.Assigned;
                 }
             }
         }

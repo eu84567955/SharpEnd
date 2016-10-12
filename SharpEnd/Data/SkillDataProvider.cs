@@ -1,10 +1,27 @@
 ﻿using reNX;
+using SharpEnd.Drawing;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace SharpEnd.Data
 {
+    internal sealed class MobSkillData
+    {
+        public int mpCon;
+        public int summonEffect;
+        public int hp;
+        public int x;
+        public int y;
+        public int time;
+        public int interval;
+        public int prop;
+        public short limit;
+        public Point lt;
+        public Point rb;
+        public bool summonOnce;
+    }
+
     internal sealed class SkillDataProvider
     {
         private Dictionary<int, SkillData> m_playerSkills;

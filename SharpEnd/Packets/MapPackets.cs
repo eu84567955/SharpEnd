@@ -11,7 +11,7 @@ namespace SharpEnd.Packets
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EHeader.SMSG_CHANGE_MAP)
+                    .WriteHeader(EHeader.SMSG_MAP_CHANGE)
                     .WriteShort() // NOTE: Random loop
                     .WriteInt() // NOTE: Channel identifier
                     .WriteBoolean(false) // NOTE: bDev

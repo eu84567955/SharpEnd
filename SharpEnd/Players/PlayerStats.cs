@@ -182,7 +182,7 @@ namespace SharpEnd.Players
             //m_player.SendMap(LevelsPackets.LevelUp(m_player.Identifier));
         }
 
-        public void SetHealth(ushort value, bool sendPacket = true)
+        public void SetHealth(uint value, bool sendPacket = true)
         {
             Health = value; // TODO: Check constrain range
 
@@ -234,7 +234,7 @@ namespace SharpEnd.Players
             }
         }
 
-        public void SetMana(ushort value, bool sendPacket = false)
+        public void SetMana(uint value, bool sendPacket = false)
         {
             // TODO: Check for infinity
 
@@ -343,7 +343,7 @@ namespace SharpEnd.Players
             m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
         }
 
-        public void SetExperience(uint value)
+        public void SetExperience(ulong value)
         {
             Experience = value;
 
@@ -448,127 +448,11 @@ namespace SharpEnd.Players
             UpdateBonuses();
         }
 
-        public void GiveExperience(ulong experience, bool inChat, bool white)
+        public void GiveExperience(ulong experience, bool white = true, bool inChat = false)
         {
-            /*byte level = Level;
 
-            byte maxLevel = Stats.PlayerLevels;
 
-            if (level >= maxLevel)
-            {
-                // NOTE: Do not give experience to characters of max level or over
-
-                return;
-            }
-
-            ulong currentExperience = Experience + experience;
-
-            if (experience > 0)
-            {
-                ulong expCounter = experience;
-                ulong batchSize = uint.MaxValue;
-
-                while (expCounter > 0)
-                {
-                    uint allocate = (uint)(Math.Min(expCounter, batchSize));
-
-                    m_player.Send(LevelsPackets.ShowExperience(allocate, white, inChat));
-
-                    expCounter -= allocate;
-                }
-            }
-
-            if (currentExperience >= GetExperience(level))
-            {
-                byte levelsGained = 0;
-                byte levelsMax = 1; // TODO: maxMultiLevel configuration
-                ushort abilityPointsGain = 0;
-                ushort skillPointsGain = 0;
-                ushort healthGain = 0;
-                ushort manaGain = 0;
-                Jobs.JobLines jobLine = GameLogicUtilities.GetJobLine(Job);
-                short intelligence = (short)(Intelligence / 10);
-                short x = 0; // NOTE: X Value for improving increase skills, cached, only needs to be set once
-
-                while (currentExperience >= GetExperience(level) && levelsGained < levelsMax)
-                {
-                    currentExperience -= GetExperience(level);
-                    level++;
-                    levelsGained++;
-
-                    abilityPointsGain += Stats.AbilityPointsPerLevel;
-
-                    switch (jobLine)
-                    {
-                        // TODO: HP addition bonuses
-                    }
-
-                    if (Job != 0)
-                    {
-                        skillPointsGain += Stats.SkillPointsPerLevel;
-                    }
-
-                    // NOTE: Do not let people level past the level cap
-                    if (level >= maxLevel)
-                    {
-                        currentExperience = 0;
-
-                        break;
-                    }
-                }
-
-                // NOTE: Check if the m_player has leveled up at all, it is possible that the user hasn't leveled up if multi-level limit is 0
-                if (levelsGained != 0)
-                {
-                    ModifyMaxHealth(healthGain);
-                    ModifyMaxMana(manaGain);
-                    SetLevel(level);
-                    SetAbilityPoints((ushort)(AbilityPoints + abilityPointsGain));
-                    SetSkillPoints((ushort)(SkillPoints + skillPointsGain));
-
-                    // NOTE: Let Hyper Body remain on during a level up, as it should
-                    // TODO: Hyper body stuff
-
-                    SetHealth(MaxHealth);
-                    SetMana(MaxMana);
-
-                    if (Level == maxLevel && true) // TODO: isGm check
-                    {
-                        string message = string.Format("[Congrats] {0} has reached Level {1}! Congratulate {0} on such an amazing achievement!", m_player.Name, maxLevel);
-
-                        // TODO: Notify the world about the stupid idiot who actually spent so much time on my server to reach Lv. 200.
-                    }
-                }
-            }
-
-            // NOTE: By this point, the experience should be a valid experience in the range of 0 to max
-            SetExperience((uint)currentExperience);
-            */
+            // TODO: Show packet.
         }
-
-        /*private ushort RandHealth()
-        {
-
-        }
-
-        private ushort RandMana()
-        {
-
-        }
-
-        private ushort LevelHealth(ushort value, ushort bonus = 0)
-        {
-
-        }
-
-        private ushort LevelMana(ushort value, ushort bonus = 0)
-        {
-
-        }*/
-
-        /*public uint GetExperience(byte level)
-        {
-            return Stats.PlayerExperience[level - 1];
-        }*/
     }
 }

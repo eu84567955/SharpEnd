@@ -79,19 +79,26 @@ namespace SharpEnd.Commands
                 }
                 else
                 {
-                    for (int i = 0; i < args.Length; i++)
+                    for (int i = 1; i < command.Parameters.Length; i++)
                     {
-                        Type requiredType = command.Parameters[i + 1].ParameterType;
+                        Type requiredType = command.Parameters[i].ParameterType;
 
-                        try
+                        if (i > args.Length)
                         {
-                            parameters[i + 1] = Convert.ChangeType(args[i], requiredType);
+                            parameters[i] = Type.Missing;
                         }
-                        catch
+                        else
                         {
-                            execute = false;
+                            try
+                            {
+                                parameters[i] = Convert.ChangeType(args[i - 1], requiredType);
+                            }
+                            catch
+                            {
+                                execute = false;
 
-                            break;
+                                break;
+                            }
                         }
                     }
                 }

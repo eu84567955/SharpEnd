@@ -2,8 +2,8 @@
 {
     internal enum EPICState : byte
     {
-        None,
-        Exists,
+        Register,
+        Assigned,
         Disable
     }
 }

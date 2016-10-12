@@ -5,7 +5,9 @@ using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Servers;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SharpEnd.Handlers
 {
@@ -118,6 +120,64 @@ namespace SharpEnd.Handlers
             else
             {
                 player.Map.Send(MapPackets.MapSeatCancel(player.Identifier));
+            }
+        }
+
+        [PacketHandler(EHeader.CMSG_ATTACK_MELEE)]
+        public static void AttackMeleeHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            AttackData attack = AttackData.Compile(ESkillType.Melee, player, inPacket);
+
+            if (attack.Portals != player.PortalCount)
+            {
+                return;
+            }
+
+            int masteryIdentifier = 0; // TODO: Obtain this from players' skills
+            sbyte damagedTargets = 0;
+            int skillIdentifier = attack.SkillIdentifier;
+            byte skillLevel = attack.SkillLevel;
+
+            if (skillIdentifier != (int)Skills.All.RegularAttack)
+            {
+                // TODO: Use the god-damn skill!
+            }
+
+            // TODO: Broadcast to map.
+
+            List<Mob> dead = new List<Mob>();
+
+            foreach (var target in attack.Damages)
+            {
+                Mob mob;
+
+                try
+                {
+                    mob = player.Map.Mobs[target.Key];
+                }
+                catch (KeyNotFoundException)
+                {
+                    continue;
+                }
+
+                int totalDamage = 0;
+
+                foreach (var hit in target.Value)
+                {
+                    totalDamage += hit;
+                }
+
+                if (mob.Damage(player, totalDamage))
+                {
+                    dead.Add(mob);
+                }
+            }
+
+            foreach (Mob mob in dead)
+            {
+                mob.Die();
             }
         }
 
@@ -357,11 +417,12 @@ namespace SharpEnd.Handlers
 
             inPacket.Skip(4); // NOTE: Ticks.
 
-            uint health = inPacket.ReadUInt();
+            /*uint health = inPacket.ReadUInt();
             uint mana = inPacket.ReadUInt();
 
             player.Stats.ModifyHealth(health);
-            player.Stats.ModifyMana(mana);
+            player.Stats.ModifyMana(mana);*/
+
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_DETAILS)]
@@ -524,6 +585,60 @@ namespace SharpEnd.Handlers
                     .WriteInt();
 
                 client.Send(outPacket.ToArray());
+            }
+        }
+
+        [PacketHandler(EHeader.CMSG_KEYMAP)]
+        public static void KeymapHandler(Client client, InPacket inPacket)
+        {
+            var player = client.Player;
+
+            int mode = inPacket.ReadInt();
+
+            switch (mode)
+            {
+                case 0: // NOTE: Key change.
+                    {
+                        player.Keymap.IsModified = true;
+
+                        int count = inPacket.ReadInt();
+
+                        while (count-- > 0)
+                        {
+                            int keyIdentifier = inPacket.ReadInt();
+                            byte type = inPacket.ReadByte();
+                            int action = inPacket.ReadInt();
+
+                            if (type != 0)
+                            {
+                                if (player.Keymap.ContainsKey(keyIdentifier))
+                                {
+                                    player.Keymap[keyIdentifier] = new Shortcut(type, action);
+                                }
+                                else
+                                {
+                                    player.Keymap.Add(keyIdentifier, new Shortcut(type, action));
+                                }
+                            }
+                            else
+                            {
+                                player.Keymap.Remove(keyIdentifier);
+                            }
+                        }
+                    }
+                    break;
+
+                case 1: // NOTE: Automatic health potions.
+                    {
+
+                    }
+                    break;
+
+                case 2: // NOTE: Automatic mana potions.
+                    {
+
+                    }
+                    break;
             }
         }
     }

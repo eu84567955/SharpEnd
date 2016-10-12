@@ -166,5 +166,35 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        private const int KEYMAP_SIZE = 89;
+
+        public static byte[] Keymap(PlayerKeymap keymap)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_KEYMAP)
+                    .WriteBoolean(keymap.Count == 0);
+
+                for (int i = 0; i < KEYMAP_SIZE; i++)
+                {
+                    if (keymap.ContainsKey(i))
+                    {
+                        outPacket
+                            .WriteByte(keymap[i].Type)
+                            .WriteInt(keymap[i].Action);
+                    }
+                    else
+                    {
+                        outPacket
+                            .WriteByte()
+                            .WriteInt();
+                    }
+                }
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

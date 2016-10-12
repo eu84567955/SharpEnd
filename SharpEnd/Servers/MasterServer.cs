@@ -1,7 +1,9 @@
 ﻿using SharpEnd.Data;
+using SharpEnd.Maps;
 using SharpEnd.Migrations;
 using SharpEnd.Utility;
 using System;
+using System.IO;
 
 namespace SharpEnd.Servers
 {
@@ -18,7 +20,6 @@ namespace SharpEnd.Servers
 
         public MigrationRequests Migrations { get; private set; }
 
-        public EquipDataProvider Equips { get; private set; }
         public ItemDataProvider Items { get; private set; }
         public MobDataProvider Mobs { get; private set; }
         public NpcDataProvider Npcs { get; private set; }
@@ -45,7 +46,6 @@ namespace SharpEnd.Servers
 
             Migrations = new MigrationRequests();
 
-            Equips = new EquipDataProvider();
             Items = new ItemDataProvider();
             Mobs = new MobDataProvider();
             Npcs = new NpcDataProvider();
@@ -63,7 +63,6 @@ namespace SharpEnd.Servers
             // Data is prioritized
             var now = DateTime.Now;
 
-            Equips.Load();
             Items.Load();
             Mobs.Load();
             Npcs.Load();
@@ -74,6 +73,43 @@ namespace SharpEnd.Servers
             //ValidCharData.Load();
             Strings.Load();
             Commands.Load();
+
+            // TODO: Move else-where.
+            {
+                string[] lines = File.ReadAllLines("monster_drops.txt");
+
+                int mobIdentifier = 0;
+
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    if (lines[i].Length == 0)
+                    {
+                        continue;
+                    }
+
+                    if (lines[i][0] == '#')
+                    {
+                        mobIdentifier = int.Parse(lines[i].Substring(1));
+                    }
+                    else
+                    {
+                        string[] split = lines[i].Split(' ');
+
+                        Loot loot = new Loot();
+
+                        loot.ItemIdentifier = int.Parse(split[0]);
+                        loot.Chance = int.Parse(split[1]);
+                        loot.MinimumQuantity = int.Parse(split[2]);
+                        loot.MaximumQuantity = int.Parse(split[3]);
+                        loot.QuestIdentifier = int.Parse(split[4]);
+
+                        /*if (Mobs.Contains(mobIdentifier))
+                        {
+                            Mobs[mobIdentifier].Loots.Add(loot);
+                        }*/
+                    }
+                }
+            }
 
             Log.Inform("Maple data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);
 

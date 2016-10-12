@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Packets;
+using SharpEnd.Players;
 using SharpEnd.Threading;
 
 namespace SharpEnd.Maps
@@ -11,13 +12,16 @@ namespace SharpEnd.Maps
 
         public override void Add(Drop drop)
         {
-            drop.Picker = null;
-
             base.Add(drop);
+
+            if (drop.Expiry != null)
+            {
+                drop.Expiry.Cancel();
+            }
 
             drop.Expiry = new Delay(ExpirationTime, () =>
             {
-                if (drop.Map != Map)
+                if (drop.Map == Map)
                 {
                     Remove(drop);
                 }
@@ -27,14 +31,14 @@ namespace SharpEnd.Maps
             Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.New));
         }
 
-        public override void Remove(Drop drop)
+        public void Remove(Drop drop, Player picker = null)
         {
             if (drop.Expiry != null)
             {
                 drop.Expiry.Cancel();
             }
 
-            Map.Send(DropPackets.DespawnDrop(drop.ObjectIdentifier, drop.Picker));
+            Map.Send(DropPackets.DespawnDrop(drop.ObjectIdentifier, picker));
 
             base.Remove(drop);
         }

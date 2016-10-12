@@ -72,6 +72,8 @@
     <Compile Include="Commands\GmCommandAttribute.cs" />
     <Compile Include="Commands\Gm\GeneralCommands.cs" />
     <Compile Include="Commands\Players\GeneralCommands.cs" />
+    <Compile Include="Constants\CreationConstants.cs" />
+    <Compile Include="Constants\SkillConstants.cs" />
     <Compile Include="Data\MapDataProvider.cs" />
     <Compile Include="Data\StringDataProvider.cs" />
     <Compile Include="Data\TamingMobDataProvider.cs" />
@@ -80,17 +82,20 @@
     <Compile Include="Data\QuestDataProvider.cs" />
     <Compile Include="Data\NpcDataProvider.cs" />
     <Compile Include="Data\MobDataProvider.cs" />
-    <Compile Include="Data\EquipDataProvider.cs" />
     <Compile Include="Data\ItemDataProvider.cs" />
     <Compile Include="Data\ValidCharDataProvider.cs" />
     <Compile Include="Drawing\Point.cs" />
     <Compile Include="Enums\EAccountLevel.cs" />
     <Compile Include="Enums\ECommandType.cs" />
     <Compile Include="Enums\EDropAnimation.cs" />
+    <Compile Include="Enums\EJobType.cs" />
+    <Compile Include="Enums\EKeyboardLayoutType.cs" />
     <Compile Include="Enums\EPICState.cs" />
     <Compile Include="Enums\EQuestAction.cs" />
     <Compile Include="Enums\EShaMode.cs" />
+    <Compile Include="Enums\ESkillType.cs" />
     <Compile Include="Enums\EStance.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\NXExtensions.cs" />
     <Compile Include="Enums\ECommand.cs" />
     <Compile Include="Enums\EDropType.cs" />
@@ -122,6 +127,7 @@
     <Compile Include="Maps\Drop.cs" />
     <Compile Include="Maps\IControllable.cs" />
     <Compile Include="Maps\LifeEntity.cs" />
+    <Compile Include="Maps\Loot.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapDrops.cs" />
     <Compile Include="Maps\MapEntities.cs" />
@@ -133,11 +139,13 @@
     <Compile Include="Maps\MapNpcs.cs" />
     <Compile Include="Maps\MapMobs.cs" />
     <Compile Include="Maps\MapSeats.cs" />
+    <Compile Include="Maps\MapSpawnPoints.cs" />
     <Compile Include="Maps\Meso.cs" />
     <Compile Include="Maps\Mob.cs" />
     <Compile Include="Maps\MovableLife.cs" />
     <Compile Include="Maps\Npc.cs" />
     <Compile Include="Maps\Reactor.cs" />
+    <Compile Include="Maps\SpawnPoint.cs" />
     <Compile Include="Migrations\MigrationRequest.cs" />
     <Compile Include="Migrations\MigrationRequests.cs" />
     <Compile Include="Network\Acceptor.cs" />
@@ -158,13 +166,16 @@
     <Compile Include="Packets\PlayerPackets.cs" />
     <Compile Include="Packets\PlayersPackets.cs" />
     <Compile Include="Packets\ReactorPackets.cs" />
+    <Compile Include="Packets\ServerPackets.cs" />
     <Compile Include="Packets\SkillPackets.cs" />
     <Compile Include="Players\Account.cs" />
+    <Compile Include="Players\AttackData.cs" />
     <Compile Include="Players\ControlledMobs.cs" />
     <Compile Include="Players\ControlledNpcs.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Players\PlayerItem.cs" />
     <Compile Include="Players\PlayerItems.cs" />
+    <Compile Include="Players\PlayerKeymap.cs" />
     <Compile Include="Players\PlayerQuest.cs" />
     <Compile Include="Players\PlayerQuests.cs" />
     <Compile Include="Players\PlayerSkill.cs" />
@@ -191,7 +202,9 @@
     <Compile Include="Utility\Reflector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripting\" />

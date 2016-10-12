@@ -102,25 +102,20 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            if (drop.Picker == null)
+            if (drop is Meso)
             {
-                drop.Picker = player;
-
-                if (drop is Meso)
-                {
-                    player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
-                }
-                else if (drop is PlayerItem)
-                {
-                    ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
-
-                    player.Items.Add((PlayerItem)drop);
-                }
-
-                player.Map.Drops.Remove(drop);
-
-                // TODO: Show gain packet.
+                player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
             }
+            else if (drop is PlayerItem)
+            {
+                ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
+
+                player.Items.Add((PlayerItem)drop);
+            }
+
+            player.Map.Drops.Remove(drop, player);
+
+            // TODO: Show gain packet.
         }
     }
 }

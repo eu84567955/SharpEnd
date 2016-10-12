@@ -7,9 +7,8 @@ namespace SharpEnd.Maps
     internal abstract class Drop : MapEntity
     {
         private MapEntity dropper;
-
+        
         public Player Owner { get; set; }
-        public Player Picker { get; set; }
         public Point Origin { get; set; }
         public Delay Expiry { get; set; }
 

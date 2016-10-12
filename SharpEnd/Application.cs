@@ -31,8 +31,6 @@ namespace SharpEnd
 
             try
             {
-                m_usageDelay.Execute();
-
                 Database.Initialize();
 
                 MasterServer.Instance.Run();
