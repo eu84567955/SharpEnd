@@ -28,7 +28,6 @@ namespace SharpEnd.Scripting
             Expose("removePlayerVariable", new Action<string>(RemovePlayerVariable));
             Expose("setMap", new Action<int>(SetMap));
             Expose("setPlayerVariable", new Action<string, int>(SetPlayerVariable));
-            Expose("startEvent", new Action<string, int, bool>(StartEvent));
         }
 
         public dynamic Get(string name)
@@ -70,13 +69,6 @@ namespace SharpEnd.Scripting
         private void SetPlayerVariable(string key, int value)
         {
             m_player.Variables.Add(key, value.ToString());
-        }
-
-        private void StartEvent(string name, int time, bool clock)
-        {
-            Event evt = new Event(m_player, name, time, clock);
-
-            evt.Begin();
         }
         #endregion
     }

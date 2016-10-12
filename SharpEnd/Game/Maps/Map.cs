@@ -1,11 +1,10 @@
 ﻿using SharpEnd.Players;
+using SharpEnd.Utility;
 
 namespace SharpEnd.Maps
 {
     internal sealed class Map
     {
-        private int sObjectIdentifiers = 0;
-
         public int Identifier { get; private set; }
 
         public MapFootholds Footholds { get; private set; }
@@ -17,6 +16,8 @@ namespace SharpEnd.Maps
         public MapReactors Reactors { get; private set; }
         public MapDrops Drops { get; private set; }
         public MapSeats Seats { get; private set; }
+
+        private AutoIncrement m_objectIncrement;
 
         public Map(int identifier)
         {
@@ -31,11 +32,13 @@ namespace SharpEnd.Maps
             Reactors = new MapReactors(this);
             Drops = new MapDrops(this);
             Seats = new MapSeats(this);
+
+            m_objectIncrement = new AutoIncrement(1);
         }
 
         public int AssignObjectIdentifier()
         {
-            return ++sObjectIdentifiers;
+            return m_objectIncrement.Next;
         }
 
         public void Send(byte[] buffer, Player ignored = null)

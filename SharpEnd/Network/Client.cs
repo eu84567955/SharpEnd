@@ -232,11 +232,6 @@ namespace SharpEnd.Network
 
                 if (Account != null && Player != null)
                 {
-                    if (Player.Event != null)
-                    {
-                        Player.Event.PlayerDisconnect(Player);
-                    }
-
                     Player.Save();
                 }
             }

@@ -36,8 +36,6 @@ namespace SharpEnd.Players
         public ControlledMobs ControlledMobs { get; private set; }
         public ControlledNpcs ControlledNpcs { get; private set; }
 
-        public Event Event { get; set; }
-
         // TODO: Move else-where
         public bool IsGm => Client.Account.Level >= EAccountLevel.Gm;
 
