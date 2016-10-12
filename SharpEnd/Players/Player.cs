@@ -31,6 +31,7 @@ namespace SharpEnd.Players
         public PlayerQuests Quests { get; private set; }
         public PlayerKeymap Keymap { get; private set; }
         public PlayerSPTable SPTable { get; private set; }
+        public PlayerVariables Variables { get; private set; }
         public ControlledMobs ControlledMobs { get; private set; }
         public ControlledNpcs ControlledNpcs { get; private set; }
 
@@ -72,7 +73,7 @@ namespace SharpEnd.Players
                 // TODO: Set map to forced return map
                 SpawnPoint = -1;
             }
-            else if (!Stats.IsAlive)
+            else if (false) // TODO: Check for alive.
             {
                 // TODO: Set map to return map
                 SpawnPoint = -1;
@@ -116,6 +117,11 @@ namespace SharpEnd.Players
             using (DatabaseQuery spTableQuery = Database.Query("SELECT * FROM player_sp_table WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
             {
                 SPTable = new PlayerSPTable(this, spTableQuery);
+            }
+
+            using (DatabaseQuery variableQuery = Database.Query("SELECT * FROM player_variable WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Identifier)))
+            {
+                Variables = new PlayerVariables(this, variableQuery);
             }
 
             ControlledMobs = new ControlledMobs(this);
@@ -165,6 +171,7 @@ namespace SharpEnd.Players
             Quests.Save();
             Keymap.Save();
             SPTable.Save();
+            Variables.Save();
         }
 
         public void Initialize()
