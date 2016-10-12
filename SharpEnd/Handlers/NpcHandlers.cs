@@ -38,7 +38,7 @@ namespace SharpEnd.Handlers
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error while executing portal script '{0}': {1}", npc.Script, e.Message);
+                    Log.Error("Error while executing NPC script '{0}': {1}", npc.Script, e.Message);
                 }
             }
             else

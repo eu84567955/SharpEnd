@@ -3,44 +3,40 @@ using SharpEnd.Players;
 using SharpEnd.Threading;
 using System;
 using System.Collections.Generic;
-using static Microsoft.Scripting.Hosting.Shell.ConsoleHostOptions;
 
 namespace SharpEnd.Scripting
 {
     internal sealed class EventScript : ScriptBase
     {
+        private Event m_event;
+
         private int m_time;
         private bool m_clock;
 
         private Dictionary<string, Delay> m_timers;
 
-        public EventScript(Player player, string name, int time, bool clock)
+        public EventScript(Event evt, Player player, string name, int time, bool clock)
             : base(player, string.Format("scripts/events/{0}.py", name))
         {
-            m_timers = new Dictionary<string, Delay>();
+            m_event = evt;
 
-            SetVariable("showTimer", new Action<int>(ShowTimer));
-            SetVariable("startTimer", new Action<string, int>(StartTimer));
+            m_time = time;
+            m_clock = clock;
+
+            Expose("startTimer", new Action<string, int, bool>(StartTimer));
         }
 
-        public override void Execute()
+        private void StartTimer(string key, int delay, bool show)
         {
-            base.Execute();
-
-            GetVariable("begin")();
-        }
-
-        private void ShowTimer(int time)
-        {
-            m_player.Map.Send(MapPackets.ShowTimer(time));
-        }
-
-        private void StartTimer(string key, int time)
-        {
-            m_timers.Add(key, new Delay(time, () =>
+            m_event.AddTimer(key, delay, () =>
             {
-                GetVariable("timerExpired")(key);
-            }));
+                m_event.TimerExpired(key);
+            });
+
+            if (show)
+            {
+                m_player.Map.Send(MapPackets.ShowTimer(delay / 1000));
+            }
         }
     }
 }

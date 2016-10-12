@@ -4,6 +4,7 @@ using SharpEnd.Drawing;
 using SharpEnd.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
+using SharpEnd.Scripting;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
 
@@ -34,6 +35,8 @@ namespace SharpEnd.Players
         public PlayerVariables Variables { get; private set; }
         public ControlledMobs ControlledMobs { get; private set; }
         public ControlledNpcs ControlledNpcs { get; private set; }
+
+        public Event Event { get; set; }
 
         // TODO: Move else-where
         public bool IsGm => Client.Account.Level >= EAccountLevel.Gm;
