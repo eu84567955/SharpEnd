@@ -99,5 +99,26 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] NpcOkDialog(int identifier, string text)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_NPC_DIALOG)
+                    .WriteByte() // unexitable dialog, etc
+                    .WriteInt(identifier)
+                    .WriteBoolean(false)
+                    .WriteByte() // type
+                    .WriteByte() // param
+                    .WriteByte() // color
+                    .WriteString(text)
+                    .WriteBoolean(false) // prev
+                    .WriteBoolean(false) // next
+                    .WriteInt(); // seconds
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

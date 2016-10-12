@@ -303,5 +303,18 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] ShowTimer(int time)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_CLOCK)
+                    .WriteByte(2)
+                    .WriteInt(time);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }

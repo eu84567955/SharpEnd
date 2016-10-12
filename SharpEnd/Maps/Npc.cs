@@ -8,6 +8,14 @@ namespace SharpEnd.Maps
         public short RX0 { get; private set; }
         public short RX1 { get; private set; }
 
+        public string Script
+        {
+            get
+            {
+                return "levelUP";
+            }
+        }
+
         public Player Controller { get; set; }
 
         public Npc(int identifier, short rx0, short rx1, Point position, ushort foothold, bool flip, bool hide)

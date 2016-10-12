@@ -1,4 +1,5 @@
-﻿using SharpEnd.Players;
+﻿using SharpEnd.Packets;
+using SharpEnd.Players;
 using System;
 
 namespace SharpEnd.Scripting
@@ -11,6 +12,13 @@ namespace SharpEnd.Scripting
             : base(player, string.Format("scripts/npcs/{0}.py", name))
         {
             m_identifier = identifier;
+
+            SetVariable("sendOk", new Action<string>(SendOk));
+        }
+
+        private void SendOk(string text)
+        {
+            m_player.Send(NpcPackets.NpcOkDialog(m_identifier, text));
         }
     }
 }
