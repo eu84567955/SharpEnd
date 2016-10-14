@@ -1,7 +1,7 @@
 ﻿using SharpEnd.Players;
 using SharpEnd.Servers;
 
-namespace SharpEnd.Commands.Gm
+namespace SharpEnd.Game.Commands.Gm
 {
     internal static class GeneralCommands
     {

@@ -1,6 +1,5 @@
-﻿using SharpEnd.Maps;
+﻿using SharpEnd.Game.Maps;
 using SharpEnd.Network;
-using SharpEnd.Packets;
 using SharpEnd.Scripting;
 using System;
 using System.Collections.Generic;
@@ -38,12 +37,12 @@ namespace SharpEnd.Handlers
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error while executing NPC script '{0}': {1}", npc.Script, e.Message);
+                    Log.Error("Error while executing Npc script '{0}': {1}", npc.Script, e.Message);
                 }
             }
             else
             {
-                Log.Warn("Unscripted NPC '{0}'.", npc.Script);
+                Log.Warn("Unscripted Npc '{0}'.", npc.Script);
             }
         }
 
@@ -65,9 +64,13 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            byte[] data = inPacket.ReadLeftoverBytes();
+            if (npc.Controller == player)
+            {
+                byte a = inPacket.ReadByte();
+                byte b = inPacket.ReadByte();
 
-            player.Map.Send(NpcPackets.NpcAction(npc.ObjectIdentifier, data));
+                //player.Map.Send(NpcPackets.NpcAction(npc.ObjectIdentifier, a, b));
+            }
         }
     }
 }

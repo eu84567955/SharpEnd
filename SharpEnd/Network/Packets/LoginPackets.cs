@@ -26,8 +26,6 @@ namespace SharpEnd.Packets
             }
         }
 
-
-
         public static byte[] PrivateServerAuth(int response)
         {
             using (OutPacket outPacket = new OutPacket())
@@ -103,13 +101,13 @@ namespace SharpEnd.Packets
                     .WriteString(client.Account.Username)
                     .WriteInt(client.Account.Identifier);
 
-                byte admin = 1, tradeBlock = 0;
+                byte admin = 0, tradeBlock = 0;
 
                 byte gradeCode = (byte)(admin << 1 | tradeBlock << 4 | 0);
 
                 outPacket.WriteByte(gradeCode);
 
-                bool manager = true, tester = true, subTester = true;
+                bool manager = false, tester = false, subTester = false;
 
                 uint privateStatusFlag = 0;
 
@@ -286,7 +284,7 @@ namespace SharpEnd.Packets
                 .WriteInt()
                 .WriteInt()
                 .WriteInt(query.Get<int>("map_identifier"))
-                .WriteByte(query.Get<byte>("map_spawn"))
+                .WriteSByte(query.Get<sbyte>("map_spawn"))
                 .WriteInt() // NOTE: Unknown
                 .WriteUShort(query.Get<ushort>("sub_job"))
                 .WriteByte() // NOTE: Fatigue

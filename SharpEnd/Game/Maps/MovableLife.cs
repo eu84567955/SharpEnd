@@ -1,7 +1,7 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Network;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal abstract class MovableLife
     {

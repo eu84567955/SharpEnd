@@ -1,73 +1,108 @@
-﻿using SharpEnd.Packets;
+﻿using SharpEnd.Drawing;
+using SharpEnd.Packets;
 using SharpEnd.Players;
 using System.Collections.Generic;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal sealed class MapPlayers : MapEntities<Player>
     {
         public MapPlayers(Map map) : base(map) { }
 
+        public Player this[string name]
+        {
+            get
+            {
+                lock (this)
+                {
+                    foreach (Player player in this.Values)
+                    {
+                        if (player.Name.ToLower() == name.ToLower())
+                        {
+                            return player;
+                        }
+                    }
+
+                    throw new KeyNotFoundException();
+                }
+            }
+        }
+
+        // TODO: Validate order of objects.
         public override void Add(Player player)
         {
-            Map.Send(PlayerPackets.PlayerSpawn(player));
-
-            foreach (Player loopPlayer in this.Values)
+            lock (this)
             {
-                player.Send(PlayerPackets.PlayerSpawn(loopPlayer));
+                foreach (Player loopPlayer in this.Values)
+                {
+                    player.Send(PlayerPackets.PlayerSpawn(loopPlayer));
+                }
+
+                Map.Send(PlayerPackets.PlayerSpawn(player));
+
+                base.Add(player);
             }
 
-            base.Add(player);
-
-            foreach (Mob mob in Map.Mobs.Values)
+            lock (Map.Mobs)
             {
-                player.Send(MobPackets.MobSpawn(mob, -1));
+                foreach (Mob mob in Map.Mobs.Values)
+                {
+                    player.Send(MobPackets.MobSpawn(mob, -1));
+                }
             }
 
-            foreach (Npc npc in Map.Npcs.Values)
+            lock (Map.Npcs)
             {
-                player.Send(NpcPackets.NpcSpawn(npc));
+                foreach (Npc npc in Map.Npcs.Values)
+                {
+                    player.Send(NpcPackets.NpcSpawn(npc));
+                }
             }
 
-            foreach (Reactor reactor in Map.Reactors.Values)
+            lock (Map.Mobs)
             {
-                player.Send(ReactorPackets.ReactorSpawn(reactor));
+                foreach (Mob mob in Map.Mobs.Values)
+                {
+                    mob.AssignController();
+                }
             }
 
-            foreach (Drop drop in Map.Drops.Values)
+            lock (Map.Npcs)
             {
-                player.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
-            }
-
-            foreach (Mob mob in Map.Mobs.Values)
-            {
-                mob.AssignController();
-            }
-
-            foreach (Npc npc in Map.Npcs.Values)
-            {
-                npc.AssignController();
+                foreach (Npc npc in Map.Npcs.Values)
+                {
+                    npc.AssignController();
+                }
             }
         }
 
         public override void Remove(Player player)
         {
-            player.ControlledMobs.Clear();
-            player.ControlledNpcs.Clear();
-
-            base.Remove(player);
-
-            foreach (Mob mob in Map.Mobs.Values)
+            lock (this)
             {
-                mob.AssignController();
-            }
+                player.ControlledMobs.Clear();
+                player.ControlledNpcs.Clear();
 
-            foreach (Npc npc in Map.Npcs.Values)
-            {
-                npc.AssignController();
-            }
+                base.Remove(player);
 
-            Map.Send(PlayerPackets.PlayerDespawn(player.Identifier));
+                lock (Map.Mobs)
+                {
+                    foreach (Mob mob in Map.Mobs.Values)
+                    {
+                        mob.AssignController();
+                    }
+                }
+
+                lock (Map.Npcs)
+                {
+                    foreach (Npc npc in Map.Npcs.Values)
+                    {
+                        npc.AssignController();
+                    }
+                }
+
+                Map.Send(PlayerPackets.PlayerDespawn(player.Identifier));
+            }
         }
     }
 }

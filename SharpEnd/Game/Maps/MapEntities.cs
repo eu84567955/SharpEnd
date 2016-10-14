@@ -1,7 +1,6 @@
-﻿using SharpEnd.Players;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal abstract class MapEntities<T> : Dictionary<int, T> where T : MapEntity
     {
@@ -16,11 +15,7 @@ namespace SharpEnd.Maps
         public virtual void Add(T entity)
         {
             entity.Map = Map;
-
-            if (!(entity is Player))
-            {
-                entity.ObjectIdentifier = Map.AssignObjectIdentifier();
-            }
+            entity.ObjectIdentifier = Map.AssignObjectIdentifier();
 
             Add(entity.ObjectIdentifier, entity);
         }
@@ -30,11 +25,7 @@ namespace SharpEnd.Maps
             Remove(entity.ObjectIdentifier);
 
             entity.Map = null;
-
-            if (!(entity is Player))
-            {
-                entity.ObjectIdentifier = -1;
-            }
+            entity.ObjectIdentifier = -1;
         }
     }
 }

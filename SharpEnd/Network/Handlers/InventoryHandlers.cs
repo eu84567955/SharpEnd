@@ -1,10 +1,8 @@
 ﻿using SharpEnd.Data;
-using SharpEnd.Drawing;
-using SharpEnd.Maps;
+using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Players;
 using SharpEnd.Servers;
-using System.Collections.Generic;
 
 namespace SharpEnd.Handlers
 {
@@ -13,13 +11,13 @@ namespace SharpEnd.Handlers
         [PacketHandler(EHeader.CMSG_INVENTORY_SORT)]
         public static void SortHandler(Client client, InPacket inPacket)
         {
-            inPacket.ReadInt(); // NOTE: Ticks
+            inPacket.ReadInt(); // NOTE: Ticks.
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_GATHER)]
         public static void GatherHandler(Client client, InPacket inPacket)
         {
-            inPacket.ReadInt(); // NOTE: Ticks
+            inPacket.ReadInt(); // NOTE: Ticks.
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_OPERATION)]
@@ -27,7 +25,7 @@ namespace SharpEnd.Handlers
         {
             var player = client.Player;
 
-            inPacket.ReadInt(); // NOTE: Ticks
+            inPacket.ReadInt(); // NOTE: Ticks.
             EInventoryType inventory = (EInventoryType)inPacket.ReadByte();
             short sourceSlot = inPacket.ReadShort();
             short destinationSlot = inPacket.ReadShort();
@@ -74,32 +72,31 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            ItemConsumeData consume = MasterServer.Instance.Items[itemIdentifier] as ItemConsumeData;
+            ItemConsumeData consume = MasterServer.Instance.Items[itemIdentifier].Consume;
 
-            if (!false) // TODO: Check if the player's map has potion limit.
+            // TODO: Check for map limitiations.
+
+            if (consume.Hp != 0)
             {
-                if (consume.Hp != 0)
-                {
 
-                }
-
-                if (consume.Mp != 0)
-                {
-
-                }
-
-                if (consume.HpR != 0)
-                {
-
-                }
-
-                if (consume.MpR != 0)
-                {
-
-                }
             }
 
-            if (consume.MoveTo != 0 && !false) // TODO: Check if the player's map has return scroll limit.
+            if (consume.Mp != 0)
+            {
+
+            }
+
+            if (consume.HpR != 0)
+            {
+
+            }
+
+            if (consume.MpR != 0)
+            {
+
+            }
+
+            if (consume.MoveTo != 0)
             {
                 player.SetMap(consume.MoveTo);
             }
@@ -110,7 +107,7 @@ namespace SharpEnd.Handlers
         {
             var player = client.Player;
 
-            inPacket.ReadInt(); // NOTE: Ticks
+            inPacket.ReadInt(); // NOTE: Ticks.
             int amount = inPacket.ReadInt();
 
             if (amount < 10 || amount > 50000 || amount > player.Items.Meso)
@@ -126,13 +123,13 @@ namespace SharpEnd.Handlers
                 Owner = null
             };
 
-            player.Map.Drops.Add(meso);
+            //player.Map.Drops.Add(meso);
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_PICKUP)]
         public static void PickupHandler(Client client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             inPacket.ReadInt(); // NOTE: Ticks
             inPacket.Skip(1);
@@ -163,7 +160,7 @@ namespace SharpEnd.Handlers
 
             player.Map.Drops.Remove(drop, player);
 
-            // TODO: Show gain packet.
+            // TODO: Show gain packet.*/
         }
     }
 }

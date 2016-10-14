@@ -3,7 +3,7 @@ using System;
 
 namespace SharpEnd.Data
 {
-    internal static class NXExtensions
+    public static class NXExtensions
     {
         public static T GetIdentifier<T>(this NXNode node)
         {

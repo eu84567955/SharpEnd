@@ -15,13 +15,14 @@ namespace SharpEnd.Handlers
             client.Send(LoginPackets.PrivateServerAuth(response));
         }
 
+        // TODO: Handle every type of error code.
         [PacketHandler(EHeader.CMSG_CLIENT_ERROR)]
         public static void ClientErrorHandler(Client client, InPacket inPacket)
         {
             ushort type = inPacket.ReadUShort();
-            int error = inPacket.ReadInt();
+            int errorCode = inPacket.ReadInt();
 
-            if (error == 38)
+            if (errorCode == 38)
             {
                 inPacket.ReadUShort(); // NOTE: Packet length
                 inPacket.Skip(4); // NOTE: Unknown

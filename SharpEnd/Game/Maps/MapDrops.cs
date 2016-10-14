@@ -2,7 +2,7 @@
 using SharpEnd.Players;
 using SharpEnd.Threading;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal sealed class MapDrops : MapEntities<Drop>
     {

@@ -1,11 +1,11 @@
 ﻿using MySql.Data.MySqlClient;
+using SharpEnd.Extensions;
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Security;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
-using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Handlers
@@ -137,7 +137,8 @@ namespace SharpEnd.Handlers
         {
             string name = inPacket.ReadString();
 
-            bool unusable = name.Length < 4 ||
+            bool unusable = name.IsAlphaNumeric() ||
+                            name.Length < 4 ||
                             name.Length > 16 ||
                             (long)Database.Scalar("SELECT COUNT(*) FROM player WHERE name=@name", new MySqlParameter("@name", name)) != 0;
 
@@ -149,7 +150,8 @@ namespace SharpEnd.Handlers
         {
             string name = inPacket.ReadString();
 
-            bool unusable = name.Length < 4 ||
+            bool unusable = name.IsAlphaNumeric() ||
+                            name.Length < 4 ||
                             name.Length > 16 ||
                             (long)Database.Scalar("SELECT COUNT(*) FROM player WHERE name=@name", new MySqlParameter("@name", name)) != 0;
 
@@ -175,10 +177,10 @@ namespace SharpEnd.Handlers
                 objects.Add(inPacket.ReadInt());
             }
 
-            if (!MasterServer.Instance.ValidCharData.Validate(job, objects))
+            /*if (!MasterServer.Instance.ValidCharData.Validate(job, objects))
             {
                 return;
-            }
+            }*/
 
             int i = 0;
 

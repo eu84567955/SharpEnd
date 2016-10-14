@@ -1,5 +1,5 @@
 ﻿using SharpEnd.Drawing;
-using SharpEnd.Maps;
+using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using System.Collections.Generic;
@@ -49,7 +49,7 @@ namespace SharpEnd.Handlers
 
             player.Send(MobPackets.MobControlAck(objectIdentifier, movementIdentifier, 0, usingAbility, 0, 0));
 
-            // TODO: Broadcast packet to map
+            // TODO: Broadcast packet to map.
         }
     }
 }

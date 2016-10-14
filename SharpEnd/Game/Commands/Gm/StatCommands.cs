@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Players;
 
-namespace SharpEnd.Commands.Gm
+namespace SharpEnd.Game.Commands.Gm
 {
     internal static class StatCommands
     {
@@ -52,7 +52,7 @@ namespace SharpEnd.Commands.Gm
             player.Stats.SetMaxMana(value);
         }
 
-        [GmCommand("heal", "Heals you.")]
+        [GmCommand("heal", "Seats your health and mana to their maximum.")]
         public static void HealCommand(Player player)
         {
             player.Stats.SetHealth(player.Stats.MaxHealth);

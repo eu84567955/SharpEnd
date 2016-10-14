@@ -1,14 +1,14 @@
 ﻿using SharpEnd.Players;
 using SharpEnd.Servers;
 
-namespace SharpEnd.Commands.Gm
+namespace SharpEnd.Game.Commands.Gm
 {
     internal static class MapCommands
     {
         [GmCommand("map", "Teleports you to the desired map.")]
-        public static void MapCommand(Player player, int mapIdentifier)
+        public static void MapCommand(Player player, int mapIdentifier, sbyte portal = 0)
         {
-            if (MasterServer.Instance.GetMaps(player.Client.ChannelIdentifier).Contains(mapIdentifier))
+            if (MasterServer.Instance.Maps.ContainsKey(mapIdentifier))
             {
                 player.SetMap(mapIdentifier);
             }

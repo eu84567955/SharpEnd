@@ -2,11 +2,13 @@
 using reNX.NXProperties;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace SharpEnd.Data
 {
-    internal class ItemData
+    public class ItemData
     {
+        public int Identifier { get; set; }
         public bool IsOnly { get; set; }
         public bool IsNotSale { get; set; }
         public bool IsCash { get; set; }
@@ -15,81 +17,58 @@ namespace SharpEnd.Data
         public bool IsQuest { get; set; }
         public ushort MaxSlotQuantity { get; set; }
         public int SalePrice { get; set; }
-        public string Name { get; set; }
 
-        public virtual void Load(NXNode infoNode, ushort maxSlotQuantity = 1)
+        public ItemEquipData Equip { get; set; }
+        public ItemConsumeData Consume { get; set; }
+
+        public void Read(BinaryReader reader)
         {
-            IsOnly = infoNode.GetBoolean("only");
-            IsNotSale = infoNode.GetBoolean("notSale");
-            IsCash = infoNode.GetBoolean("cash");
-            IsTradeBlock = infoNode.GetBoolean("tradeBlock");
-            IsAccountSharable = infoNode.GetBoolean("accountSharable");
-            IsQuest = infoNode.GetBoolean("quest");
-            MaxSlotQuantity = infoNode.GetUShort("maxSlot", (ushort)(IsOnly ? 1 : maxSlotQuantity));
-            SalePrice = infoNode.GetInt("price");
+            Identifier = reader.ReadInt32();
+            IsOnly = reader.ReadBoolean();
+            IsNotSale = reader.ReadBoolean();
+            IsCash = reader.ReadBoolean();
+            IsTradeBlock = reader.ReadBoolean();
+            IsAccountSharable = reader.ReadBoolean();
+            IsQuest = reader.ReadBoolean();
+            MaxSlotQuantity = reader.ReadUInt16();
+            SalePrice = reader.ReadInt32();
+
+            if (reader.ReadBoolean())
+            {
+                Equip = new ItemEquipData();
+
+                Equip.Read(reader);
+            }
+
+            if (reader.ReadBoolean())
+            {
+                Consume = new ItemConsumeData();
+
+                Consume.Read(reader);
+            }
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Identifier);
+            writer.Write(IsOnly);
+            writer.Write(IsNotSale);
+            writer.Write(IsCash);
+            writer.Write(IsTradeBlock);
+            writer.Write(IsAccountSharable);
+            writer.Write(IsQuest);
+            writer.Write(MaxSlotQuantity);
+            writer.Write(SalePrice);
+
+            writer.Write(Equip != null);
+            if (Equip != null) Equip.Write(writer);
+
+            writer.Write(Consume != null);
+            if (Consume != null) Consume.Write(writer);
         }
     }
 
-    internal sealed class ItemConsumeData : ItemData
-    {
-        public short HpR { get; set; }
-        public short MpR { get; set; }
-        public int Hp { get; set; }
-        public int Mp { get; set; }
-        public int Speed { get; set; }
-        public int Time { get; set; }
-        public int MoveTo { get; set; }
-
-        public int CraftExp { get; set; }
-        public int CharmExp { get; set; }
-        public int CharismaExp { get; set; }
-        public int InsightExp { get; set; }
-        public int WillExp { get; set; }
-        public int SenseExp { get; set; }
-
-        public void Load(NXNode infoNode, NXNode specNode, ushort maxSlotQuantity = 1)
-        {
-            base.Load(infoNode, maxSlotQuantity);
-
-            HpR = specNode.GetShort("hpR");
-            MpR = specNode.GetShort("mpR");
-            Hp = specNode.GetInt("hp");
-            Mp = specNode.GetInt("mp");
-            Speed = specNode.GetInt("speed");
-            Time = specNode.GetInt("time");
-
-            CharismaExp = specNode.GetInt("charismaEXP");
-            CharmExp = specNode.GetInt("charmEXP");
-            CraftExp = specNode.GetInt("craftEXP");
-            InsightExp = specNode.GetInt("insightEXP");
-            SenseExp = specNode.GetInt("senseEXP");
-            WillExp = specNode.GetInt("willEXP");
-        }
-    }
-
-    internal sealed class ItemPetData : ItemData
-    {
-        public bool IsMultiable { get; set; }
-        public bool IsPermanent { get; set; }
-        public bool HasPickupItem { get; set; }
-        public bool HasAutoBuff { get; set; }
-        public int Life { get; set; }
-        public int Hunger { get; set; }
-
-        public override void Load(NXNode infoNode, ushort maxSlotQuantity = 1)
-        {
-            base.Load(infoNode, maxSlotQuantity);
-
-            IsMultiable = infoNode.GetBoolean("multiPet");
-            IsPermanent = infoNode.GetBoolean("permanent");
-            HasPickupItem = infoNode.GetBoolean("pickupItem");
-            HasAutoBuff = infoNode.GetBoolean("autoBuff");
-            Life = infoNode.GetInt("life");
-            Hunger = infoNode.GetInt("hungry");
-        }
-    }
-
-    internal sealed class ItemEquipData : ItemData
+    public sealed class ItemEquipData
     {
         public byte Slots { get; set; }
         public byte ReqLevel { get; set; }
@@ -113,33 +92,134 @@ namespace SharpEnd.Data
         public short Speed { get; set; }
         public short Jump { get; set; }
 
-        public override void Load(NXNode infoNode, ushort maxSlotQuantity = 1)
+        public void Read(BinaryReader reader)
+        {
+            Slots = reader.ReadByte();
+            ReqLevel = reader.ReadByte();
+            ReqStr = reader.ReadInt16();
+            ReqDex = reader.ReadInt16();
+            ReqInt = reader.ReadInt16();
+            ReqLuk = reader.ReadInt16();
+            Strength = reader.ReadInt16();
+            Dexterity = reader.ReadInt16();
+            Intelligence = reader.ReadInt16();
+            Luck = reader.ReadInt16();
+            WeaponAttack = reader.ReadInt16();
+            MagicAttack = reader.ReadInt16();
+            WeaponDefense = reader.ReadInt16();
+            MagicDefense = reader.ReadInt16();
+            MaxHealth = reader.ReadInt16();
+            MaxMana = reader.ReadInt16();
+            Accuracy = reader.ReadInt16();
+            Avoidability = reader.ReadInt16();
+            Hands = reader.ReadInt16();
+            Speed = reader.ReadInt16();
+            Jump = reader.ReadInt16();
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Slots);
+            writer.Write(ReqLevel);
+            writer.Write(ReqStr);
+            writer.Write(ReqDex);
+            writer.Write(ReqInt);
+            writer.Write(ReqLuk);
+            writer.Write(Strength);
+            writer.Write(Dexterity);
+            writer.Write(Intelligence);
+            writer.Write(Luck);
+            writer.Write(WeaponAttack);
+            writer.Write(MagicAttack);
+            writer.Write(WeaponDefense);
+            writer.Write(MagicDefense);
+            writer.Write(MaxHealth);
+            writer.Write(MaxMana);
+            writer.Write(Accuracy);
+            writer.Write(Avoidability);
+            writer.Write(Hands);
+            writer.Write(Speed);
+            writer.Write(Jump);
+        }
+    }
+
+
+    public sealed class ItemConsumeData
+    {
+        public short HpR { get; set; }
+        public short MpR { get; set; }
+        public int Hp { get; set; }
+        public int Mp { get; set; }
+        public int Speed { get; set; }
+        public int Time { get; set; }
+        public int MoveTo { get; set; }
+
+        public int CraftExp { get; set; }
+        public int CharmExp { get; set; }
+        public int CharismaExp { get; set; }
+        public int InsightExp { get; set; }
+        public int WillExp { get; set; }
+        public int SenseExp { get; set; }
+
+        public void Read(BinaryReader reader)
+        {
+            HpR = reader.ReadInt16();
+            MpR = reader.ReadInt16();
+            Hp = reader.ReadInt32();
+            Mp = reader.ReadInt32();
+            Speed = reader.ReadInt32();
+            Time = reader.ReadInt32();
+            MoveTo = reader.ReadInt32();
+
+            CraftExp = reader.ReadInt32();
+            CharmExp = reader.ReadInt32();
+            CharismaExp = reader.ReadInt32();
+            InsightExp = reader.ReadInt32();
+            WillExp = reader.ReadInt32();
+            SenseExp = reader.ReadInt32();
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(HpR);
+            writer.Write(MpR);
+            writer.Write(Hp);
+            writer.Write(Mp);
+            writer.Write(Speed);
+            writer.Write(Time);
+            writer.Write(MoveTo);
+
+            writer.Write(CraftExp);
+            writer.Write(CharmExp);
+            writer.Write(CharismaExp);
+            writer.Write(InsightExp);
+            writer.Write(WillExp);
+            writer.Write(SenseExp);
+        }
+    }
+
+    /*internal sealed class ItemPetData : ItemData
+    {
+        public bool IsMultiable { get; set; }
+        public bool IsPermanent { get; set; }
+        public bool HasPickupItem { get; set; }
+        public bool HasAutoBuff { get; set; }
+        public int Life { get; set; }
+        public int Hunger { get; set; }
+
+        /*public override void Load(NXNode infoNode, ushort maxSlotQuantity = 1)
         {
             base.Load(infoNode, maxSlotQuantity);
 
-            Slots = infoNode.GetByte("tuc");
-            ReqLevel = infoNode.GetByte("reqLevel");
-            ReqStr = infoNode.GetShort("reqSTR");
-            ReqDex = infoNode.GetShort("reqDEX");
-            ReqInt = infoNode.GetShort("reqINT");
-            ReqLuk = infoNode.GetShort("reqLUK");
-            Strength = infoNode.GetShort("incSTR");
-            Dexterity = infoNode.GetShort("incINT");
-            Intelligence = infoNode.GetShort("incINT");
-            Luck = infoNode.GetShort("incLUK");
-            WeaponAttack = infoNode.GetShort("incPAD");
-            MagicAttack = infoNode.GetShort("incMAD");
-            WeaponDefense = infoNode.GetShort("incPDD");
-            MagicDefense = infoNode.GetShort("incMDD");
-            MaxHealth = infoNode.GetShort("incMHP");
-            MaxMana = infoNode.GetShort("incMMP");
-            Accuracy = infoNode.GetShort("incACC");
-            Avoidability = infoNode.GetShort("incEVA");
-            Hands = infoNode.GetShort("incHands"); // TODO: Validate this.
-            Speed = infoNode.GetShort("incSpeed");
-            Jump = infoNode.GetShort("incJump");
+            IsMultiable = infoNode.GetBoolean("multiPet");
+            IsPermanent = infoNode.GetBoolean("permanent");
+            HasPickupItem = infoNode.GetBoolean("pickupItem");
+            HasAutoBuff = infoNode.GetBoolean("autoBuff");
+            Life = infoNode.GetInt("life");
+            Hunger = infoNode.GetInt("hungry");
         }
     }
+       */
 
     internal sealed class ItemDataProvider : Dictionary<int, ItemData>
     {
@@ -147,127 +227,19 @@ namespace SharpEnd.Data
 
         public void Load()
         {
-            using (NXFile file = new NXFile(Path.Combine("nx", "Character.nx")))
+            using (FileStream stream = File.Open("data/Items.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                foreach (NXNode category in file.BaseNode)
+                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
                 {
-                    if (category.Name.Contains(".img") ||
-                        category.Name == "Afterimage" ||
-                        category.Name == "Face" ||
-                        category.Name == "Hair")
+                    int count = reader.ReadInt32();
+
+                    while (count-- > 0)
                     {
-                        continue;
-                    }
+                        ItemData item = new ItemData();
 
-                    foreach (NXNode node in category)
-                    {
-                        if (!node.ContainsChild("info"))
-                        {
-                            continue;
-                        }
+                        item.Read(reader);
 
-                        NXNode infoNode = node["info"];
-
-                        int identifier = node.GetIdentifier<int>();
-
-                        if (ContainsKey(identifier))
-                        {
-                            continue;
-                        }
-
-                        ItemEquipData equip = new ItemEquipData();
-
-                        equip.Load(infoNode);
-
-                        Add(identifier, equip);
-                    }
-                }
-            }
-
-            using (NXFile file = new NXFile(Path.Combine("nx", "Item.nx")))
-            {
-                foreach (NXNode category in file.BaseNode)
-                {
-                    switch (category.Name)
-                    {
-                        case "ItemOption.img":
-                            {
-                                // TODO: Potential.
-                            }
-                            break;
-
-                        case "Cash":
-                        case "Consume":
-                        case "Etc":
-                        case "Install":
-                            {
-                                foreach (NXNode container in category)
-                                {
-                                    foreach (NXNode node in container)
-                                    {
-                                        if (!node.ContainsChild("info"))
-                                        {
-                                            continue;
-                                        }
-
-                                        int identifier = node.GetIdentifier<int>();
-
-                                        if (ContainsKey(identifier))
-                                        {
-                                            continue;
-                                        }
-
-                                        NXNode infoNode = node["info"];
-
-                                        if (node.ContainsChild("spec"))
-                                        {
-                                            NXNode specNode = node["spec"];
-
-                                            ItemConsumeData consume = new ItemConsumeData();
-
-                                            consume.Load(infoNode, specNode, 200);
-
-                                            Add(identifier, consume);
-                                        }
-                                        else
-                                        {
-                                            ItemData item = new ItemData();
-
-                                            item.Load(infoNode, 200);
-
-                                            Add(identifier, item);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-
-                        case "Pet":
-                            {
-                                foreach (NXNode node in category)
-                                {
-                                    if (!node.ContainsChild("info"))
-                                    {
-                                        continue;
-                                    }
-
-                                    NXNode infoNode = node["info"];
-
-                                    int identifier = node.GetIdentifier<int>();
-
-                                    if (ContainsKey(identifier))
-                                    {
-                                        continue;
-                                    }
-
-                                    ItemPetData pet = new ItemPetData();
-
-                                    pet.Load(infoNode);
-
-                                    Add(identifier, pet);
-                                }
-                            }
-                            break;
+                        Add(item.Identifier, item);
                     }
                 }
             }

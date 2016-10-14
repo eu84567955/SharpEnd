@@ -1,11 +1,9 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Packets;
 using SharpEnd.Players;
-using SharpEnd.Threading;
-using System;
 using System.Collections.Generic;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal sealed class MapMobs : MapEntities<Mob>
     {
@@ -35,7 +33,7 @@ namespace SharpEnd.Maps
                         owner = attacker.Key;
                     }
 
-                    ulong experience = (ulong)(Math.Min(mob.Data.Experience, (attacker.Value * mob.Data.Experience) / mob.Data.MaxHealth));
+                    ulong experience = 0;// (ulong)(Math.Min(mob.Data.Experience, (attacker.Value * mob.Data.Experience) / mob.Data.MaxHealth));
 
                     attacker.Key.Stats.GiveExperience(experience, true, false);
                 }
@@ -43,7 +41,7 @@ namespace SharpEnd.Maps
 
             mob.Attackers.Clear();
 
-            if (true) // TODO: A boolean indicating if a mob can drop.
+            if (mob.CanDrop)
             {
                 List<Drop> drops = new List<Drop>();
 
@@ -69,7 +67,7 @@ namespace SharpEnd.Maps
 
                     dropPosition.X += 25;
 
-                    Map.Drops.Add(drop);
+                    //Map.Drops.Add(drop);
                 }
             }
 
@@ -84,13 +82,7 @@ namespace SharpEnd.Maps
 
             base.Remove(mob);
 
-            if (mob.SpawnPoint != null)
-            {
-                Delay.Execute(3000, () =>
-                {
-                    mob.SpawnPoint.Spawn();
-                });
-            }
+            // TODO: Respawn.
 
             // TODO: Spawn death summons.
         }

@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Drawing
 {
-    internal sealed class Point
+    public sealed class Point
     {
         public short X { get; set; }
         public short Y { get; set; }

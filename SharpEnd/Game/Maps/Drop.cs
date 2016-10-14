@@ -2,7 +2,7 @@
 using SharpEnd.Players;
 using SharpEnd.Threading;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal abstract class Drop : MapEntity
     {
@@ -21,7 +21,7 @@ namespace SharpEnd.Maps
             set
             {
                 Origin = value.Position;
-                Position = value.Map.Footholds.FindBelow(value.Position, -20);
+                //Position = value.Map.Footholds.FindBelow(value.Position, -20);
 
                 dropper = value;
             }

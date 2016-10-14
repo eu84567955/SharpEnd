@@ -9,11 +9,11 @@ namespace SharpEnd.Handlers
         {
             if (inPacket.ReadBoolean())
             {
-                // TODO: Remove quest 122901
+                // TODO: Remove quest 122901.
             }
             else
             {
-                // TODO: Add quest 122901
+                // TODO: Add quest 122901.
             }
         }
     }

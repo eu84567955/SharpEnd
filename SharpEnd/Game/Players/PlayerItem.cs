@@ -1,6 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using SharpEnd.Data;
-using SharpEnd.Maps;
+using SharpEnd.Game.Maps;
 using SharpEnd.Packets;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
@@ -96,7 +96,7 @@ namespace SharpEnd.Players
 
             if (Inventory == EInventoryType.Equipment)
             {
-                ItemEquipData data = MasterServer.Instance.Items[Identifier] as ItemEquipData;
+                ItemEquipData data = MasterServer.Instance.Items[Identifier].Equip;
 
                 Slots = data.Slots;
                 Strength = data.Strength;
@@ -239,7 +239,7 @@ namespace SharpEnd.Players
                 Dropper = Player;
                 Owner = null;
 
-                Player.Map.Drops.Add(this);
+                //Player.Map.Drops.Add(this);
 
                 Parent.Remove(this);
             }

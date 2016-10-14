@@ -67,7 +67,7 @@ namespace SharpEnd.Packets
                             .WriteInt() // NOTE: Waru points
                             .WriteInt() // NOTE: Gachapon experience
                             .WriteInt(player.MapIdentifier)
-                            .WriteSByte(player.SpawnPoint)
+                            .WriteSByte(player.MapSpawnPoint)
                             .WriteInt() // NOTE: Unknown
                             .WriteUShort(player.Stats.SubJob)
                             .WriteByte() // NOTE: Fatigue
@@ -246,7 +246,7 @@ namespace SharpEnd.Packets
                     outPacket
                         .WriteBoolean(false) // NOTE: bUsingBuffProtector
                         .WriteInt(player.MapIdentifier)
-                        .WriteSByte(player.SpawnPoint)
+                        .WriteSByte(player.MapSpawnPoint)
                         .WriteUInt(player.Stats.Health) // NOTE: Health
                         .WriteBoolean(spawnByPosition);
 

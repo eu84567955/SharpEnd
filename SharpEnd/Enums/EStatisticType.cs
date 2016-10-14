@@ -21,6 +21,20 @@
         Experience = 0x10000,
         Fame = 0x20000,
         Meso = 0x40000,
-        Pet = 0x180008
+        Pet = 0x180008,
+        GachaponExperience = 0x200000,
+        Fatigue = 0x400000,
+        Charisma = 0x800000,
+        Insight = 0x1000000,
+        Will = 0x2000000,
+        Craft = 0x4000000,
+        Sense = 0x8000000,
+        Charm = 0x10000000,
+        TraitLimit = 0x20000000,
+        BattleExperience = 0x40000000,
+        BattleRank = 0x80000000,
+        BattlePoints = 0x100000000,
+        IceGage = 0x200000000,
+        Virtue = 0x400000000
     }
 }

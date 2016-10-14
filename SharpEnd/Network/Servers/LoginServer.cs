@@ -1,5 +1,4 @@
 ﻿using SharpEnd.Network;
-using System;
 using System.Net.Sockets;
 
 namespace SharpEnd.Servers

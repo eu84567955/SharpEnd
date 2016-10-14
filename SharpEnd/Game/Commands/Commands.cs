@@ -3,7 +3,7 @@ using SharpEnd.Utility;
 using System;
 using System.Collections.Generic;
 
-namespace SharpEnd.Commands
+namespace SharpEnd.Game.Commands
 {
     internal sealed class Commands : Dictionary<ECommandType, Dictionary<string, Command>>
     {
@@ -28,6 +28,7 @@ namespace SharpEnd.Commands
             }
         }
 
+        // TODO: If a player executes a Gm command (restricted), show an appropriate message instead of invalid command.
         public void Execute(Player player, string text)
         {
             string[] splitted = text.Split(' ');

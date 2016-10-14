@@ -1,4 +1,4 @@
-﻿namespace SharpEnd.Maps
+﻿namespace SharpEnd.Game.Maps
 {
     internal abstract class MapEntity : MovableLife
     {

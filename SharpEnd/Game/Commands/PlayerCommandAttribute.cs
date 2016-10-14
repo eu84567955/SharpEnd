@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpEnd.Commands
+namespace SharpEnd.Game.Commands
 {
     internal sealed class PlayerCommandAttribute : Attribute
     {

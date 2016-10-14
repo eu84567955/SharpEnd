@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Packets;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal sealed class MapNpcs : MapEntities<Npc>
     {

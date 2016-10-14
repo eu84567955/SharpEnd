@@ -1,9 +1,9 @@
-﻿using SharpEnd.Maps;
+﻿using SharpEnd.Game.Maps;
 using SharpEnd.Players;
 using SharpEnd.Servers;
 using System.Collections.Generic;
 
-namespace SharpEnd.Commands.Gm
+namespace SharpEnd.Game.Commands.Gm
 {
     internal static class MobCommands
     {
@@ -14,7 +14,7 @@ namespace SharpEnd.Commands.Gm
             {
                 while (amount-- > 0)
                 {
-                    //player.Map.Mobs.Add(new Mob(mobIdentifier, player.Position, player.Foothold));
+                    player.Map.Mobs.Add(new Mob(mobIdentifier, player.Position));
                 }
             }
             else
@@ -44,7 +44,7 @@ namespace SharpEnd.Commands.Gm
         {
             List<Drop> toClear = new List<Drop>();
 
-            foreach (Drop drop in player.Map.Drops.Values)
+            /*foreach (Drop drop in player.Map.Drops.Values)
             {
                 toClear.Add(drop);
             }
@@ -52,7 +52,7 @@ namespace SharpEnd.Commands.Gm
             foreach (Drop drop in toClear)
             {
                 player.Map.Drops.Remove(drop);
-            }
+            }*/
         }
     }
 }

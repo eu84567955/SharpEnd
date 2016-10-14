@@ -2,7 +2,7 @@
 using SharpEnd.Servers;
 using SharpEnd.Utility;
 
-namespace SharpEnd.Commands.Gm
+namespace SharpEnd.Game.Commands.Gm
 {
     internal static class ItemCommands
     {

@@ -1,4 +1,4 @@
-﻿namespace SharpEnd.Maps
+﻿namespace SharpEnd.Game.Maps
 {
     internal sealed class Meso : Drop
     {

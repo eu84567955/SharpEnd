@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using SharpEnd.Network;
-using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
@@ -9,8 +8,8 @@ namespace SharpEnd.Handlers
 {
     internal static class MigrationHandlers
     {
-        [PacketHandler(EHeader.CMSG_PLAYER_LOAD)]
-        public static void PlayerLoadHandler(Client client, InPacket inPacket)
+        [PacketHandler(EHeader.CMSG_MIGRATE_TO_CHANNEL)]
+        public static void MigrateToChannelHandler(Client client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: World alliance identifier.
             int accountIdentifier;
@@ -40,8 +39,14 @@ namespace SharpEnd.Handlers
             client.Player.Initialize();
         }
 
-        [PacketHandler(EHeader.CMSG_CASH_SHOP)]
-        public static void CashShopHandler(Client client, InPacket inPacket)
+        [PacketHandler(EHeader.CMSG_MIGRATE_TO_CASH_SHOP)]
+        public static void MigrateToCashShopHandler(Client client, InPacket inPacket)
+        {
+
+        }
+
+        [PacketHandler(EHeader.CMSG_MIGRATE_TO_MONSTER_LIFE)]
+        public static void MigrateToMonsterLifeHandler(Client client, InPacket inPacket)
         {
 
         }

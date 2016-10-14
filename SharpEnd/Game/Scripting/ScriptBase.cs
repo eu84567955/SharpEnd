@@ -1,9 +1,7 @@
 ﻿using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
-using SharpEnd.Packets;
 using SharpEnd.Players;
 using System;
-using System.IO;
 
 namespace SharpEnd.Scripting
 {
@@ -63,7 +61,7 @@ namespace SharpEnd.Scripting
 
         private void SetMap(int mapIdentifier)
         {
-            m_player.SetMap(mapIdentifier);
+            //m_player.SetMap(mapIdentifier);
         }
 
         private void SetPlayerVariable(string key, int value)

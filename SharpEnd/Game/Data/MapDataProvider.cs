@@ -1,260 +1,326 @@
-﻿using reNX;
-using reNX.NXProperties;
-using SharpEnd.Drawing;
-using SharpEnd.Maps;
-using System;
+﻿using SharpEnd.Drawing;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
-namespace SharpEnd.Data
+namespace SharpEnd.Game.Data
 {
-    internal sealed class MapDataProvider
+    public sealed class MapData
     {
-        private static List<string> skippedCategories = new List<string>()
+        public sealed class MapFootholdData
         {
-            "AdditionalInfo_JP.img", "AreaCode.img", "FieldGenerator.img", "Graph.img"
-        };
+            public ushort Identifier;
+            public ushort NextIdentifier;
+            public ushort PreviousIdentifier;
+            public short DragForce;
+            public Point Point1;
+            public Point Point2;
 
-        private Dictionary<int, Map> m_maps;
-
-        public MapDataProvider()
-        {
-            m_maps = new Dictionary<int, Map>();
-        }
-
-        public bool Contains(int identifier)
-        {
-            using (NXFile file = new NXFile(Path.Combine("nx", "Map.nx")))
+            public void Read(BinaryReader reader)
             {
-                return file.BaseNode["Map"][string.Format("Map{0}", identifier / 100000000)].ContainsChild(string.Format("{0}.img", identifier));
+                Identifier = reader.ReadUInt16();
+                NextIdentifier = reader.ReadUInt16();
+                PreviousIdentifier = reader.ReadUInt16();
+                DragForce = reader.ReadInt16();
+                Point1 = new Point(reader.ReadInt16(), reader.ReadInt16());
+                Point2 = new Point(reader.ReadInt16(), reader.ReadInt16());
+            }
+
+            public void Write(BinaryWriter writer)
+            {
+                writer.Write(Identifier);
+                writer.Write(NextIdentifier);
+                writer.Write(PreviousIdentifier);
+                writer.Write(DragForce);
+                writer.Write(Point1.X);
+                writer.Write(Point1.Y);
+                writer.Write(Point2.X);
+                writer.Write(Point2.Y);
             }
         }
 
-        public Map this[int identifier]
+        public sealed class MapMobData
         {
-            get
+            public int Identifier;
+            public Point Position;
+            public ushort Foothold;
+            public int RespawnTime;
+
+            public void Read(BinaryReader reader)
             {
-                if (!m_maps.ContainsKey(identifier))
-                {
-                    LoadMap(identifier);
+                Identifier = reader.ReadInt32();
+                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
+                Foothold = reader.ReadUInt16();
+                RespawnTime = reader.ReadInt32();
+            }
 
-                    foreach (SpawnPoint spawnPoint in m_maps[identifier].SpawnPoints)
-                    {
-                        spawnPoint.Spawn();
-                    }
-                }
-
-                return m_maps[identifier];
+            public void Write(BinaryWriter writer)
+            {
+                writer.Write(Identifier);
+                writer.Write(Position.X);
+                writer.Write(Position.Y);
+                writer.Write(Foothold);
+                writer.Write(RespawnTime);
             }
         }
 
-        private void LoadMap(int identifier)
+        public sealed class MapNpcData
         {
-            Map map = new Map(identifier);
+            public int Identifier;
+            public Point Position;
+            public ushort Foothold;
+            public short MinimumClickX;
+            public short MaximumClickX;
+            public bool Flip;
+            public bool Hide;
 
-            using (NXFile file = new NXFile(Path.Combine("nx", "Map.nx")))
+            public void Read(BinaryReader reader)
             {
-                var node = file.BaseNode["Map"][string.Format("Map{0}", identifier / 100000000)][string.Format("{0}.img", identifier)];
+                Identifier = reader.ReadInt32();
+                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
+                Foothold = reader.ReadUInt16();
+                MinimumClickX = reader.ReadInt16();
+                MaximumClickX = reader.ReadInt16();
+                Flip = reader.ReadBoolean();
+                Hide = reader.ReadBoolean();
+            }
 
-                var infoNode = node["info"];
-
-                // TODO: Fetch info from infoNode
-
-                if (node.ContainsChild("foothold"))
-                {
-                    LoadFoothold(map, node["foothold"]);
-                }
-
-                if (node.ContainsChild("life"))
-                {
-                    LoadLife(map, node["life"]);
-                }
-
-                if (node.ContainsChild("portal"))
-                {
-                    LoadPortals(map, node["portal"]);
-                }
-
-                if (node.ContainsChild("reactor"))
-                {
-                    LoadReactors(map, node["reactor"]);
-                }
-
-                if (node.ContainsChild("seat"))
-                {
-                    LoadSeats(map, node["seat"]);
-                }
-
-                m_maps.Add(identifier, map);
+            public void Write(BinaryWriter writer)
+            {
+                writer.Write(Identifier);
+                writer.Write(Position.X);
+                writer.Write(Position.Y);
+                writer.Write(Foothold);
+                writer.Write(MinimumClickX);
+                writer.Write(MaximumClickX);
+                writer.Write(Flip);
+                writer.Write(Hide);
             }
         }
 
-        private void LoadFoothold(Map map, NXNode footholdNode)
+        public sealed class MapPortalData
         {
-            foreach (var layer in footholdNode)
+            public sbyte Identifier;
+            public Point Position;
+            public string Label;
+            public int ToMap;
+            public string ToName;
+            public string Script;
+
+            public void Read(BinaryReader reader)
             {
-                foreach (var category in layer)
-                {
-                    foreach (var node in category)
-                    {
-                        FootholdData foothold = new FootholdData();
+                Identifier = reader.ReadSByte();
+                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
+                Label = reader.ReadString();
+                ToMap = reader.ReadInt32();
+                ToName = reader.ReadString();
+                Script = reader.ReadString();
+            }
 
-                        foothold.Identifier = node.GetIdentifier<short>();
-                        foothold.Next = node.GetShort("next");
-                        foothold.Previous = node.GetShort("prev");
-                        foothold.Point1 = new Point(node.GetShort("x1"), node.GetShort("y1"));
-                        foothold.Point2 = new Point(node.GetShort("x2"), node.GetShort("y2"));
-
-                        map.Footholds.Add(foothold);
-                    }
-                }
+            public void Write(BinaryWriter writer)
+            {
+                writer.Write(Identifier);
+                writer.Write(Position.X);
+                writer.Write(Position.Y);
+                writer.Write(Label);
+                writer.Write(ToMap);
+                writer.Write(ToName);
+                writer.Write(Script);
             }
         }
 
-        private void LoadLife(Map map, NXNode lifeNode)
+        public sealed class MapSeatData
         {
-            // NOTE: Some maps have life in categories.
-            // We're going to skip them for now until we figure this one out.
-            if (lifeNode.ContainsChild("isCategory"))
+            public short Identifier;
+            public Point Position;
+
+            public void Read(BinaryReader reader)
             {
-                return;
+                Identifier = reader.ReadInt16();
+                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
             }
 
-            foreach (var node in lifeNode)
+            public void Write(BinaryWriter writer)
             {
-                int identifier = int.Parse(node.GetString("id")); // NOTE: Life identifiers are string
-                Point position = new Point(node.GetShort("x"), node.GetShort("cy"));
-                ushort foothold = node.GetUShort("fh");
-                bool flip = node.GetBoolean("f");
-                bool hide = node.GetBoolean("hide");
-
-                switch (node.GetString("type"))
-                {
-                    case "n":
-                        {
-                            short cy = node.GetShort("cy");
-                            short rx0 = node.GetShort("rx0");
-                            short rx1 = node.GetShort("rx1");
-
-                            Npc npc = new Npc(identifier, rx0, rx1, position, foothold, flip, hide);
-
-                            map.Npcs.Add(npc);
-                        }
-                        break;
-
-                    case "m":
-                        {
-                            int respawnTime = node.GetInt("mobTime");
-
-                            SpawnPoint spawnPoint = new SpawnPoint(identifier, position, foothold, flip, hide);
-
-                            map.SpawnPoints.Add(spawnPoint);
-                        }
-                        break;
-
-                    case "r":
-                        {
-                            // NOTE: Reactors are no longer inside the life node.
-                            // Instead, they have their own separate node called "reactor".
-                        }
-                        break;
-                }
+                writer.Write(Identifier);
+                writer.Write(Position.X);
+                writer.Write(Position.Y);
             }
         }
 
-        // TODO: Use the "pt" property which indicates the type of the portal (spawn point, door, etcetera)
-        private void LoadPortals(Map map, NXNode portalNode)
+        public int Identifier { get; set; }
+        //public EMapFlags Flags { get; set; }
+        public string ShuffleName { get; set; }
+        public string Music { get; set; }
+        public byte MinLevelLimit { get; set; }
+        public ushort TimeLimit { get; set; }
+        public byte RegenRate { get; set; }
+        public float Traction { get; set; }
+        public short LeftTopX { get; set; }
+        public short LeftTopY { get; set; }
+        public short RightBottomX { get; set; }
+        public short RightBottomY { get; set; }
+        public int ReturnMapIdentifier { get; set; }
+        public int ForcedReturnMapIdentifier { get; set; }
+        //public EMapFieldType FieldTypes { get; set; }
+        //public EMapFieldLimit FieldLimits { get; set; }
+        public byte DecreaseHP { get; set; }
+        public ushort DamagePerSecond { get; set; }
+        public int ProtectItemIdentifier { get; set; }
+        public float MobRate { get; set; }
+        public int LinkIdentifier { get; set; }
+        public List<MapFootholdData> Footholds { get; set; }
+        public List<MapMobData> Mobs { get; set; }
+        public List<MapNpcData> Npcs { get; set; }
+        //public List<MapReactorData> Reactors { get; set; }
+        public List<MapPortalData> Portals { get; set; }
+        public List<MapSeatData> Seats { get; set; }
+        
+        public void Read(BinaryReader reader)
         {
-            foreach (var node in portalNode)
+            Identifier = reader.ReadInt32();
+            //Flags = (EMapFlags)pReader.ReadUInt16();
+            ShuffleName = reader.ReadString();
+            Music = reader.ReadString();
+            MinLevelLimit = reader.ReadByte();
+            TimeLimit = reader.ReadUInt16();
+            RegenRate = reader.ReadByte();
+            Traction = reader.ReadSingle();
+            LeftTopX = reader.ReadInt16();
+            LeftTopY = reader.ReadInt16();
+            RightBottomX = reader.ReadInt16();
+            RightBottomY = reader.ReadInt16();
+            ReturnMapIdentifier = reader.ReadInt32();
+            ForcedReturnMapIdentifier = reader.ReadInt32();
+            //FieldTypes = (EMapFieldType)pReader.ReadUInt16();
+            //FieldLimits = (EMapFieldLimit)pReader.ReadUInt32();
+            DecreaseHP = reader.ReadByte();
+            DamagePerSecond = reader.ReadUInt16();
+            ProtectItemIdentifier = reader.ReadInt32();
+            MobRate = reader.ReadSingle();
+            LinkIdentifier = reader.ReadInt32();
+
+            int footholdsCount = reader.ReadInt32();
+            Footholds = new List<MapFootholdData>(footholdsCount);
+            while (footholdsCount-- > 0)
             {
-                try
-                {
-                    PortalData portal = new PortalData();
+                MapFootholdData foothold = new MapFootholdData();
+                foothold.Read(reader);
+                Footholds.Add(foothold);
+            }
 
-                    portal.Identifier = node.GetIdentifier<sbyte>();
-                    portal.Label = node.GetString("pn");
-                    portal.DestinationMap = node.GetInt("tm");
-                    portal.DestinationLabel = node.GetString("tn");
-                    portal.Position = new Point(node.GetShort("x"), node.GetShort("y"));
-                    portal.Script = node.GetString("script");
+            int mobsCount = reader.ReadInt32();
+            Mobs = new List<MapMobData>(mobsCount);
+            while (mobsCount-- > 0)
+            {
+                MapMobData mob = new MapMobData();
+                mob.Read(reader);
+                Mobs.Add(mob);
+            }
 
-                    if (portal.Label == "sp")
-                    {
-                        map.Portals.SpawnPoints.Add(portal);
-                    }
-                    else
-                    {
-                        map.Portals.Regular.Add(portal);
-                    }
-                }
-                catch
-                {
-                    // NOTE: Some maps include way too many portals. We'll deal with them later.
-                    // For now, we're skipping them.
-                }
+            int npcsCount = reader.ReadInt32();
+            Npcs = new List<MapNpcData>(npcsCount);
+            while (npcsCount-- > 0)
+            {
+                MapNpcData npc = new MapNpcData();
+                npc.Read(reader);
+                Npcs.Add(npc);
+            }
+
+            /*int reactorsCount = pReader.ReadInt32();
+            Reactors = new List<MapReactorData>(reactorsCount);
+            while (reactorsCount-- > 0)
+            {
+                MapReactorData reactor = new MapReactorData();
+                reactor.Load(pReader);
+                Reactors.Add(reactor);
+            }*/
+
+            int portalsCount = reader.ReadInt32();
+            Portals = new List<MapPortalData>(portalsCount);
+            while (portalsCount-- > 0)
+            {
+                MapPortalData portal = new MapPortalData();
+                portal.Read(reader);
+                Portals.Add(portal);
+            }
+
+            int seatsCount = reader.ReadInt32();
+            Seats = new List<MapSeatData>(seatsCount);
+            while (seatsCount-- > 0)
+            {
+                MapSeatData seat = new MapSeatData();
+                seat.Read(reader);
+                Seats.Add(seat);
             }
         }
 
-        private void LoadReactors(Map map, NXNode reactorNode)
+        public void Write(BinaryWriter writer)
         {
-            foreach (var node in reactorNode)
-            {
-                int identifier = int.Parse(node.GetString("id")); // NOTE: Reactor identifiers are string
-                string label = node.GetString("name");
-                int time = node.GetInt("reactorTime");
-                Point position = new Point(node.GetShort("x"), node.GetShort("cy"));
-                bool flip = node.GetBoolean("f");
+            writer.Write(Identifier);
+            //pWriter.Write((ushort)Flags);
+            writer.Write(ShuffleName);
+            writer.Write(Music);
+            writer.Write(MinLevelLimit);
+            writer.Write(TimeLimit);
+            writer.Write(RegenRate);
+            writer.Write(Traction);
+            writer.Write(LeftTopX);
+            writer.Write(LeftTopY);
+            writer.Write(RightBottomX);
+            writer.Write(RightBottomY);
+            writer.Write(ReturnMapIdentifier);
+            writer.Write(ForcedReturnMapIdentifier);
+            //pWriter.Write((ushort)FieldTypes);
+            //pWriter.Write((uint)FieldLimits);
+            writer.Write(DecreaseHP);
+            writer.Write(DamagePerSecond);
+            writer.Write(ProtectItemIdentifier);
+            writer.Write(MobRate);
+            writer.Write(LinkIdentifier);
 
-                Reactor reactor = new Reactor(identifier, label, time, position, 0, flip, false);
+            writer.Write(Footholds.Count);
+            Footholds.ForEach(f => f.Write(writer));
 
-                map.Reactors.Add(reactor);
-            }
-        }
+            writer.Write(Mobs.Count);
+            Mobs.ForEach(m => m.Write(writer));
 
-        private void LoadSeats(Map map, NXNode seatNode)
-        {
-            foreach (var node in seatNode)
-            {
-                SeatData seat = new SeatData();
+            writer.Write(Npcs.Count);
+            Npcs.ForEach(n => n.Write(writer));
 
-                seat.Identifier = node.GetIdentifier<short>();
-                seat.Position = new Point(0, 0); // TODO: NXValuedNode<Point>, somehow.
+            /*pWriter.Write(Reactors.Count);
+            Reactors.ForEach(r => r.Write(pWriter));*/
 
-                map.Seats.Add(seat);
-            }
+            writer.Write(Portals.Count);
+            Portals.ForEach(p => p.Write(writer));
+
+            writer.Write(Seats.Count);
+            Seats.ForEach(s => s.Write(writer));
         }
     }
 
-    internal sealed class FootholdData
+    internal sealed class MapDataProvider : Dictionary<int, MapData>
     {
-        public short Identifier { get; set; }
-        public short Previous { get; set; }
-        public short Next { get; set; }
-        public Point Point1 { get; set; }
-        public Point Point2 { get; set; }
+        public MapDataProvider() : base() { }
 
-        public bool IsWall
+        public void Load()
         {
-            get
+            using (FileStream stream = File.Open("data/Maps.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Point1.X == Point2.X;
+                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                {
+                    int count = reader.ReadInt32();
+
+                    while (count-- > 0)
+                    {
+                        MapData map = new MapData();
+
+                        map.Read(reader);
+
+                        Add(map.Identifier, map);
+                    }
+                }
             }
         }
-    }
-
-    internal sealed class PortalData
-    {
-        public sbyte Identifier { get; set; }
-        public string Label { get; set; }
-        public int DestinationMap { get; set; }
-        public string DestinationLabel { get; set; }
-        public Point Position { get; set; }
-        public string Script { get; set; }
-    }
-
-    internal sealed class SeatData
-    {
-        public short Identifier { get; set; }
-        public Point Position { get; set; }
     }
 }

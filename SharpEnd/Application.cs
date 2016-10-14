@@ -1,5 +1,4 @@
-﻿using SharpEnd.Players;
-using SharpEnd.Servers;
+﻿using SharpEnd.Servers;
 using SharpEnd.Threading;
 using SharpEnd.Utility;
 using System;
@@ -45,7 +44,7 @@ namespace SharpEnd
                 Console.Read();
             }
 
-            // TODO: Dispose
+            // TODO: Dispose.
 
             Log.SkipLine();
 

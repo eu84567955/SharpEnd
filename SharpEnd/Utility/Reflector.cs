@@ -1,4 +1,4 @@
-﻿using SharpEnd.Commands;
+﻿using SharpEnd.Game.Commands;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -33,6 +33,7 @@ namespace SharpEnd.Utility
             return results;
         }
 
+        // TODO: Refactor and combine the both to one.
         public static List<Command> FindCommands(ECommandType commandType)
         {
             List<Command> commands = new List<Command>();
@@ -68,7 +69,7 @@ namespace SharpEnd.Utility
                                     MethodInfo methodInfo = method;
                                     ParameterInfo[] parameters = method.GetParameters();
 
-                                    commands.Add(new Command(name, description, methodInfo, parameters));
+                                    commands.Add(new Command(commandType, name, description, methodInfo, parameters));
                                 }
                                 break;
 
@@ -86,7 +87,7 @@ namespace SharpEnd.Utility
                                     MethodInfo methodInfo = method;
                                     ParameterInfo[] parameters = method.GetParameters();
 
-                                    commands.Add(new Command(name, description, methodInfo, parameters));
+                                    commands.Add(new Command(commandType, name, description, methodInfo, parameters));
                                 }
                                 break;
                         }

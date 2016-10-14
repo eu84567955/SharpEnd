@@ -2,11 +2,13 @@
 using reNX.NXProperties;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace SharpEnd.Data
 {
-    internal sealed class MobData
+    public sealed class MobData
     {
+        public int Identifier;
         public bool IsBoss { get; set; }
         public bool HasFFALoot { get; set; }
         public bool HasExplosiveReward { get; set; }
@@ -27,40 +29,55 @@ namespace SharpEnd.Data
         public int Invincible { get; set; }
         public int FixedDamage { get; set; }
         public int SummonType { get; set; }
-        public string Name { get; set; }
-        public List<MobSkillData> Skills = new List<MobSkillData>();
 
-        public void Load(NXNode node)
+        public void Read(BinaryReader reader)
         {
-            IsBoss = node.GetBoolean("boss");
-            HasFFALoot = node.GetBoolean("publicReward");
-            HasExplosiveReward = node.GetBoolean("explosiveReward");
-            Level = node.GetInt("level");
-            WeaponAttack = node.GetInt("PADamage");
-            MagicAttack = node.GetInt("MADamage");
-            WeaponDefense = node.GetInt("PDDamage");
-            MagicDefense = node.GetInt("MDDamage");
-            PDRate = node.GetInt("PDRate");
-            MDRate = node.GetInt("MDRate");
+            Identifier = reader.ReadInt32();
+            IsBoss = reader.ReadBoolean();
+            HasFFALoot = reader.ReadBoolean();
+            HasExplosiveReward = reader.ReadBoolean();
+            Level = reader.ReadInt32();
+            WeaponAttack = reader.ReadInt32();
+            MagicAttack = reader.ReadInt32();
+            WeaponDefense = reader.ReadInt32();
+            MagicDefense = reader.ReadInt32();
+            PDRate = reader.ReadInt32();
+            MDRate = reader.ReadInt32();
+            MaxHealth = reader.ReadInt32();
+            MaxMana = reader.ReadInt32();
+            Accuracy = reader.ReadInt32();
+            Avoidability = reader.ReadInt32();
+            Speed = reader.ReadInt32();
+            KnockbackDistance = reader.ReadInt32();
+            Experience = reader.ReadInt32();
+            Invincible = reader.ReadInt32();
+            FixedDamage = reader.ReadInt32();
+            SummonType = reader.ReadInt32();
+        }
 
-            try
-            {
-                MaxHealth = node.GetInt("maxHP");
-            }
-            catch
-            {
-                MaxHealth = 0; // NOTE: Some mobs have hp listed as question marks. Figure out what it is.
-            }
-
-            MaxMana = node.GetInt("maxMP");
-            Accuracy = node.GetInt("acc");
-            Avoidability = node.GetInt("eva");
-            Speed = node.GetInt("speed");
-            KnockbackDistance = node.GetInt("pushed");
-            Experience = node.GetInt("exp");
-            Invincible = node.GetInt("invincible");
-            FixedDamage = node.GetInt("fixedDamage");
-            SummonType = node.GetInt("summonType");
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Identifier);
+            writer.Write(IsBoss);
+            writer.Write(HasFFALoot);
+            writer.Write(HasExplosiveReward);
+            writer.Write(Level);
+            writer.Write(WeaponAttack);
+            writer.Write(MagicAttack);
+            writer.Write(WeaponDefense);
+            writer.Write(MagicDefense);
+            writer.Write(PDRate);
+            writer.Write(MDRate);
+            writer.Write(MaxHealth);
+            writer.Write(MaxMana);
+            writer.Write(Accuracy);
+            writer.Write(Avoidability);
+            writer.Write(Speed);
+            writer.Write(KnockbackDistance);
+            writer.Write(Experience);
+            writer.Write(Invincible);
+            writer.Write(FixedDamage);
+            writer.Write(SummonType);
         }
     }
 
@@ -70,37 +87,22 @@ namespace SharpEnd.Data
 
         public void Load()
         {
-            NXFile file = new NXFile(Path.Combine("nx", "Mob.nx"));
-
-            foreach (NXNode node in file.BaseNode)
+            using (FileStream stream = File.Open("data/Mobs.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                if (node.Name == "QuestCountGroup")
+                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
                 {
-                    continue;
+                    int count = reader.ReadInt32();
+
+                    while (count-- > 0)
+                    {
+                        MobData mob = new MobData();
+
+                        mob.Read(reader);
+
+                        Add(mob.Identifier, mob);
+                    }
                 }
-
-                if (!node.ContainsChild("info"))
-                {
-                    continue;
-                }
-
-                NXNode infoNode = node["info"];
-
-                int identifier = node.GetIdentifier<int>();
-
-                if (ContainsKey(identifier))
-                {
-                    continue;
-                }
-
-                MobData mob = new MobData();
-
-                mob.Load(infoNode);
-
-                Add(identifier, mob);
             }
-
-            file.Dispose();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using SharpEnd.Network;
 using SharpEnd.Players;
 using SharpEnd.Utility;
+using System.Collections.Generic;
 
 namespace SharpEnd.Packets
 {
@@ -169,7 +170,7 @@ namespace SharpEnd.Packets
 
         private const int KEYMAP_SIZE = 89;
 
-        public static byte[] Keymap(PlayerKeymap keymap)
+        public static byte[] Keymap(Dictionary<int, Shortcut> keymap)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -191,6 +192,30 @@ namespace SharpEnd.Packets
                             .WriteByte()
                             .WriteInt();
                     }
+                }
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] QuickSlot(int[] binds)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_KEYMAP)
+                    .WriteBoolean(true);
+
+                if (binds.Length == 28)
+                {
+                    for (int i = 0; i < 28; i++)
+                    {
+                        outPacket.WriteInt(binds[i]);
+                    }
+                }
+                else
+                {
+                    outPacket.WriteZero(112);
                 }
 
                 return outPacket.ToArray();

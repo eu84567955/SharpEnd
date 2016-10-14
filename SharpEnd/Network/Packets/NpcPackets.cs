@@ -1,4 +1,4 @@
-﻿using SharpEnd.Maps;
+﻿using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 
 namespace SharpEnd.Packets
@@ -17,8 +17,8 @@ namespace SharpEnd.Packets
                     .WriteSByte(npc.Stance)
                     .WriteBoolean(!npc.Flip)
                     .WriteUShort(npc.Foothold)
-                    .WriteShort(npc.RX0)
-                    .WriteShort(npc.RX1)
+                    .WriteShort(npc.MinimumClickX)
+                    .WriteShort(npc.MaximumClickX)
                     .WriteBoolean(!npc.Hide)
                     .WriteInt() // NOTE: Unknown
                     .WriteByte() // NOTE: tPresentTimeState
@@ -46,8 +46,8 @@ namespace SharpEnd.Packets
                     .WriteSByte(npc.Stance)
                     .WriteBoolean(!npc.Flip)
                     .WriteUShort(npc.Foothold)
-                    .WriteShort(npc.RX0)
-                    .WriteShort(npc.RX1)
+                    .WriteShort(npc.MinimumClickX)
+                    .WriteShort(npc.MaximumClickX)
                     .WriteBoolean(!npc.Hide)
                     .WriteInt() // NOTE: Unknown
                     .WriteByte() // NOTE: tPresentTimeState
@@ -87,14 +87,15 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] NpcAction(int objectIdentifier, byte[] data)
+        public static byte[] NpcAction(int objectIdentifier, byte a, byte b)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_ACTION)
                     .WriteInt(objectIdentifier)
-                    .WriteBytes(data);
+                    .WriteByte(a)
+                    .WriteByte(b);
 
                 return outPacket.ToArray();
             }

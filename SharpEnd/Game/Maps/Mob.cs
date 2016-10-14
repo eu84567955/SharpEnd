@@ -1,45 +1,43 @@
-﻿using SharpEnd.Data;
-using SharpEnd.Packets;
+﻿using SharpEnd.Drawing;
 using SharpEnd.Players;
-using SharpEnd.Servers;
-using System;
 using System.Collections.Generic;
+using static SharpEnd.Game.Data.MapData;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal sealed class Mob : MapEntity, IControllable
     {
         public int Identifier { get; private set; }
-
-        public MobData Data { get; private set; }
-
-        public int Health { get; private set; }
-
-        public SpawnPoint SpawnPoint { get; private set; }
-        
         public Player Controller { get; set; }
-
         public Dictionary<Player, int> Attackers { get; private set; }
+        public bool IsProvoked { get; set; }
+        public bool CanDrop { get; set; }
+
+        public int Health { get; set; }
+        public int Mana { get; set; }
 
         public Mob(int identifier)
+            : base()
         {
             Identifier = identifier;
 
-            Data = MasterServer.Instance.Mobs[identifier];
-
-            Health = Data.MaxHealth;
-
             Attackers = new Dictionary<Player, int>();
+            CanDrop = true;
         }
 
-        public Mob(SpawnPoint spawnPoint)
-            : this(spawnPoint.Identifier)
+        public Mob(MapMobData data)
+            : this(data.Identifier)
         {
-            SpawnPoint = spawnPoint;
+            Position = data.Position;
+            Foothold = data.Foothold;
+        }
 
-            Position = spawnPoint.Position;
-            Stance = spawnPoint.Stance;
-            Foothold = spawnPoint.Foothold;
+        public Mob(int identifier, Point position)
+            : this(identifier)
+        {
+            Position = position;
+            Stance = 0;
+            Foothold = 0; // TODO: FindFloor.
         }
 
         public void AssignController()
@@ -69,7 +67,7 @@ namespace SharpEnd.Maps
 
         public bool Damage(Player player, int amount)
         {
-            amount = Math.Min(amount, Health);
+            /*amount = Math.Min(amount, Health);
 
             if (Attackers.ContainsKey(player))
             {
@@ -89,7 +87,7 @@ namespace SharpEnd.Maps
             if (Health <= 0)
             {
                 return true;
-            }
+            }*/
 
             return false;
         }

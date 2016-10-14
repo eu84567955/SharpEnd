@@ -1,6 +1,5 @@
-﻿using SharpEnd.Data;
-using SharpEnd.Drawing;
-using SharpEnd.Maps;
+﻿using SharpEnd.Drawing;
+using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
@@ -50,25 +49,23 @@ namespace SharpEnd.Handlers
 
                 case -1:
                     {
-                        inPacket.Skip(4); // NOTE: Unknown
+                        inPacket.Skip(4); // NOTE: Unknown.
                         string label = inPacket.ReadString();
 
-                        PortalData portal = player.Map.Portals[label];
+                        Portal portal = player.Map.Portals.GetPortal(label);
 
                         if (portal == null)
                         {
                             return;
                         }
 
-                        PortalData destinationPortal = MasterServer.Instance.GetMaps(client.ChannelIdentifier)[portal.DestinationMap].Portals[portal.DestinationLabel];
-
-                        player.SetMap(portal.DestinationMap, destinationPortal);
+                        player.SetMap(portal.ToMap, MasterServer.Instance.GetMap(portal.ToMap).Portals.GetPortal(portal.ToName));
                     }
                     break;
 
                 default:
                     {
-                        // TODO: /m command
+                        // TODO: /m command, some say.
                     }
                     break;
             }
@@ -452,7 +449,7 @@ namespace SharpEnd.Handlers
             }
             else
             {
-                // TODO: Cross-world operations
+                // TODO: Cross-world operations.
             }
         }
 
@@ -470,7 +467,7 @@ namespace SharpEnd.Handlers
 
             string label = inPacket.ReadString();
 
-            PortalData portal = player.Map.Portals[label];
+            Portal portal = player.Map.Portals.GetPortal(label);
 
             if (portal == null)
             {
@@ -514,13 +511,9 @@ namespace SharpEnd.Handlers
 
             string label = inPacket.ReadString();
 
-            PortalData portal;
+            Portal portal = player.Map.Portals.GetPortal(label);
 
-            try
-            {
-                portal = player.Map.Portals[label];
-            }
-            catch (KeyNotFoundException)
+            if (portal == null)
             {
                 return;
             }

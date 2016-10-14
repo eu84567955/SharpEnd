@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Players;
 
-namespace SharpEnd.Maps
+namespace SharpEnd.Game.Maps
 {
     internal interface IControllable
     {

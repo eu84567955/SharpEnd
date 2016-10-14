@@ -1,9 +1,11 @@
 ﻿using SharpEnd.Data;
-using SharpEnd.Maps;
+using SharpEnd.Game.Commands;
+using SharpEnd.Game.Data;
+using SharpEnd.Game.Maps;
 using SharpEnd.Migrations;
 using SharpEnd.Utility;
-using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SharpEnd.Servers
 {
@@ -21,15 +23,9 @@ namespace SharpEnd.Servers
         public MigrationRequests Migrations { get; private set; }
 
         public ItemDataProvider Items { get; private set; }
+        public MapDataProvider Maps { get; private set; }
         public MobDataProvider Mobs { get; private set; }
-        public NpcDataProvider Npcs { get; private set; }
-        public QuestDataProvider Quests { get; private set; }
-        public ReactorDataProvider Reactors { get; private set; }
-        public SkillDataProvider Skills { get; private set; }
-        public TamingMobDataProvider TamingMobs { get; private set; }
-        public ValidCharDataProvider ValidCharData { get; private set; }
-        public StringDataProvider Strings { get; private set; }
-        public Commands.Commands Commands { get; private set; }
+        public Commands Commands { get; private set; }
 
         private MasterServer()
         {
@@ -47,73 +43,14 @@ namespace SharpEnd.Servers
             Migrations = new MigrationRequests();
 
             Items = new ItemDataProvider();
+            Maps = new MapDataProvider();
             Mobs = new MobDataProvider();
-            Npcs = new NpcDataProvider();
-            Quests = new QuestDataProvider();
-            Reactors = new ReactorDataProvider();
-            Skills = new SkillDataProvider();
-            TamingMobs = new TamingMobDataProvider();
-            ValidCharData = new ValidCharDataProvider();
-            Strings = new StringDataProvider();
-            Commands = new Commands.Commands();
+            Commands = new Commands();
         }
 
         public void Run()
         {
-            // Data is prioritized
-            var now = DateTime.Now;
-
-            Items.Load();
-            Mobs.Load();
-            Npcs.Load();
-            Quests.Load();
-            Reactors.Load();
-            Skills.Load();
-            TamingMobs.Load();
-            //ValidCharData.Load();
-            Strings.Load();
-            Commands.Load();
-
-            // TODO: Move else-where.
-            {
-                string[] lines = File.ReadAllLines("monster_drops.txt");
-
-                int mobIdentifier = 0;
-
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    if (lines[i].Length == 0)
-                    {
-                        continue;
-                    }
-
-                    if (lines[i][0] == '#')
-                    {
-                        mobIdentifier = int.Parse(lines[i].Substring(1));
-                    }
-                    else
-                    {
-                        string[] split = lines[i].Split(' ');
-
-                        Loot loot = new Loot();
-
-                        loot.ItemIdentifier = int.Parse(split[0]);
-                        loot.Chance = int.Parse(split[1]);
-                        loot.MinimumQuantity = int.Parse(split[2]);
-                        loot.MaximumQuantity = int.Parse(split[3]);
-                        loot.QuestIdentifier = int.Parse(split[4]);
-
-                        /*if (Mobs.Contains(mobIdentifier))
-                        {
-                            Mobs[mobIdentifier].Loots.Add(loot);
-                        }*/
-                    }
-                }
-            }
-
-            Log.Inform("Maple data loaded in {0:N3} seconds.", (DateTime.Now - now).TotalSeconds);
-
-            Handlers.Load();
+            LoadData();
 
             Login.Run();
 
@@ -125,6 +62,23 @@ namespace SharpEnd.Servers
             Running = true;
 
             Log.Success("SharpEnd is online.");
+        }
+
+        private void LoadData()
+        {
+            Handlers.Load();
+
+            Stopwatch sw = Stopwatch.StartNew();
+
+            Items.Load();
+            Maps.Load();
+            Mobs.Load();
+
+            Commands.Load();
+
+            sw.Stop();
+
+            Log.Inform("Maple data loaded in {0:N3} seconds.", sw.Elapsed.TotalSeconds);
         }
 
         public void Shutdown()
@@ -141,9 +95,17 @@ namespace SharpEnd.Servers
             Log.Inform("SharpEnd is offline.");
         }
 
-        public Maps GetMaps(byte channelIdentifier)
+        private Dictionary<int, Map> maps = new Dictionary<int, Map>();
+        public Map GetMap(int identifier)
         {
-            return MasterServer.Instance.Worlds[0].Channels[channelIdentifier].Maps;
+            if (!maps.ContainsKey(identifier))
+            {
+                var data = Maps[identifier];
+
+                maps.Add(identifier, new Map(data));
+            }
+
+            return maps[identifier];
         }
     }
 }

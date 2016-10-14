@@ -2,14 +2,14 @@
 using SharpEnd.Servers;
 using System.Collections.Generic;
 
-namespace SharpEnd.Commands.Gm
+namespace SharpEnd.Game.Commands.Gm
 {
     internal static class InfoCommands
     {
         [GmCommand("search", "Searches")]
         public static void SearchCommand(Player player, string category, string name)
         {
-            switch (category)
+            /*switch (category)
             {
                 case "map":
                     {
@@ -36,7 +36,7 @@ namespace SharpEnd.Commands.Gm
                         player.Notify("[Command] Invalid category.");
                     }
                     break;
-            }
+            }*/
         }
     }
 }

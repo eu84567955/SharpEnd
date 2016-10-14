@@ -1,4 +1,4 @@
-﻿using SharpEnd.Maps;
+﻿using SharpEnd.Game.Maps;
 using SharpEnd.Packets;
 using System.Collections.Generic;
 
