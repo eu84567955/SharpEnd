@@ -1,5 +1,4 @@
-﻿using SharpEnd.Drawing;
-using SharpEnd.Packets;
+﻿using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Servers;
 using System;
@@ -167,7 +166,7 @@ namespace SharpEnd.Game.Maps
 
             Health -= amount;
 
-            if (Health > 0)
+            if (Health > 0) // NOTE: Is this check needed, or do we send it regardless?
             {
                 var percent = (byte)((Health * 100) / MaxHealth);
 

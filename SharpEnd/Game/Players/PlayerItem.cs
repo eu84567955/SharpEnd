@@ -5,25 +5,17 @@ using SharpEnd.Packets;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
 using System;
-using System.Collections.Generic;
 
 namespace SharpEnd.Players
 {
     internal sealed class PlayerItem : Drop
     {
-        public Player Player => Parent.Parent;
-
         public PlayerItems Parent { get; set; }
 
         public int Identifier { get; private set; }
-
         public short Slot { get; set; }
-        public bool IsEquipped => Slot < 0;
-
         public ushort Quantity { get; set; }
-
         public DateTime Expiration { get; private set; }
-
         public byte Slots { get; private set; }
         public byte Scrolls { get; private set; }
         public short Strength { get; private set; }
@@ -44,7 +36,29 @@ namespace SharpEnd.Players
         public string Creator { get; private set; }
         public ushort Flags { get; private set; }
 
-        public EInventoryType Inventory => GameLogicUtilities.GetInventory(Identifier);
+        public bool IsEquipped
+        {
+            get
+            {
+                return Slot < 0;
+            }
+        }
+
+        public EInventoryType Inventory
+        {
+            get
+            {
+                return GameLogicUtilities.GetInventory(Identifier);
+            }
+        }
+
+        public Player Player
+        {
+            get
+            {
+                return Parent.Parent;
+            }
+        }
 
         public PlayerItem(DatabaseQuery query)
         {

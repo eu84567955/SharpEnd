@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Game.Maps;
+using SharpEnd.Game.Shops;
 using SharpEnd.Network;
 using SharpEnd.Utility;
 

@@ -165,10 +165,11 @@
     <Compile Include="Game\Maps\Loot.cs" />
     <Compile Include="Game\Maps\MapFootholds.cs" />
     <Compile Include="Game\Maps\Portal.cs" />
-    <Compile Include="Game\Maps\Shop.cs" />
+    <Compile Include="Game\Shops\Shop.cs" />
     <Compile Include="Game\Script\ItemScript.cs" />
     <Compile Include="Game\Script\MapScript.cs" />
     <Compile Include="Game\Script\ReactorScript.cs" />
+    <Compile Include="Game\Shops\ShopItem.cs" />
     <Compile Include="Network\Handlers\GeneralHandlers.cs" />
     <Compile Include="Network\Handlers\InventoryHandlers.cs" />
     <Compile Include="Network\Handlers\LoginHandlers.cs" />
@@ -259,9 +260,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Game\Events\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>

@@ -73,34 +73,34 @@ namespace SharpEnd.Game.Data
         public sealed class MapNpcData
         {
             public int Identifier;
+            public bool Flip;
+            public bool Hide;
             public Point Position;
             public ushort Foothold;
             public short MinimumClickX;
             public short MaximumClickX;
-            public bool Flip;
-            public bool Hide;
 
             public void Load(BinaryReader reader)
             {
                 Identifier = reader.ReadInt32();
+                Flip = reader.ReadBoolean();
+                Hide = reader.ReadBoolean();
                 Position = new Point(reader.ReadInt16(), reader.ReadInt16());
                 Foothold = reader.ReadUInt16();
                 MinimumClickX = reader.ReadInt16();
                 MaximumClickX = reader.ReadInt16();
-                Flip = reader.ReadBoolean();
-                Hide = reader.ReadBoolean();
             }
 
             public void Save(BinaryWriter writer)
             {
                 writer.Write(Identifier);
+                writer.Write(Flip);
+                writer.Write(Hide);
                 writer.Write(Position.X);
                 writer.Write(Position.Y);
                 writer.Write(Foothold);
                 writer.Write(MinimumClickX);
                 writer.Write(MaximumClickX);
-                writer.Write(Flip);
-                writer.Write(Hide);
             }
         }
 

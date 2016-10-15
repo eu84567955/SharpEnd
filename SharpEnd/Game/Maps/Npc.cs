@@ -1,4 +1,5 @@
-﻿using SharpEnd.Players;
+﻿using SharpEnd.Game.Shops;
+using SharpEnd.Players;
 using SharpEnd.Servers;
 using static SharpEnd.Game.Data.MapData;
 
@@ -7,16 +8,16 @@ namespace SharpEnd.Game.Maps
     internal sealed class Npc : MapEntity, IControllable
     {
         public int Identifier { get; private set; }
-        public short MinimumClickX { get; private set; }
-        public short MaximumClickX { get; private set; }
+        public Player Controller { get; set; }
+
         public bool Flip { get; private set; }
         public bool Hide { get; private set; }
+        public short MinimumClickX { get; private set; }
+        public short MaximumClickX { get; private set; }
 
         public int StorageCost { get; private set; }
         public string Script { get; private set; }
         public Shop Shop { get; private set; }
-
-        public Player Controller { get; set; }
 
         public bool HasShop
         {
@@ -49,13 +50,13 @@ namespace SharpEnd.Game.Maps
         public Npc(MapNpcData data)
             : this(data.Identifier)
         {
+            Flip = data.Flip;
+            Hide = data.Hide;
             Position = data.Position;
-            Stance = (sbyte)(data.Flip ? 1 : 2); // TODO: Validate this.
+            Stance = (sbyte)(Flip ? 1 : 2); // TODO: Validate this.
             Foothold = data.Foothold;
             MinimumClickX = data.MinimumClickX;
             MaximumClickX = data.MaximumClickX;
-            Flip = data.Flip;
-            Hide = data.Hide;
         }
 
         public Npc(int identifier, MovableLife reference)
