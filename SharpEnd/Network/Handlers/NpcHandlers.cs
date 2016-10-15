@@ -1,5 +1,6 @@
 ﻿using SharpEnd.Game.Maps;
 using SharpEnd.Network;
+using SharpEnd.Packets;
 using SharpEnd.Script;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,9 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            if (npc.IsShop)
+            if (npc.HasShop)
             {
-                Log.Warn("Missing Npc shop {0}.", npc.Identifier);
+                client.Send(NpcPackets.NpcShop(npc.Shop));
             }
             else if (npc.IsStorage)
             {

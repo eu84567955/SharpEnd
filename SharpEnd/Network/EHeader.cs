@@ -131,6 +131,7 @@
         SMSG_REACTOR_SPAWN =                    0x0404,
         SMSG_REACTOR_DESPAWN =                  0x0405,
         SMSG_NPC_DIALOG =                       0x0501,
+        SMSG_NPC_SHOP =                         0x0502,
         SMSG_KEYMAP =                           0x0591,
         SMSG_PET_AUTO_HEALTH =                  0x0592,
         SMSG_PET_AUTO_MANA =                    0x0593,

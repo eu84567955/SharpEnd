@@ -12,11 +12,19 @@ namespace SharpEnd.Game.Maps
         public bool Flip { get; private set; }
         public bool Hide { get; private set; }
 
-        public bool IsShop { get; private set; }
         public int StorageCost { get; private set; }
         public string Script { get; private set; }
+        public Shop Shop { get; private set; }
 
         public Player Controller { get; set; }
+
+        public bool HasShop
+        {
+            get
+            {
+                return Shop != null;
+            }
+        }
 
         public bool IsStorage
         {
@@ -33,9 +41,9 @@ namespace SharpEnd.Game.Maps
 
             var data = MasterServer.Instance.Npcs[Identifier];
 
-            IsShop = data.IsShop;
             StorageCost = data.StorageCost;
             Script = data.Script;
+            if (data.Shop != null) Shop = new Shop(data.Shop);
         }
 
         public Npc(MapNpcData data)

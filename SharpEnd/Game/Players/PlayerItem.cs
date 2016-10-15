@@ -5,6 +5,7 @@ using SharpEnd.Packets;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace SharpEnd.Players
 {
@@ -88,7 +89,7 @@ namespace SharpEnd.Players
 
             Quantity = quantity;
 
-            Expiration = DateTime.FromFileTimeUtc((long)EExpirationTime.Permanent);
+            Expiration = DateTime.FromFileTimeUtc((long)EExpirationTime.Default);
 
             Creator = string.Empty;
 
@@ -209,9 +210,44 @@ namespace SharpEnd.Players
 
             PlayerItem destination = Parent[Inventory, destinationSlot];
 
-            if (destination != null && false)
+            if (destination != null &&
+                destination.Identifier == Identifier &&
+                GameLogicUtilities.IsStackable(Identifier))
             {
-                // TODO: Stack both items.
+                ushort maxPerStack = MasterServer.Instance.Items[Identifier].MaxSlotQuantity;
+
+                if (Quantity + destination.Quantity > maxPerStack)
+                {
+                    Quantity -= (ushort)(maxPerStack - destination.Quantity);
+                    destination.Quantity = maxPerStack;
+
+                    Player.Send(InventoryPackets.InventoryOperation(true,
+                    new InventoryOperation()
+                    {
+                        Type = EInventoryOperation.ModifyQuantity,
+                        Item = this,
+                        CurrentSlot = Slot
+                    },
+                    new InventoryOperation()
+                    {
+                        Type = EInventoryOperation.ModifyQuantity,
+                        Item = destination,
+                        CurrentSlot = destinationSlot
+                    }));
+                }
+                else
+                {
+                    destination.Quantity += Quantity;
+
+                    Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                    {
+                        Type = EInventoryOperation.ModifyQuantity,
+                        Item = destination,
+                        CurrentSlot = destinationSlot
+                    }));
+
+                    Parent.Remove(this);
+                }
             }
             else
             {

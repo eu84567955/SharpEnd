@@ -165,6 +165,7 @@
     <Compile Include="Game\Maps\Loot.cs" />
     <Compile Include="Game\Maps\MapFootholds.cs" />
     <Compile Include="Game\Maps\Portal.cs" />
+    <Compile Include="Game\Maps\Shop.cs" />
     <Compile Include="Game\Script\ItemScript.cs" />
     <Compile Include="Game\Script\MapScript.cs" />
     <Compile Include="Game\Script\ReactorScript.cs" />

@@ -131,7 +131,7 @@ namespace WvsData
                                                 item.IsTradeBlock = infoNode.GetBoolean("tradeBlock");
                                                 item.IsAccountSharable = infoNode.GetBoolean("accountSharable");
                                                 item.IsQuest = infoNode.GetBoolean("quest");
-                                                item.MaxSlotQuantity = infoNode.GetUShort("maxSlot", 1);
+                                                item.MaxSlotQuantity = (ushort)(Math.Min(infoNode.GetInt("slotMax", 1), ushort.MaxValue));
                                                 item.SalePrice = infoNode.GetInt("price");
 
                                                 if (node.ContainsChild("spec"))
