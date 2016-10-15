@@ -13,20 +13,23 @@ namespace SharpEnd.Scripting
         public NpcScript(Player player, Npc npc)
             : base(player, string.Format("scripts/npcs/{0}.py", npc.Script))
         {
+            player.NpcScript = this;
+
             m_npc = npc;
 
-            Expose("addText", new Action<string>(AddText));
-            Expose("sendOk", new Action(SendOk));
+            SetEnvrionmentVariables();
+            SetNpcVariables();
         }
 
-        private void AddText(string text)
+        private void SetEnvrionmentVariables()
         {
-            m_text += text;
+
         }
 
-        private void SendOk()
+        private void SetNpcVariables()
         {
-            m_player.Send(NpcPackets.NpcOkDialog(m_npc.Identifier, m_text));
+            Set("addText", new Action<string>((text) => m_text += text));
+            Set("sendOk", new Action(() => m_player.Send(NpcPackets.NpcOkDialog(m_npc.Identifier, m_text))));
         }
     }
 }

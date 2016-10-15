@@ -44,7 +44,7 @@ namespace SharpEnd
 
         public static void Error(Exception exception)
         {
-            Error(exception.ToString());
+            Error(exception.Message); // TODO: Exception stack trace configuration.
         }
 
         public static void Error(string value, params object[] args)

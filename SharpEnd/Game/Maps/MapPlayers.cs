@@ -1,6 +1,9 @@
 ﻿using SharpEnd.Packets;
 using SharpEnd.Players;
+using SharpEnd.Scripting;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SharpEnd.Game.Maps
 {
@@ -79,6 +82,39 @@ namespace SharpEnd.Game.Maps
                 foreach (Npc npc in Map.Npcs.Values)
                 {
                     npc.AssignController();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(Map.EntryScript) || !string.IsNullOrEmpty(Map.InitialEntryScript))
+            {
+                bool initial = !string.IsNullOrEmpty(Map.InitialEntryScript);
+
+                if (initial && Count != 1)
+                {
+                    // NOTE: Initial map entry scripts are only executed if this is the first player to enter the map.
+                    // If the players' count does not equal to 1, we don't execute the script.
+
+                    return;
+                }
+
+                string name = initial ? Map.InitialEntryScript : Map.EntryScript;
+
+                if (File.Exists(string.Format("scripts/maps/{0}/{1}.py", initial ? "inital_entry" : "entry", name)))
+                {
+                    MapScript script = new MapScript(player, Map, initial);
+
+                    try
+                    {
+                        script.Execute();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error("Exception while executing map script '{0}': \n{1}", Map.EntryScript, e.Message);
+                    }
+                }
+                else
+                {
+                    Log.Warn("Unscripted map '{0}'.", Map.EntryScript);
                 }
             }
         }

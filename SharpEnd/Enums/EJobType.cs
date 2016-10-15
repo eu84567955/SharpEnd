@@ -3,7 +3,7 @@
     public enum EJobType : int
     {
         Resistance,
-        Advenutrer,
+        Adventurer,
         Cygnus,
         Aran,
         Evan,

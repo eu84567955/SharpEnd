@@ -110,11 +110,12 @@
     <Compile Include="Drawing\Ratio.cs" />
     <Compile Include="Drawing\Rectangle.cs" />
     <Compile Include="Enums\EExpirationTime.cs" />
+    <Compile Include="Enums\EFieldEffect.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Game\Commands\Command.cs" />
     <Compile Include="Game\Commands\Commands.cs" />
     <Compile Include="Game\Commands\Gm\InfoCommands.cs" />
-    <Compile Include="Game\Commands\Gm\ItemCommands.cs" />
+    <Compile Include="Game\Commands\Gm\InventoryCommands.cs" />
     <Compile Include="Game\Commands\Gm\MapCommands.cs" />
     <Compile Include="Game\Commands\Gm\MobCommands.cs" />
     <Compile Include="Game\Commands\Gm\StatCommands.cs" />

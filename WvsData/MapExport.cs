@@ -55,6 +55,8 @@ namespace WvsData
                                 map.Music = infoNode.GetString("bgm");
                                 map.ReturnMapIdentifier = infoNode.GetInt("returnMap");
                                 map.ForcedReturnMapIdentifier = infoNode.GetInt("forcedReturn");
+                                map.EntryScript = infoNode.GetString("onUserEnter");
+                                map.InitialEntryScript = infoNode.GetString("onFirstUserEnter");
 
                                 map.Footholds = new List<MapFootholdData>();
                                 if (node.ContainsChild("foothold"))

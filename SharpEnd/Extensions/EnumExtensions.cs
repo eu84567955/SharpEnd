@@ -8,7 +8,7 @@ namespace SharpEnd
         {
             switch (jobType)
             {
-                case EJobType.Advenutrer: return EJob.Beginner;
+                case EJobType.Adventurer: return EJob.Beginner;
                 case EJobType.Resistance: return EJob.Citizen;
                 case EJobType.Cygnus: return EJob.Noblesse;
                 case EJobType.Aran: return EJob.Legend;

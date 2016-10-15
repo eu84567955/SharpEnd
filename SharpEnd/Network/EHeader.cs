@@ -97,6 +97,7 @@
         SMSG_EVENT_LIST =                       0x0114,
         SMSG_EVENT_NAME_TAG_INFO =              0x0118,
         SMSG_MAP_CHANGE =                       0x01AC,
+        SMSG_FIELD_EFFECT =                     0x01B8,
         SMSG_CLOCK =                            0x01C5,
         SMSG_PLAYER_SPAWN =                     0x0204,
         SMSG_PLAYER_DESPAWN =                   0x0205,

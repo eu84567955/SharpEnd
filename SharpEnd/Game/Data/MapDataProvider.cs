@@ -175,13 +175,15 @@ namespace SharpEnd.Game.Data
         public int ProtectItemIdentifier { get; set; }
         public float MobRate { get; set; }
         public int LinkIdentifier { get; set; }
+        public string EntryScript { get; set; }
+        public string InitialEntryScript { get; set; }
         public List<MapFootholdData> Footholds { get; set; }
         public List<MapMobData> Mobs { get; set; }
         public List<MapNpcData> Npcs { get; set; }
         //public List<MapReactorData> Reactors { get; set; }
         public List<MapPortalData> Portals { get; set; }
         public List<MapSeatData> Seats { get; set; }
-        
+
         public void Read(BinaryReader reader)
         {
             Identifier = reader.ReadInt32();
@@ -205,6 +207,8 @@ namespace SharpEnd.Game.Data
             ProtectItemIdentifier = reader.ReadInt32();
             MobRate = reader.ReadSingle();
             LinkIdentifier = reader.ReadInt32();
+            EntryScript = reader.ReadString();
+            InitialEntryScript = reader.ReadString();
 
             int footholdsCount = reader.ReadInt32();
             Footholds = new List<MapFootholdData>(footholdsCount);
@@ -284,6 +288,8 @@ namespace SharpEnd.Game.Data
             writer.Write(ProtectItemIdentifier);
             writer.Write(MobRate);
             writer.Write(LinkIdentifier);
+            writer.Write(EntryScript);
+            writer.Write(InitialEntryScript);
 
             writer.Write(Footholds.Count);
             Footholds.ForEach(f => f.Write(writer));

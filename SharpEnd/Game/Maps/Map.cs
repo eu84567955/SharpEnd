@@ -23,6 +23,8 @@ namespace SharpEnd.Game.Maps
         public int ProtectItemIdentifier { get; private set; }
         public float MobRate { get; private set; }
         public int LinkIdentifier { get; private set; }
+        public string EntryScript { get; private set; }
+        public string InitialEntryScript { get; private set; }
 
         public MapPlayers Players { get; private set; }
         public MapFootholds Footholds { get; private set; }
@@ -53,6 +55,8 @@ namespace SharpEnd.Game.Maps
             ProtectItemIdentifier = data.ProtectItemIdentifier;
             MobRate = data.MobRate;
             LinkIdentifier = data.LinkIdentifier;
+            EntryScript = data.EntryScript;
+            InitialEntryScript = data.InitialEntryScript;
 
             Players = new MapPlayers(this);
             Footholds = new MapFootholds(this);

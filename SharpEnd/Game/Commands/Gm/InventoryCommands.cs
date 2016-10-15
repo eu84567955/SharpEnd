@@ -1,10 +1,9 @@
 ﻿using SharpEnd.Players;
 using SharpEnd.Servers;
-using SharpEnd.Utility;
 
 namespace SharpEnd.Game.Commands.Gm
 {
-    internal static class ItemCommands
+    internal static class InventoryCommands
     {
         [GmCommand("item", "Gives you the desired item.")]
         public static void ItemCommand(Player player, int itemIdentifier, ushort quantity = 1)
@@ -17,6 +16,12 @@ namespace SharpEnd.Game.Commands.Gm
             {
                 player.Notify("[Command] Invalid item.");
             }
+        }
+
+        [GmCommand("meso", "Sets your meso.")]
+        public static void MesoCommand(Player player, int amount)
+        {
+            player.Items.SetMeso(amount);
         }
     }
 }

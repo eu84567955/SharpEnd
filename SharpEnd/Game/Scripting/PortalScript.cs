@@ -15,18 +15,17 @@ namespace SharpEnd.Scripting
             m_portal = portal;
 
             SetEnvironmentVariables();
-
-            Expose("playPortalSe", new Action(PlayPortalSe));
+            SetPortalVariables();
         }
 
         private void SetEnvironmentVariables()
         {
-            Expose("system_portal_name", m_portal.Label);
+            Set("system_portal_name", m_portal.Label);
         }
 
-        private void PlayPortalSe()
+        private void SetPortalVariables()
         {
-            m_player.Send(EffectPackets.PlayPortalSoundEffect());
+            Set("playPortalSe", new Action(() => m_player.Send(EffectPackets.PlayPortalSoundEffect())));
         }
     }
 }

@@ -234,7 +234,9 @@ namespace SharpEnd.Players
 
         public void SetMeso(int amount, bool sendPacket = false)
         {
+            Meso = Math.Min(amount, 9999999999);
 
+            Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
         }
 
         public bool ModifyMeso(int mod, bool sendPacket = false)

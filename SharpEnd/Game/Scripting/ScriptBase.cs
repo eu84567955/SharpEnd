@@ -31,17 +31,33 @@ namespace SharpEnd.Scripting
             m_scope = m_engine.CreateScope();
 
             SetEnvironmentVariables();
+            SetBaseVariables();
+        }
 
+        private void SetEnvironmentVariables()
+        {
+            Set("type_bool", VariableType.Boolean);
+            Set("type_int", VariableType.Integer);
+            Set("type_num", VariableType.Number);
+            Set("type_str", VariableType.String);
+        }
+
+        private void SetBaseVariables()
+        {
             // NOTE: Map exports.
-            Expose("getMap", new Func<int>(() => m_player.MapIdentifier));
-            Expose("setMap", new Action<int, string>((mapIdentifier, portalIdentifier) =>
+            Set("getMap", new Func<int>(() => m_player.MapIdentifier));
+            Set("setMap", new Action<int, string>((mapIdentifier, portalIdentifier) =>
             {
                 m_player.SetMap(mapIdentifier, MasterServer.Instance.GetMap(mapIdentifier).Portals.GetPortal(portalIdentifier));
             }));
-            Expose("getMapPlayerCount", new Func<int>(() => m_player.Map.Players.Count));
+            Set("getMapPlayerCount", new Func<int>(() => m_player.Map.Players.Count));
 
             // NOTE: Inventory exports.
-            Expose("giveItem", new Func<int, ushort, bool>((itemIdentifier, quantity) =>
+            Set("giveMeso", new Func<int, bool>((amount) =>
+            {
+                return true;
+            }));
+            Set("giveItem", new Func<int, ushort, bool>((itemIdentifier, quantity) =>
             {
                 if (quantity < 0)
                 {
@@ -56,7 +72,7 @@ namespace SharpEnd.Scripting
             }));
 
             // NOTE: Player exports.
-            Expose("getPlayerVariable", new Func<string, string>((key) =>
+            Set("getPlayerVariable", new Func<string, string>((key) =>
             {
                 string value = null;
 
@@ -64,8 +80,8 @@ namespace SharpEnd.Scripting
 
                 return value;
             }));
-            Expose("removePlayerVariable", new Action<string>((key) => m_player.Variables.Remove(key)));
-            Expose("setPlayerVariable", new Action<string, object>((key, value) =>
+            Set("removePlayerVariable", new Action<string>((key) => m_player.Variables.Remove(key)));
+            Set("setPlayerVariable", new Action<string, object>((key, value) =>
             {
                 if (m_player.Variables.ContainsKey(key))
                 {
@@ -78,20 +94,12 @@ namespace SharpEnd.Scripting
             }));
         }
 
-        private void SetEnvironmentVariables()
-        {
-            Expose("type_bool", VariableType.Boolean);
-            Expose("type_int", VariableType.Integer);
-            Expose("type_num", VariableType.Number);
-            Expose("type_str", VariableType.String);
-        }
-
         public dynamic Get(string name)
         {
             return m_scope.GetVariable(name);
         }
 
-        protected void Expose(string name, object value)
+        protected void Set(string name, object value)
         {
             m_scope.SetVariable(name, value);
         }

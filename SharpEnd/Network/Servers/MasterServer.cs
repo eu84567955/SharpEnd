@@ -4,6 +4,7 @@ using SharpEnd.Game.Data;
 using SharpEnd.Game.Maps;
 using SharpEnd.Migrations;
 using SharpEnd.Utility;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -70,9 +71,16 @@ namespace SharpEnd.Servers
 
             Stopwatch sw = Stopwatch.StartNew();
 
-            Items.Load();
-            Maps.Load();
-            Mobs.Load();
+            try
+            {
+                Items.Load();
+                Maps.Load();
+                Mobs.Load();
+            }
+            catch
+            {
+                throw new Exception("The data files are corrupt.");
+            }
 
             Commands.Load();
 
