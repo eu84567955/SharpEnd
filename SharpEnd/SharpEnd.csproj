@@ -203,6 +203,7 @@
     <Compile Include="Network\Packets\EffectPackets.cs" />
     <Compile Include="Network\Packets\HelpPackets.cs" />
     <Compile Include="Network\Packets\InventoryPackets.cs" />
+    <Compile Include="Network\Packets\LevelPackets.cs" />
     <Compile Include="Network\Packets\LoginPackets.cs" />
     <Compile Include="Network\Packets\MapPackets.cs" />
     <Compile Include="Network\Packets\MessagePackets.cs" />

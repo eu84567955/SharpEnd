@@ -2,6 +2,7 @@
 using SharpEnd.Drawing;
 using SharpEnd.Game.Maps;
 using SharpEnd.Network;
+using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
@@ -170,7 +171,7 @@ namespace SharpEnd.Handlers
 
             player.Map.Drops.Remove(drop, player);
 
-            // TODO: Show gain packet.
+            player.Send(DropPackets.DropGain(drop));
         }
     }
 }

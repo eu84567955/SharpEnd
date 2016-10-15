@@ -2,7 +2,7 @@
 {
     internal static class GameConstants
     {
-        private static readonly long[] PlayerExperience = {
+        private static readonly ulong[] PlayerExperience = {
             // NOTE: Levels 0 to 49.
             1, 15, 34, 57, 92, 135, 372, 560, 840, 1242, 1242, 1242, 1242, 1242, 1242, 1490, 1788, 2145, 2574, 3088, 3705, 4446, 5335, 6402, 7682, 9218, 11061, 13273, 15927, 
             19112, 19112, 19112, 19112, 19112, 19112, 22934, 27520, 33024, 39628, 47553, 51357, 55465, 59902, 64694, 69869, 75458, 81494, 88013, 95054, 102658, 
@@ -28,7 +28,7 @@
             600613720956, 606619858165, 612686956746, 618812917313, 625001046486, 631251056950, 637563567519, 643939203194, 650378595225, 
         };
 
-        public static long GetPlayerExperience(byte level)
+        public static ulong GetPlayerExperience(byte level)
         {
             return PlayerExperience[level];
         }

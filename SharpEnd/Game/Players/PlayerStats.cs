@@ -1,4 +1,6 @@
-﻿using SharpEnd.Network;
+﻿using SharpEnd.Game.Constants;
+using SharpEnd.Network;
+using SharpEnd.Network.Packets;
 using SharpEnd.Packets;
 using SharpEnd.Utility;
 using System;
@@ -448,9 +450,74 @@ namespace SharpEnd.Players
             UpdateBonuses();
         }
 
-        public void GiveExperience(ulong experience, bool white = true, bool inChat = false)
+        public void GiveExperience(ulong amount, bool white = true, bool inChat = false)
         {
+            byte level = Level;
+            byte jobMaxLevel = GameLogicUtilities.GetMaxLevel(Job);
 
+            if (level >= jobMaxLevel)
+            {
+                return;
+            }
+
+            ulong currentExperience = Experience + amount;
+
+            if (amount > 0)
+            {
+                ulong expCounter = amount;
+                ulong batchSize = ulong.MaxValue;
+
+                while (expCounter > 0)
+                {
+                    ulong allocate = Math.Min(expCounter, batchSize);
+
+                    m_player.Send(LevelPackets.ShowExperience((uint)amount, white, inChat));
+
+                    expCounter -= allocate;
+                }
+            }
+
+            if (currentExperience >= GameConstants.GetPlayerExperience(level))
+            {
+                byte levelsGained = 0;
+                ushort abilityPointGain = 0;
+                ushort skillPointGain = 0;
+                uint healthGain = 0;
+                ushort manaGain = 0;
+
+                while (currentExperience >= GameConstants.GetPlayerExperience(Level))
+                {
+                    currentExperience -= GameConstants.GetPlayerExperience(Level);
+                    level++;
+                    levelsGained++;
+
+                    // TODO: Ability point gain.
+                    // TODO: Skill point gain.
+                    // TODO: Health gain.
+                    // TODO: Mana gain.
+
+                    if (Level >= jobMaxLevel)
+                    {
+                        currentExperience = 0;
+
+                        break;
+                    }
+                }
+
+                if (currentExperience >= GameConstants.GetPlayerExperience(Level))
+                {
+                    currentExperience = GameConstants.GetPlayerExperience(Level) - 1;
+                }
+
+                if (levelsGained > 0)
+                {
+                    SetLevel(level);
+
+                    // TODO: Modify the gains.
+                }
+            }
+
+            SetExperience(currentExperience);
 
             // TODO: Show packet.
         }

@@ -66,7 +66,6 @@ namespace SharpEnd.Utility
         public static bool IsShade(ushort job) => job == 10000 || job == 10100 || (job >= 10110 && job <= 10112);
         public static bool IsAran(ushort job) => (job / 100) == 21 || job == 2000;
         public static bool IsBeastTamer(ushort job) => job == 14000 || job == 14200 || (job >= 14210 && job <= 14212);
-
         public static bool HasSeparatedSkillPoints(ushort job)
         {
             if (IsBeginner(job) ||
@@ -95,6 +94,7 @@ namespace SharpEnd.Utility
 
             return false;
         }
+        public static byte GetMaxLevel(ushort job) => 250; // TODO.
 
         // Monster card
         public static bool IsMonsterCard(int itemIdentifier) => itemIdentifier / 10000 == 287;

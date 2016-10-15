@@ -53,9 +53,7 @@ namespace SharpEnd.Game.Maps
                 {
                     if (loot.QuestIdentifier != 0) continue;
 
-                    bool test = true;
-
-                    int chance = test ? 1000000 : loot.Chance * 1; // TODO: World drop rate.
+                    int chance = Math.Min(loot.Chance * 1, 1000000);
 
                     if (Randomizer.NextInt(0, 999999) < chance)
                     {

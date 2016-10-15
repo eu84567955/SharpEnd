@@ -76,5 +76,34 @@ namespace SharpEnd.Packets
                 return outPacket.ToArray();
             }
         }
+
+        public static byte[] DropGain(Drop drop)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_SHOW_LOG)
+                    .WriteByte()
+                    .WriteBoolean(drop is Meso);
+
+                if (drop is Meso)
+                {
+                    outPacket.WriteByte();
+                }
+
+                if (drop is Meso)
+                {
+                    outPacket.WriteInt(((Meso)drop).Amount);
+                }
+                else
+                {
+                    outPacket.WriteInt(((PlayerItem)drop).Identifier);
+                }
+
+                outPacket.WriteInt(drop is PlayerItem ? ((PlayerItem)drop).Quantity : 0);
+
+                return outPacket.ToArray();
+            }
+        }
     }
 }
