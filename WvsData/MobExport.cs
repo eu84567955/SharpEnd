@@ -120,7 +120,7 @@ namespace WvsData
 
                     foreach (MobData mob in mobs.Values)
                     {
-                        mob.Write(writer);
+                        mob.Save(writer);
                     }
 
                     Console.WriteLine("Mobs: {0}", mobs.Count);

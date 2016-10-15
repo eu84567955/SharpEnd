@@ -14,7 +14,7 @@ namespace SharpEnd.Data
             public ushort QuestIdentifier { get; set; }
             public int Chance { get; set; }
             
-            public void Read(BinaryReader reader)
+            public void Load(BinaryReader reader)
             {
                 ItemIdentifier = reader.ReadInt32();
                 Minimum = reader.ReadInt32();
@@ -23,7 +23,7 @@ namespace SharpEnd.Data
                 Chance = reader.ReadInt32();
             }
 
-            public void Write(BinaryWriter writer)
+            public void Save(BinaryWriter writer)
             {
                 writer.Write(ItemIdentifier);
                 writer.Write(Minimum);
@@ -73,7 +73,7 @@ namespace SharpEnd.Data
         public List<int> Summons { get; set; }
         public List<MobDropData> Drops { get; set; }
 
-        public void Read(BinaryReader reader)
+        public void Load(BinaryReader reader)
         {
             Identifier = reader.ReadInt32();
             //Flags = (EMobFlags)reader.ReadUInt16();
@@ -138,12 +138,12 @@ namespace SharpEnd.Data
             while (dropsCount-- > 0)
             {
                 MobDropData drop = new MobDropData();
-                drop.Read(reader);
+                drop.Load(reader);
                 Drops.Add(drop);
             }
         }
 
-        public void Write(BinaryWriter writer)
+        public void Save(BinaryWriter writer)
         {
             writer.Write(Identifier);
             //writer.Write((ushort)Flags);
@@ -191,7 +191,7 @@ namespace SharpEnd.Data
             Summons.ForEach(s => writer.Write(s));
 
             writer.Write(Drops.Count);
-            Drops.ForEach(d => d.Write(writer));
+            Drops.ForEach(d => d.Save(writer));
         }
     }
 
@@ -211,7 +211,7 @@ namespace SharpEnd.Data
                     {
                         MobData mob = new MobData();
 
-                        mob.Read(reader);
+                        mob.Load(reader);
 
                         Add(mob.Identifier, mob);
                     }

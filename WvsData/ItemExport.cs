@@ -176,7 +176,7 @@ namespace WvsData
 
                     foreach (ItemData item in items.Values)
                     {
-                        item.Write(writer);
+                        item.Save(writer);
                     }
 
                     Console.WriteLine("Items: {0}", items.Count);

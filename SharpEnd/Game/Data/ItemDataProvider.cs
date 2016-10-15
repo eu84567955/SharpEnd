@@ -19,7 +19,7 @@ namespace SharpEnd.Data
         public ItemEquipData Equip { get; set; }
         public ItemConsumeData Consume { get; set; }
 
-        public void Read(BinaryReader reader)
+        public void Load(BinaryReader reader)
         {
             Identifier = reader.ReadInt32();
             IsOnly = reader.ReadBoolean();
@@ -35,18 +35,18 @@ namespace SharpEnd.Data
             {
                 Equip = new ItemEquipData();
 
-                Equip.Read(reader);
+                Equip.Load(reader);
             }
 
             if (reader.ReadBoolean())
             {
                 Consume = new ItemConsumeData();
 
-                Consume.Read(reader);
+                Consume.Load(reader);
             }
         }
 
-        public void Write(BinaryWriter writer)
+        public void Save(BinaryWriter writer)
         {
             writer.Write(Identifier);
             writer.Write(IsOnly);
@@ -59,10 +59,10 @@ namespace SharpEnd.Data
             writer.Write(SalePrice);
 
             writer.Write(Equip != null);
-            if (Equip != null) Equip.Write(writer);
+            if (Equip != null) Equip.Save(writer);
 
             writer.Write(Consume != null);
-            if (Consume != null) Consume.Write(writer);
+            if (Consume != null) Consume.Save(writer);
         }
     }
 
@@ -90,7 +90,7 @@ namespace SharpEnd.Data
         public short Speed { get; set; }
         public short Jump { get; set; }
 
-        public void Read(BinaryReader reader)
+        public void Load(BinaryReader reader)
         {
             Slots = reader.ReadByte();
             ReqLevel = reader.ReadByte();
@@ -115,7 +115,7 @@ namespace SharpEnd.Data
             Jump = reader.ReadInt16();
         }
 
-        public void Write(BinaryWriter writer)
+        public void Save(BinaryWriter writer)
         {
             writer.Write(Slots);
             writer.Write(ReqLevel);
@@ -159,7 +159,7 @@ namespace SharpEnd.Data
         public int WillExp { get; set; }
         public int SenseExp { get; set; }
 
-        public void Read(BinaryReader reader)
+        public void Load(BinaryReader reader)
         {
             HpR = reader.ReadInt16();
             MpR = reader.ReadInt16();
@@ -177,7 +177,7 @@ namespace SharpEnd.Data
             SenseExp = reader.ReadInt32();
         }
 
-        public void Write(BinaryWriter writer)
+        public void Save(BinaryWriter writer)
         {
             writer.Write(HpR);
             writer.Write(MpR);
@@ -235,7 +235,7 @@ namespace SharpEnd.Data
                     {
                         ItemData item = new ItemData();
 
-                        item.Read(reader);
+                        item.Load(reader);
 
                         Add(item.Identifier, item);
                     }

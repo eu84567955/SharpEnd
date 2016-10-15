@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Packets;
 using SharpEnd.Players;
-using SharpEnd.Scripting;
+using SharpEnd.Script;
 using System;
 using System.IO;
 
@@ -71,12 +71,12 @@ namespace SharpEnd.Game.Maps
                     }
                     catch (Exception e)
                     {
-                        Log.Error("Exception while executing map script '{0}': \n{1}", Map.EntryScript, e.Message);
+                        Log.Error("Exception while executing {0} script '{1}': \n{2}", initial ? "initial map entry" : "map entry", name, e.Message);
                     }
                 }
                 else
                 {
-                    Log.Warn("Unscripted map '{0}'.", Map.EntryScript);
+                    Log.Warn("Missing {0} script '{1}'.", initial ? "initial map entry" : "map entry", name);
                 }
             }
         }

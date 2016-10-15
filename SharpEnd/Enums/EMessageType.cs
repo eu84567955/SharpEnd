@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    public enum EMessageType : sbyte
+    public enum ENoticeType : sbyte
     {
         Notice,
         Popup,

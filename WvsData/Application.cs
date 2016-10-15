@@ -15,8 +15,9 @@ namespace WvsData
                 string path = args[0];
 
                 ItemExport.Export(path);
-                MapExport.Export(path);
                 MobExport.Export(path);
+                NpcExport.Export(path);
+                MapExport.Export(path);
 
                 Console.WriteLine("Press any key to continue...");
 

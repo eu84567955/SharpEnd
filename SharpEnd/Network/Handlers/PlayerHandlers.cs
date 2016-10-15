@@ -3,7 +3,7 @@ using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
 using SharpEnd.Players;
-using SharpEnd.Scripting;
+using SharpEnd.Script;
 using SharpEnd.Servers;
 using System;
 using System.Collections.Generic;
@@ -504,7 +504,7 @@ namespace SharpEnd.Handlers
             }
             else
             {
-                Log.Warn("Unscripted portal '{0}'.", portal.Script);
+                Log.Warn("Missing portal script '{0}'.", portal.Script);
             }
         }
 

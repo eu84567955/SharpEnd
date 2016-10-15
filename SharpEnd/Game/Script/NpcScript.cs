@@ -3,7 +3,7 @@ using SharpEnd.Packets;
 using SharpEnd.Players;
 using System;
 
-namespace SharpEnd.Scripting
+namespace SharpEnd.Script
 {
     internal sealed class NpcScript : ScriptBase
     {

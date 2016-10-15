@@ -57,7 +57,7 @@ namespace SharpEnd.Game.Maps
             Stance = 5; // TODO.
             CanDrop = true;
 
-            var data = MasterServer.Instance.Mobs[identifier];
+            var data = MasterServer.Instance.Mobs[Identifier];
 
             Level = data.Level;
             Health = MaxHealth = data.Health;

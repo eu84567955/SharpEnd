@@ -4,7 +4,7 @@ using SharpEnd.Players;
 using SharpEnd.Servers;
 using System;
 
-namespace SharpEnd.Scripting
+namespace SharpEnd.Script
 {
     internal abstract class ScriptBase
     {
@@ -36,10 +36,20 @@ namespace SharpEnd.Scripting
 
         private void SetEnvironmentVariables()
         {
+            // NOTE: Return types.
             Set("type_bool", VariableType.Boolean);
             Set("type_int", VariableType.Integer);
             Set("type_num", VariableType.Number);
             Set("type_str", VariableType.String);
+
+            // NOTE: Notification types.
+            Set("notice_notice", ENoticeType.Notice);
+            Set("notice_popup", ENoticeType.Popup);
+            Set("notice_megaphone", ENoticeType.Megaphone);
+            Set("notice_super_megaphone", ENoticeType.SuperMegaphone);
+            Set("notice_Header", ENoticeType.Header);
+            Set("notice_pink", ENoticeType.Pink);
+            Set("notice_blue", ENoticeType.Blue);
         }
 
         private void SetBaseVariables()
@@ -72,6 +82,7 @@ namespace SharpEnd.Scripting
             }));
 
             // NOTE: Player exports.
+            Set("notify", new Action<string, ENoticeType>((text, type) => m_player.Notify(text, type)));
             Set("getPlayerVariable", new Func<string, string>((key) =>
             {
                 string value = null;

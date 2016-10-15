@@ -3,7 +3,7 @@ using SharpEnd.Drawing;
 using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
-using SharpEnd.Scripting;
+using SharpEnd.Script;
 using SharpEnd.Servers;
 using SharpEnd.Utility;
 
@@ -195,7 +195,7 @@ namespace SharpEnd.Players
             Client.Send(PlayerPackets.PlayerUpdate(this, EPlayerUpdate.None, true));
         }
 
-        public void Notify(string text, EMessageType type = EMessageType.Pink)
+        public void Notify(string text, ENoticeType type = ENoticeType.Pink)
         {
             Client.Send(MessagePackets.Notification(text, type));
         }

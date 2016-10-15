@@ -24,8 +24,9 @@ namespace SharpEnd.Servers
         public MigrationRequests Migrations { get; private set; }
 
         public ItemDataProvider Items { get; private set; }
-        public MapDataProvider Maps { get; private set; }
         public MobDataProvider Mobs { get; private set; }
+        public NpcDataProvider Npcs { get; private set; }
+        public MapDataProvider Maps { get; private set; }
         public Commands Commands { get; private set; }
 
         private MasterServer()
@@ -46,6 +47,7 @@ namespace SharpEnd.Servers
             Items = new ItemDataProvider();
             Maps = new MapDataProvider();
             Mobs = new MobDataProvider();
+            Npcs = new NpcDataProvider();
             Commands = new Commands();
         }
 
@@ -74,8 +76,9 @@ namespace SharpEnd.Servers
             try
             {
                 Items.Load();
-                Maps.Load();
                 Mobs.Load();
+                Npcs.Load();
+                Maps.Load();
             }
             catch
             {

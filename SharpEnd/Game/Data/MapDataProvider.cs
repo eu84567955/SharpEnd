@@ -16,7 +16,7 @@ namespace SharpEnd.Game.Data
             public Point Point1;
             public Point Point2;
 
-            public void Read(BinaryReader reader)
+            public void Load(BinaryReader reader)
             {
                 Identifier = reader.ReadUInt16();
                 NextIdentifier = reader.ReadUInt16();
@@ -26,7 +26,7 @@ namespace SharpEnd.Game.Data
                 Point2 = new Point(reader.ReadInt16(), reader.ReadInt16());
             }
 
-            public void Write(BinaryWriter writer)
+            public void Save(BinaryWriter writer)
             {
                 writer.Write(Identifier);
                 writer.Write(NextIdentifier);
@@ -48,7 +48,7 @@ namespace SharpEnd.Game.Data
             public bool Hide;
             public int RespawnTime;
 
-            public void Read(BinaryReader reader)
+            public void Load(BinaryReader reader)
             {
                 Identifier = reader.ReadInt32();
                 Position = new Point(reader.ReadInt16(), reader.ReadInt16());
@@ -58,7 +58,7 @@ namespace SharpEnd.Game.Data
                 RespawnTime = reader.ReadInt32();
             }
 
-            public void Write(BinaryWriter writer)
+            public void Save(BinaryWriter writer)
             {
                 writer.Write(Identifier);
                 writer.Write(Position.X);
@@ -80,7 +80,7 @@ namespace SharpEnd.Game.Data
             public bool Flip;
             public bool Hide;
 
-            public void Read(BinaryReader reader)
+            public void Load(BinaryReader reader)
             {
                 Identifier = reader.ReadInt32();
                 Position = new Point(reader.ReadInt16(), reader.ReadInt16());
@@ -91,7 +91,7 @@ namespace SharpEnd.Game.Data
                 Hide = reader.ReadBoolean();
             }
 
-            public void Write(BinaryWriter writer)
+            public void Save(BinaryWriter writer)
             {
                 writer.Write(Identifier);
                 writer.Write(Position.X);
@@ -113,7 +113,7 @@ namespace SharpEnd.Game.Data
             public string ToName;
             public string Script;
 
-            public void Read(BinaryReader reader)
+            public void Load(BinaryReader reader)
             {
                 Identifier = reader.ReadSByte();
                 Position = new Point(reader.ReadInt16(), reader.ReadInt16());
@@ -123,7 +123,7 @@ namespace SharpEnd.Game.Data
                 Script = reader.ReadString();
             }
 
-            public void Write(BinaryWriter writer)
+            public void Save(BinaryWriter writer)
             {
                 writer.Write(Identifier);
                 writer.Write(Position.X);
@@ -140,13 +140,13 @@ namespace SharpEnd.Game.Data
             public short Identifier;
             public Point Position;
 
-            public void Read(BinaryReader reader)
+            public void Load(BinaryReader reader)
             {
                 Identifier = reader.ReadInt16();
                 Position = new Point(reader.ReadInt16(), reader.ReadInt16());
             }
 
-            public void Write(BinaryWriter writer)
+            public void Save(BinaryWriter writer)
             {
                 writer.Write(Identifier);
                 writer.Write(Position.X);
@@ -184,7 +184,7 @@ namespace SharpEnd.Game.Data
         public List<MapPortalData> Portals { get; set; }
         public List<MapSeatData> Seats { get; set; }
 
-        public void Read(BinaryReader reader)
+        public void Load(BinaryReader reader)
         {
             Identifier = reader.ReadInt32();
             //Flags = (EMapFlags)pReader.ReadUInt16();
@@ -215,7 +215,7 @@ namespace SharpEnd.Game.Data
             while (footholdsCount-- > 0)
             {
                 MapFootholdData foothold = new MapFootholdData();
-                foothold.Read(reader);
+                foothold.Load(reader);
                 Footholds.Add(foothold);
             }
 
@@ -224,7 +224,7 @@ namespace SharpEnd.Game.Data
             while (mobsCount-- > 0)
             {
                 MapMobData mob = new MapMobData();
-                mob.Read(reader);
+                mob.Load(reader);
                 Mobs.Add(mob);
             }
 
@@ -233,7 +233,7 @@ namespace SharpEnd.Game.Data
             while (npcsCount-- > 0)
             {
                 MapNpcData npc = new MapNpcData();
-                npc.Read(reader);
+                npc.Load(reader);
                 Npcs.Add(npc);
             }
 
@@ -251,7 +251,7 @@ namespace SharpEnd.Game.Data
             while (portalsCount-- > 0)
             {
                 MapPortalData portal = new MapPortalData();
-                portal.Read(reader);
+                portal.Load(reader);
                 Portals.Add(portal);
             }
 
@@ -260,12 +260,12 @@ namespace SharpEnd.Game.Data
             while (seatsCount-- > 0)
             {
                 MapSeatData seat = new MapSeatData();
-                seat.Read(reader);
+                seat.Load(reader);
                 Seats.Add(seat);
             }
         }
 
-        public void Write(BinaryWriter writer)
+        public void Save(BinaryWriter writer)
         {
             writer.Write(Identifier);
             //pWriter.Write((ushort)Flags);
@@ -292,22 +292,22 @@ namespace SharpEnd.Game.Data
             writer.Write(InitialEntryScript);
 
             writer.Write(Footholds.Count);
-            Footholds.ForEach(f => f.Write(writer));
+            Footholds.ForEach(f => f.Save(writer));
 
             writer.Write(Mobs.Count);
-            Mobs.ForEach(m => m.Write(writer));
+            Mobs.ForEach(m => m.Save(writer));
 
             writer.Write(Npcs.Count);
-            Npcs.ForEach(n => n.Write(writer));
+            Npcs.ForEach(n => n.Save(writer));
 
             /*pWriter.Write(Reactors.Count);
             Reactors.ForEach(r => r.Write(pWriter));*/
 
             writer.Write(Portals.Count);
-            Portals.ForEach(p => p.Write(writer));
+            Portals.ForEach(p => p.Save(writer));
 
             writer.Write(Seats.Count);
-            Seats.ForEach(s => s.Write(writer));
+            Seats.ForEach(s => s.Save(writer));
         }
     }
 
@@ -327,7 +327,7 @@ namespace SharpEnd.Game.Data
                     {
                         MapData map = new MapData();
 
-                        map.Read(reader);
+                        map.Load(reader);
 
                         Add(map.Identifier, map);
                     }

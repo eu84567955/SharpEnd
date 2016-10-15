@@ -97,7 +97,7 @@ namespace WvsData
 
                     foreach (MapData map in maps.Values)
                     {
-                        map.Write(writer);
+                        map.Save(writer);
                     }
 
                     Console.WriteLine("Maps: {0}", maps.Count);

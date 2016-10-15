@@ -4,7 +4,7 @@ namespace SharpEnd.Packets
 {
     internal static class MessagePackets
     {
-        public static byte[] Notification(string text, EMessageType type)
+        public static byte[] Notification(string text, ENoticeType type)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -12,14 +12,14 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_NOTIFICATION)
                     .WriteByte((byte)type);
 
-                if (type == EMessageType.Header)
+                if (type == ENoticeType.Header)
                 {
                     outPacket.WriteBoolean(!string.IsNullOrEmpty(text));
                 }
 
                 outPacket.WriteString(text);
 
-                if (type == EMessageType.Blue)
+                if (type == ENoticeType.Blue)
                 {
                     outPacket.WriteInt();
                 }

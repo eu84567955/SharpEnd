@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Players;
+using SharpEnd.Servers;
 using static SharpEnd.Game.Data.MapData;
 
 namespace SharpEnd.Game.Maps
@@ -11,19 +12,35 @@ namespace SharpEnd.Game.Maps
         public bool Flip { get; private set; }
         public bool Hide { get; private set; }
 
+        public bool IsShop { get; private set; }
+        public int StorageCost { get; private set; }
+        public string Script { get; private set; }
+
         public Player Controller { get; set; }
 
-        public string Script
+        public bool IsStorage
         {
             get
             {
-                return "levelUP";
+                return StorageCost > 0;
             }
         }
 
-        public Npc(MapNpcData data)
+        public Npc(int identifier)
+            : base()
         {
-            Identifier = data.Identifier;
+            Identifier = identifier;
+
+            var data = MasterServer.Instance.Npcs[Identifier];
+
+            IsShop = data.IsShop;
+            StorageCost = data.StorageCost;
+            Script = data.Script;
+        }
+
+        public Npc(MapNpcData data)
+            : this(data.Identifier)
+        {
             Position = data.Position;
             Stance = (sbyte)(data.Flip ? 1 : 2); // TODO: Validate this.
             Foothold = data.Foothold;
@@ -31,6 +48,14 @@ namespace SharpEnd.Game.Maps
             MaximumClickX = data.MaximumClickX;
             Flip = data.Flip;
             Hide = data.Hide;
+        }
+
+        public Npc(int identifier, MovableLife reference)
+            : this(identifier)
+        {
+            Position = reference.Position;
+            Stance = reference.Stance;
+            Foothold = reference.Foothold;
         }
 
         public void AssignController()

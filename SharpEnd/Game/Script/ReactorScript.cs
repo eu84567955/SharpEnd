@@ -1,6 +1,6 @@
 ﻿using SharpEnd.Players;
 
-namespace SharpEnd.Scripting
+namespace SharpEnd.Script
 {
     internal sealed class ReactorScript : ScriptBase
     {
