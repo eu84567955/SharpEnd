@@ -6,20 +6,22 @@ namespace SharpEnd.Game.Maps
     {
         public MapNpcs(Map map) : base(map) { }
 
-        public override void Add(Npc npc)
+        protected override void InsertItem(Npc item)
         {
-            base.Add(npc);
+            base.InsertItem(item);
 
-            Map.Send(NpcPackets.NpcSpawn(npc));
+            Map.Send(NpcPackets.NpcSpawn(item));
 
-            npc.AssignController();
+            item.AssignController();
         }
 
-        public override void Remove(Npc npc)
+        protected override void RemoveItem(Npc item)
         {
-            Map.Send(NpcPackets.NpcDespawn(npc.ObjectIdentifier));
+            item.Controller.ControlledNpcs.Remove(item);
 
-            base.Remove(npc);
+            Map.Send(NpcPackets.NpcDespawn(item.ObjectIdentifier));
+
+            base.RemoveItem(item);
         }
     }
 }

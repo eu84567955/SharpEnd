@@ -10,22 +10,22 @@ namespace SharpEnd.Game.Maps
     {
         public MapMobs(Map map) : base(map) { }
 
-        public override void Add(Mob mob)
+        protected override void InsertItem(Mob item)
         {
-            base.Add(mob);
+            base.InsertItem(item);
 
-            Map.Send(MobPackets.MobSpawn(mob, -2));
+            Map.Send(MobPackets.MobSpawn(item, -2));
 
-            mob.AssignController();
+            item.AssignController();
         }
 
         // NOTE: Equivalent of mob death.
-        public override void Remove(Mob mob)
+        protected override void RemoveItem(Mob item)
         {
             uint mostDamage = 0;
             Player owner = null;
 
-            foreach (KeyValuePair<Player, int> attacker in mob.Attackers)
+            foreach (KeyValuePair<Player, int> attacker in item.Attackers)
             {
                 if (attacker.Key.Map == Map && attacker.Key.Stats.IsAlive)
                 {
@@ -34,22 +34,22 @@ namespace SharpEnd.Game.Maps
                         owner = attacker.Key;
                     }
 
-                    ulong experience = (ulong)(Math.Min(mob.Experience, (attacker.Value * mob.Experience) / mob.MaxHealth));
+                    ulong experience = (ulong)(Math.Min(item.Experience, (attacker.Value * item.Experience) / item.MaxHealth));
 
                     attacker.Key.Stats.GiveExperience(experience, true, false);
                 }
             }
 
-            mob.Attackers.Clear();
+            item.Attackers.Clear();
 
-            if (mob.CanDrop)
+            if (item.CanDrop)
             {
                 short i = 1;
                 short mod = false ? 35 : 25; // TODO: Explosive.
 
                 List<Drop> drops = new List<Drop>();
 
-                foreach (Loot loot in mob.Loots)
+                foreach (Loot loot in item.Loots)
                 {
                     if (loot.QuestIdentifier != 0) continue;
 
@@ -59,7 +59,7 @@ namespace SharpEnd.Game.Maps
                     {
                         drops.Add(new PlayerItem(loot.ItemIdentifier, Randomizer.NextUShort(loot.Minimum, loot.Maximum))
                         {
-                            Dropper = mob,
+                            Dropper = item,
                             Owner = owner
                         });
                     }
@@ -71,7 +71,7 @@ namespace SharpEnd.Game.Maps
                                       (mod * (i + 1) / 2) :
                                       -(mod * (i / 2)));
 
-                    drop.Position = new Point(mob.Position.X + modX, mob.Position.Y);
+                    drop.Position = new Point(item.Position.X + modX, item.Position.Y);
 
                     i++;
 
@@ -84,17 +84,17 @@ namespace SharpEnd.Game.Maps
                 // TODO: Add mob to quests.
             }
 
-            mob.Controller.ControlledMobs.Remove(mob);
+            item.Controller.ControlledMobs.Remove(item);
 
-            Map.Send(MobPackets.MobDespawn(mob.ObjectIdentifier, 1));
+            Map.Send(MobPackets.MobDespawn(item.ObjectIdentifier, 1));
 
-            base.Remove(mob);
+            base.RemoveItem(item);
 
             // TODO: Respawn.
 
-            foreach (int summon in mob.Summons)
+            foreach (int summon in item.Summons)
             {
-                Map.Mobs.Add(new Mob(summon, mob));
+                Map.Mobs.Add(new Mob(summon, item));
             }
         }
     }

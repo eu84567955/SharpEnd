@@ -106,6 +106,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Collections\SafeEnumerator.cs" />
+    <Compile Include="Collections\SafeKeyedCollection.cs" />
     <Compile Include="Drawing\Line.cs" />
     <Compile Include="Drawing\Ratio.cs" />
     <Compile Include="Drawing\Rectangle.cs" />

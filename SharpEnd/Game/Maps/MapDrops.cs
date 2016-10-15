@@ -1,5 +1,4 @@
 ﻿using SharpEnd.Packets;
-using SharpEnd.Players;
 using SharpEnd.Threading;
 
 namespace SharpEnd.Game.Maps
@@ -10,40 +9,42 @@ namespace SharpEnd.Game.Maps
 
         public MapDrops(Map map) : base(map) { }
 
-        public override void Add(Drop drop)
+        protected override void InsertItem(Drop item)
         {
-            base.Add(drop);
+            item.Picker = null;
 
-            if (drop.Expiry != null)
+            base.InsertItem(item);
+
+            if (item.Expiry != null)
             {
-                drop.Expiry.Cancel();
+                item.Expiry.Cancel();
             }
 
             if (true) // TODO: Check if map has everlasting drops (e.g. christmas maps).
             {
-                drop.Expiry = new Delay(ExpirationTime, () =>
+                item.Expiry = new Delay(ExpirationTime, () =>
                 {
-                    if (drop.Map == Map)
+                    if (item.Map == Map) // NOTE: Is this needed?
                     {
-                        Remove(drop);
+                        Remove(item);
                     }
                 });
             }
 
-            Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Pop));
-            Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.New));
+            Map.Send(DropPackets.SpawnDrop(item, EDropAnimation.Pop));
+            Map.Send(DropPackets.SpawnDrop(item, EDropAnimation.New));
         }
 
-        public void Remove(Drop drop, Player picker = null)
+        protected override void RemoveItem(Drop item)
         {
-            if (drop.Expiry != null)
+            if (item.Expiry != null)
             {
-                drop.Expiry.Cancel();
+                item.Expiry.Cancel();
             }
 
-            Map.Send(DropPackets.DespawnDrop(drop.ObjectIdentifier, picker));
-
-            base.Remove(drop);
+            Map.Send(DropPackets.DespawnDrop(item.ObjectIdentifier, item.Picker));
+            
+            base.RemoveItem(item);
         }
     }
 }

@@ -78,7 +78,7 @@ namespace SharpEnd.Game.Maps
 
         public void Send(byte[] buffer, Player ignored = null)
         {
-            foreach (Player player in Players.Values)
+            foreach (Player player in Players)
             {
                 if (player != ignored)
                 {

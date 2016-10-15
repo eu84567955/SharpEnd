@@ -2,7 +2,6 @@
 using SharpEnd.Players;
 using SharpEnd.Scripting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace SharpEnd.Game.Maps
@@ -11,78 +10,41 @@ namespace SharpEnd.Game.Maps
     {
         public MapPlayers(Map map) : base(map) { }
 
-        public Player this[string name]
-        {
-            get
-            {
-                lock (this)
-                {
-                    foreach (Player player in this.Values)
-                    {
-                        if (player.Name.ToLower() == name.ToLower())
-                        {
-                            return player;
-                        }
-                    }
-
-                    throw new KeyNotFoundException();
-                }
-            }
-        }
-
         // TODO: Validate order of objects.
-        public override void Add(Player player)
+        protected override void InsertItem(Player item)
         {
-            lock (this)
+            foreach (Player player in this)
             {
-                foreach (Player loopPlayer in this.Values)
-                {
-                    player.Send(PlayerPackets.PlayerSpawn(loopPlayer));
-                }
-
-                Map.Send(PlayerPackets.PlayerSpawn(player));
-
-                base.Add(player);
+                item.Send(PlayerPackets.PlayerSpawn(player));
             }
 
-            lock (Map.Mobs)
+            Map.Send(PlayerPackets.PlayerSpawn(item));
+
+            base.InsertItem(item);
+
+            foreach (Mob mob in Map.Mobs)
             {
-                foreach (Mob mob in Map.Mobs.Values)
-                {
-                    player.Send(MobPackets.MobSpawn(mob, -1));
-                }
+                item.Send(MobPackets.MobSpawn(mob, -1));
             }
 
-            lock (Map.Npcs)
+            foreach (Npc npc in Map.Npcs)
             {
-                foreach (Npc npc in Map.Npcs.Values)
-                {
-                    player.Send(NpcPackets.NpcSpawn(npc));
-                }
+                item.Send(NpcPackets.NpcSpawn(npc));
             }
 
-            lock (Map.Drops)
+            foreach (Drop drop in Map.Drops)
             {
-                foreach (Drop drop in Map.Drops.Values)
-                {
-                    player.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
-                }
+                item.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
             }
 
-            lock (Map.Mobs)
+            foreach (Mob mob in Map.Mobs)
             {
-                foreach (Mob mob in Map.Mobs.Values)
-                {
-                    mob.AssignController();
-                }
+                mob.AssignController();
             }
 
-            lock (Map.Npcs)
+            foreach (Npc npc in Map.Npcs)
             {
-                foreach (Npc npc in Map.Npcs.Values)
-                {
-                    npc.AssignController();
-                }
+                npc.AssignController();
             }
 
             if (!string.IsNullOrEmpty(Map.EntryScript) || !string.IsNullOrEmpty(Map.InitialEntryScript))
@@ -101,7 +63,7 @@ namespace SharpEnd.Game.Maps
 
                 if (File.Exists(string.Format("scripts/maps/{0}/{1}.py", initial ? "inital_entry" : "entry", name)))
                 {
-                    MapScript script = new MapScript(player, Map, initial);
+                    MapScript script = new MapScript(item, Map, initial);
 
                     try
                     {
@@ -119,33 +81,24 @@ namespace SharpEnd.Game.Maps
             }
         }
 
-        public override void Remove(Player player)
+        protected override void RemoveItem(Player item)
         {
-            lock (this)
+            item.ControlledMobs.Clear();
+            item.ControlledNpcs.Clear();
+
+            base.RemoveItem(item);
+
+            foreach (Mob mob in Map.Mobs)
             {
-                player.ControlledMobs.Clear();
-                player.ControlledNpcs.Clear();
-
-                base.Remove(player);
-
-                lock (Map.Mobs)
-                {
-                    foreach (Mob mob in Map.Mobs.Values)
-                    {
-                        mob.AssignController();
-                    }
-                }
-
-                lock (Map.Npcs)
-                {
-                    foreach (Npc npc in Map.Npcs.Values)
-                    {
-                        npc.AssignController();
-                    }
-                }
-
-                Map.Send(PlayerPackets.PlayerDespawn(player.Identifier));
+                mob.AssignController();
             }
+
+            foreach (Npc npc in Map.Npcs)
+            {
+                npc.AssignController();
+            }
+
+            Map.Send(PlayerPackets.PlayerDespawn(item.Identifier));
         }
     }
 }

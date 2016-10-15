@@ -151,27 +151,33 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            if (drop is Meso)
+
+            if (drop.Picker == null)
             {
-                player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
-            }
-            else if (drop is PlayerItem)
-            {
-                if (GameLogicUtilities.IsMonsterCard(((PlayerItem)drop).Identifier))
+                drop.Picker = player;
+
+                if (drop is Meso)
                 {
-                    // TODO: Monster Book handling.
+                    player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
                 }
-                else
+                else if (drop is PlayerItem)
                 {
-                    ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
+                    if (GameLogicUtilities.IsMonsterCard(((PlayerItem)drop).Identifier))
+                    {
+                        // TODO: Monster Book handling.
+                    }
+                    else
+                    {
+                        ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
 
-                    player.Items.Add((PlayerItem)drop);
+                        player.Items.Add((PlayerItem)drop);
+                    }
                 }
+
+                player.Map.Drops.Remove(drop);
+
+                player.Send(DropPackets.DropGain(drop));
             }
-
-            player.Map.Drops.Remove(drop, player);
-
-            player.Send(DropPackets.DropGain(drop));
         }
     }
 }

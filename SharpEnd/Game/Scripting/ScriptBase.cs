@@ -48,7 +48,7 @@ namespace SharpEnd.Scripting
             Set("getMap", new Func<int>(() => m_player.MapIdentifier));
             Set("setMap", new Action<int, string>((mapIdentifier, portalIdentifier) =>
             {
-                m_player.SetMap(mapIdentifier, MasterServer.Instance.GetMap(mapIdentifier).Portals.GetPortal(portalIdentifier));
+                m_player.SetMap(mapIdentifier, MasterServer.Instance.GetMap(mapIdentifier).Portals[portalIdentifier]);
             }));
             Set("getMapPlayerCount", new Func<int>(() => m_player.Map.Players.Count));
 

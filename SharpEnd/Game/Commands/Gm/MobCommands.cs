@@ -28,7 +28,7 @@ namespace SharpEnd.Game.Commands.Gm
         {
             List<Mob> toKill = new List<Mob>();
 
-            foreach (Mob mob in player.Map.Mobs.Values)
+            foreach (Mob mob in player.Map.Mobs)
             {
                 toKill.Add(mob);
             }
@@ -44,7 +44,7 @@ namespace SharpEnd.Game.Commands.Gm
         {
             List<Drop> toClear = new List<Drop>();
 
-            foreach (Drop drop in player.Map.Drops.Values)
+            foreach (Drop drop in player.Map.Drops)
             {
                 toClear.Add(drop);
             }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using SharpEnd.Collections;
+using System.Collections.Generic;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class MapPortals : List<Portal>
+    internal sealed class MapPortals : SafeKeyedCollection<sbyte, Portal>
     {
         public Map Map { get; private set; }
 
@@ -12,47 +13,50 @@ namespace SharpEnd.Game.Maps
             Map = map;
         }
 
-        public Portal GetPortal(string label)
+        protected override sbyte GetKeyForItem(Portal item)
         {
-            foreach (Portal portal in this)
-            {
-                if (portal.Label.ToLower() == label.ToLower())
-                {
-                    return portal;
-                }
-            }
-
-            return null;
+            return item.Identifier;
         }
 
-        public Portal GetSpawnPoint(sbyte identifier = -1)
+        public Portal this[string label]
         {
-            if (identifier == -1)
-            {
-                List<Portal> spawnPoints = new List<Portal>();
-
-                foreach (Portal portal in this)
-                {
-                    if (portal.Label == "sp")
-                    {
-                        spawnPoints.Add(portal);
-                    }
-                }
-
-                return spawnPoints[Randomizer.NextSByte(0, spawnPoints.Count)];
-            }
-            else
+            get
             {
                 foreach (Portal portal in this)
                 {
-                    if (portal.Identifier == identifier)
+                    if (portal.Label.ToLower() == label.ToLower())
                     {
                         return portal;
                     }
                 }
-            }
 
-            return null;
+                throw new KeyNotFoundException();
+            }
+        }
+
+        public new Portal this[sbyte identifier]
+        {
+            get
+            {
+                if (identifier == -1)
+                {
+                    List<Portal> spawnPoints = new List<Portal>();
+
+                    foreach (Portal portal in this)
+                    {
+                        if (portal.Label == "sp")
+                        {
+                            spawnPoints.Add(portal);
+                        }
+                    }
+
+                    return spawnPoints[Randomizer.NextSByte(0, spawnPoints.Count)];
+                }
+                else
+                {
+                    return base[identifier];
+                }
+            }
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using SharpEnd.Collections;
 
 namespace SharpEnd.Game.Maps
 {
-    internal abstract class MapEntities<T> : Dictionary<int, T> where T : MapEntity
+    internal abstract class MapEntities<T> : SafeKeyedCollection<int, T> where T : MapEntity
     {
         public Map Map { get; private set; }
 
@@ -12,20 +13,25 @@ namespace SharpEnd.Game.Maps
             Map = map;
         }
 
-        public virtual void Add(T entity)
+        protected override int GetKeyForItem(T item)
         {
-            entity.Map = Map;
-            entity.ObjectIdentifier = Map.AssignObjectIdentifier();
-
-            Add(entity.ObjectIdentifier, entity);
+            return item.ObjectIdentifier;
         }
 
-        public virtual void Remove(T entity)
+        protected override void InsertItem(T item)
         {
-            Remove(entity.ObjectIdentifier);
+            item.Map = Map;
+            item.ObjectIdentifier = Map.AssignObjectIdentifier();
 
-            entity.Map = null;
-            entity.ObjectIdentifier = -1;
+            base.InsertItem(item);
+        }
+
+        protected override void RemoveItem(T item)
+        {
+            base.RemoveItem(item);
+
+            item.Map = null;
+            item.ObjectIdentifier = -1;
         }
     }
 }

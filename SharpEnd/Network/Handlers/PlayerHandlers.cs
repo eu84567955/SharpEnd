@@ -52,14 +52,18 @@ namespace SharpEnd.Handlers
                         inPacket.Skip(4); // NOTE: Unknown.
                         string label = inPacket.ReadString();
 
-                        Portal portal = player.Map.Portals.GetPortal(label);
+                        Portal portal;
 
-                        if (portal == null)
+                        try
+                        {
+                            portal = player.Map.Portals[label];
+                        }
+                        catch (KeyNotFoundException)
                         {
                             return;
                         }
 
-                        player.SetMap(portal.ToMap, MasterServer.Instance.GetMap(portal.ToMap).Portals.GetPortal(portal.ToName));
+                        player.SetMap(portal.DestinationMapIdentifier, portal.Link);
                     }
                     break;
 
@@ -470,9 +474,13 @@ namespace SharpEnd.Handlers
 
             string label = inPacket.ReadString();
 
-            Portal portal = player.Map.Portals.GetPortal(label);
+            Portal portal;
 
-            if (portal == null)
+            try
+            {
+                portal = player.Map.Portals[label];
+            }
+            catch (KeyNotFoundException)
             {
                 return;
             }
@@ -514,9 +522,13 @@ namespace SharpEnd.Handlers
 
             string label = inPacket.ReadString();
 
-            Portal portal = player.Map.Portals.GetPortal(label);
+            Portal portal;
 
-            if (portal == null)
+            try
+            {
+                portal = player.Map.Portals[label];
+            }
+            catch (KeyNotFoundException)
             {
                 return;
             }

@@ -83,7 +83,7 @@ namespace SharpEnd.Players
             }
 
             Map = MasterServer.Instance.GetMap(MapIdentifier);
-            Position = Map.Portals.GetSpawnPoint(MapSpawnPoint).Position;
+            Position = Map.Portals[MapSpawnPoint].Position;
             Stance = 0;
             Foothold = 0;
 
@@ -216,7 +216,7 @@ namespace SharpEnd.Players
 
             if (portal == null)
             {
-                portal = newMap.Portals.GetSpawnPoint();
+                portal = newMap.Portals[-1];
             }
 
             InternalSetMap(mapIdentifier, portal.Identifier, false, new Point(portal.Position.X, (short)(portal.Position.Y - 40)));
