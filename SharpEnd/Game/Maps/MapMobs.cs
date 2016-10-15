@@ -1,6 +1,7 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Packets;
 using SharpEnd.Players;
+using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Game.Maps
@@ -33,7 +34,7 @@ namespace SharpEnd.Game.Maps
                         owner = attacker.Key;
                     }
 
-                    ulong experience = 0;// (ulong)(Math.Min(mob.Data.Experience, (attacker.Value * mob.Data.Experience) / mob.Data.MaxHealth));
+                    ulong experience = (ulong)(Math.Min(mob.Experience, (attacker.Value * mob.Experience) / mob.MaxHealth));
 
                     attacker.Key.Stats.GiveExperience(experience, true, false);
                 }
@@ -43,31 +44,40 @@ namespace SharpEnd.Game.Maps
 
             if (mob.CanDrop)
             {
+                short i = 1;
+                short mod = false ? 35 : 25; // TODO: Explosive.
+
                 List<Drop> drops = new List<Drop>();
 
-                /*foreach (Loot loot in mob.Data.Loots)
+                foreach (Loot loot in mob.Loots)
                 {
-                    if (Randomizer.NextInt(0, 999999) < loot.Chance)
+                    if (loot.QuestIdentifier != 0) continue;
+
+                    bool test = true;
+
+                    int chance = test ? 1000000 : loot.Chance * 1; // TODO: World drop rate.
+
+                    if (Randomizer.NextInt(0, 999999) < chance)
                     {
-                        drops.Add(new PlayerItem(loot.ItemIdentifier)
+                        drops.Add(new PlayerItem(loot.ItemIdentifier, Randomizer.NextUShort(loot.Minimum, loot.Maximum))
                         {
                             Dropper = mob,
                             Owner = owner
                         });
                     }
-                }*/
-
-                Point dropPosition = new Point(mob.Position.X, mob.Position.Y);
-
-                dropPosition.X -= (short)(12 * drops.Count);
+                }
 
                 foreach (Drop drop in drops)
                 {
-                    drop.Position = new Point(dropPosition.X, dropPosition.Y);
+                    short modX = (short)((i % 2 == 0) ?
+                                      (mod * (i + 1) / 2) :
+                                      -(mod * (i / 2)));
 
-                    dropPosition.X += 25;
+                    drop.Position = new Point(mob.Position.X + modX, mob.Position.Y);
 
-                    //Map.Drops.Add(drop);
+                    i++;
+
+                    Map.Drops.Add(drop);
                 }
             }
 
@@ -84,7 +94,10 @@ namespace SharpEnd.Game.Maps
 
             // TODO: Respawn.
 
-            // TODO: Spawn death summons.
+            foreach (int summon in mob.Summons)
+            {
+                Map.Mobs.Add(new Mob(summon, mob));
+            }
         }
     }
 }

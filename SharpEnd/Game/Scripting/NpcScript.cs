@@ -1,4 +1,5 @@
-﻿using SharpEnd.Packets;
+﻿using SharpEnd.Game.Maps;
+using SharpEnd.Packets;
 using SharpEnd.Players;
 using System;
 
@@ -6,13 +7,13 @@ namespace SharpEnd.Scripting
 {
     internal sealed class NpcScript : ScriptBase
     {
-        private int m_identifier;
+        private Npc m_npc;
         private string m_text;
 
-        public NpcScript(Player player, string name, int identifier)
-            : base(player, string.Format("scripts/npcs/{0}.py", name))
+        public NpcScript(Player player, Npc npc)
+            : base(player, string.Format("scripts/npcs/{0}.py", npc.Script))
         {
-            m_identifier = identifier;
+            m_npc = npc;
 
             Expose("addText", new Action<string>(AddText));
             Expose("sendOk", new Action(SendOk));
@@ -25,7 +26,7 @@ namespace SharpEnd.Scripting
 
         private void SendOk()
         {
-            m_player.Send(NpcPackets.NpcOkDialog(m_identifier, m_text));
+            m_player.Send(NpcPackets.NpcOkDialog(m_npc.Identifier, m_text));
         }
     }
 }

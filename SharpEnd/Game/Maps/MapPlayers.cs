@@ -1,5 +1,4 @@
-﻿using SharpEnd.Drawing;
-using SharpEnd.Packets;
+﻿using SharpEnd.Packets;
 using SharpEnd.Players;
 using System.Collections.Generic;
 
@@ -56,6 +55,14 @@ namespace SharpEnd.Game.Maps
                 foreach (Npc npc in Map.Npcs.Values)
                 {
                     player.Send(NpcPackets.NpcSpawn(npc));
+                }
+            }
+
+            lock (Map.Drops)
+            {
+                foreach (Drop drop in Map.Drops.Values)
+                {
+                    player.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
                 }
             }
 

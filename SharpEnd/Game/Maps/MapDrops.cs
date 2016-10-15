@@ -6,7 +6,7 @@ namespace SharpEnd.Game.Maps
 {
     internal sealed class MapDrops : MapEntities<Drop>
     {
-        private const int ExpirationTime = 60 * 1000;
+        private const int ExpirationTime = 3 * 60 * 1000;
 
         public MapDrops(Map map) : base(map) { }
 
@@ -19,13 +19,16 @@ namespace SharpEnd.Game.Maps
                 drop.Expiry.Cancel();
             }
 
-            drop.Expiry = new Delay(ExpirationTime, () =>
+            if (true) // TODO: Check if map has everlasting drops (e.g. christmas maps).
             {
-                if (drop.Map == Map)
+                drop.Expiry = new Delay(ExpirationTime, () =>
                 {
-                    Remove(drop);
-                }
-            });
+                    if (drop.Map == Map)
+                    {
+                        Remove(drop);
+                    }
+                });
+            }
 
             Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Pop));
             Map.Send(DropPackets.SpawnDrop(drop, EDropAnimation.New));

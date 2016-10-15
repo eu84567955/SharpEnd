@@ -1,12 +1,21 @@
 ﻿using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using SharpEnd.Players;
+using SharpEnd.Servers;
 using System;
 
 namespace SharpEnd.Scripting
 {
     internal abstract class ScriptBase
     {
+        private enum VariableType : int
+        {
+            Boolean,
+            String,
+            Number,
+            Integer
+        }
+
         protected readonly Player m_player;
 
         private readonly string m_path;
@@ -21,11 +30,60 @@ namespace SharpEnd.Scripting
             m_engine = Python.CreateEngine();
             m_scope = m_engine.CreateScope();
 
-            Expose("getMap", new Func<int>(GetMap));
-            Expose("getPlayerVariable", new Func<string, int>(GetPlayerVariable));
-            Expose("removePlayerVariable", new Action<string>(RemovePlayerVariable));
-            Expose("setMap", new Action<int>(SetMap));
-            Expose("setPlayerVariable", new Action<string, int>(SetPlayerVariable));
+            SetEnvironmentVariables();
+
+            // NOTE: Map exports.
+            Expose("getMap", new Func<int>(() => m_player.MapIdentifier));
+            Expose("setMap", new Action<int, string>((mapIdentifier, portalIdentifier) =>
+            {
+                m_player.SetMap(mapIdentifier, MasterServer.Instance.GetMap(mapIdentifier).Portals.GetPortal(portalIdentifier));
+            }));
+            Expose("getMapPlayerCount", new Func<int>(() => m_player.Map.Players.Count));
+
+            // NOTE: Inventory exports.
+            Expose("giveItem", new Func<int, ushort, bool>((itemIdentifier, quantity) =>
+            {
+                if (quantity < 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    m_player.Items.Add(new PlayerItem(itemIdentifier, quantity));
+
+                    return true;
+                }
+            }));
+
+            // NOTE: Player exports.
+            Expose("getPlayerVariable", new Func<string, string>((key) =>
+            {
+                string value = null;
+
+                m_player.Variables.TryGetValue(key, out value);
+
+                return value;
+            }));
+            Expose("removePlayerVariable", new Action<string>((key) => m_player.Variables.Remove(key)));
+            Expose("setPlayerVariable", new Action<string, object>((key, value) =>
+            {
+                if (m_player.Variables.ContainsKey(key))
+                {
+                    m_player.Variables[key] = value.ToString();
+                }
+                else
+                {
+                    m_player.Variables.Add(key, value.ToString());
+                }
+            }));
+        }
+
+        private void SetEnvironmentVariables()
+        {
+            Expose("type_bool", VariableType.Boolean);
+            Expose("type_int", VariableType.Integer);
+            Expose("type_num", VariableType.Number);
+            Expose("type_str", VariableType.String);
         }
 
         public dynamic Get(string name)
@@ -42,32 +100,5 @@ namespace SharpEnd.Scripting
         {
             m_engine.ExecuteFile(m_path, m_scope);
         }
-
-        #region Exports
-        private int GetMap()
-        {
-            return m_player.Map.Identifier;
-        }
-
-        private int GetPlayerVariable(string key)
-        {
-            return int.Parse(m_player.Variables[key]);
-        }
-
-        private void RemovePlayerVariable(string key)
-        {
-            m_player.Variables.Remove(key);
-        }
-
-        private void SetMap(int mapIdentifier)
-        {
-            //m_player.SetMap(mapIdentifier);
-        }
-
-        private void SetPlayerVariable(string key, int value)
-        {
-            m_player.Variables.Add(key, value.ToString());
-        }
-        #endregion
     }
 }

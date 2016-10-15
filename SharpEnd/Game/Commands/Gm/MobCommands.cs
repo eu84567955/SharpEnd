@@ -14,7 +14,7 @@ namespace SharpEnd.Game.Commands.Gm
             {
                 while (amount-- > 0)
                 {
-                    player.Map.Mobs.Add(new Mob(mobIdentifier, player.Position));
+                    player.Map.Mobs.Add(new Mob(mobIdentifier, player));
                 }
             }
             else
@@ -44,7 +44,7 @@ namespace SharpEnd.Game.Commands.Gm
         {
             List<Drop> toClear = new List<Drop>();
 
-            /*foreach (Drop drop in player.Map.Drops.Values)
+            foreach (Drop drop in player.Map.Drops.Values)
             {
                 toClear.Add(drop);
             }
@@ -52,7 +52,7 @@ namespace SharpEnd.Game.Commands.Gm
             foreach (Drop drop in toClear)
             {
                 player.Map.Drops.Remove(drop);
-            }*/
+            }
         }
     }
 }

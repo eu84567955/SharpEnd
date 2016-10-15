@@ -97,6 +97,7 @@ namespace SharpEnd.Utility
         }
 
         // Monster card
+        public static bool IsMonsterCard(int itemIdentifier) => itemIdentifier / 10000 == 287;
 
         // Map
         public static sbyte GetMapCluster(int mapId) => (sbyte)(mapId / 10000000);

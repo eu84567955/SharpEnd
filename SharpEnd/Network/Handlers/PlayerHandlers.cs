@@ -160,6 +160,9 @@ namespace SharpEnd.Handlers
                     continue;
                 }
 
+                mob.IsProvoked = true;
+                mob.SwitchController(player);
+
                 int totalDamage = 0;
 
                 foreach (var hit in target.Value)
@@ -480,7 +483,7 @@ namespace SharpEnd.Handlers
 
             if (File.Exists(string.Format("scripts/portals/{0}.py", portal.Script)))
             {
-                PortalScript script = new PortalScript(player, portal.Script);
+                PortalScript script = new PortalScript(player, portal);
 
                 try
                 {
@@ -488,7 +491,7 @@ namespace SharpEnd.Handlers
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error while executing portal script '{0}': {1}", portal.Script, e.Message);
+                    Log.Error("Error while executing portal script '{0}': \n{1}", portal.Script, e.Message);
                 }
             }
             else

@@ -33,5 +33,10 @@ namespace SharpEnd.Drawing
         {
             return new Point(p1.X - p2.X, p1.Y - p2.Y);
         }
+
+        public static implicit operator short(Point v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -44,6 +44,8 @@ namespace SharpEnd.Game.Data
             public int Identifier;
             public Point Position;
             public ushort Foothold;
+            public bool Flip;
+            public bool Hide;
             public int RespawnTime;
 
             public void Read(BinaryReader reader)
@@ -51,6 +53,8 @@ namespace SharpEnd.Game.Data
                 Identifier = reader.ReadInt32();
                 Position = new Point(reader.ReadInt16(), reader.ReadInt16());
                 Foothold = reader.ReadUInt16();
+                Flip = reader.ReadBoolean();
+                Hide = reader.ReadBoolean();
                 RespawnTime = reader.ReadInt32();
             }
 
@@ -60,6 +64,8 @@ namespace SharpEnd.Game.Data
                 writer.Write(Position.X);
                 writer.Write(Position.Y);
                 writer.Write(Foothold);
+                writer.Write(Flip);
+                writer.Write(Hide);
                 writer.Write(RespawnTime);
             }
         }

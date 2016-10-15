@@ -11,6 +11,11 @@ namespace SharpEnd
             return Convert.ToSByte(mRandom.Next(minValue, maxValue));
         }
 
+        public static ushort NextUShort(int minValue, int maxValue)
+        {
+            return Convert.ToUInt16(mRandom.Next(minValue, maxValue));
+        }
+
         public static int NextInt()
         {
             return mRandom.Next();

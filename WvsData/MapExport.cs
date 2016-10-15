@@ -147,6 +147,8 @@ namespace WvsData
                             mob.Position = new Point(node.GetShort("x"), node.GetShort("cy"));
                             mob.Foothold = node.GetUShort("fh");
                             mob.RespawnTime = node.GetInt("mobTime");
+                            mob.Flip = node.GetBoolean("f");
+                            mob.Hide = node.GetBoolean("hide");
 
                             map.Mobs.Add(mob);
 
@@ -162,6 +164,8 @@ namespace WvsData
                             npc.Foothold = node.GetUShort("fh");
                             npc.MinimumClickX = node.GetShort("rx0");
                             npc.MaximumClickX = node.GetShort("rx1");
+                            npc.Flip = node.GetBoolean("f");
+                            npc.Hide = node.GetBoolean("hide");
 
                             map.Npcs.Add(npc);
                         }

@@ -112,7 +112,7 @@ namespace SharpEnd.Game.Commands
                     }
                     catch (Exception e)
                     {
-                        player.Notify("[Command] Unknown error: " + e.Message);
+                        player.Notify("[Command] Unknown error: " + e.InnerException.Message);
                     }
                 }
                 else

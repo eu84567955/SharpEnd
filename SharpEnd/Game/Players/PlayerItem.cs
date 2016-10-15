@@ -239,7 +239,7 @@ namespace SharpEnd.Players
                 Dropper = Player;
                 Owner = null;
 
-                //Player.Map.Drops.Add(this);
+                Player.Map.Drops.Add(this);
 
                 Parent.Remove(this);
             }

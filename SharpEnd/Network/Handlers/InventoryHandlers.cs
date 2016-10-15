@@ -1,8 +1,11 @@
 ﻿using SharpEnd.Data;
+using SharpEnd.Drawing;
 using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Players;
 using SharpEnd.Servers;
+using SharpEnd.Utility;
+using System.Collections.Generic;
 
 namespace SharpEnd.Handlers
 {
@@ -123,13 +126,13 @@ namespace SharpEnd.Handlers
                 Owner = null
             };
 
-            //player.Map.Drops.Add(meso);
+            player.Map.Drops.Add(meso);
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_PICKUP)]
         public static void PickupHandler(Client client, InPacket inPacket)
         {
-            /*var player = client.Player;
+            var player = client.Player;
 
             inPacket.ReadInt(); // NOTE: Ticks
             inPacket.Skip(1);
@@ -153,14 +156,21 @@ namespace SharpEnd.Handlers
             }
             else if (drop is PlayerItem)
             {
-                ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
+                if (GameLogicUtilities.IsMonsterCard(((PlayerItem)drop).Identifier))
+                {
+                    // TODO: Monster Book handling.
+                }
+                else
+                {
+                    ((PlayerItem)drop).Slot = player.Items.GetNextFreeSlot(((PlayerItem)drop).Inventory); // TODO: Check for full inventory.
 
-                player.Items.Add((PlayerItem)drop);
+                    player.Items.Add((PlayerItem)drop);
+                }
             }
 
             player.Map.Drops.Remove(drop, player);
 
-            // TODO: Show gain packet.*/
+            // TODO: Show gain packet.
         }
     }
 }

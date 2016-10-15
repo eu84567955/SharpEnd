@@ -1,6 +1,4 @@
-﻿using reNX;
-using reNX.NXProperties;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 

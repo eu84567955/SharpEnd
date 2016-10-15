@@ -21,7 +21,7 @@ namespace SharpEnd.Game.Maps
             set
             {
                 Origin = value.Position;
-                //Position = value.Map.Footholds.FindBelow(value.Position, -20);
+                Position = value.Map.Footholds.FindFloor(value.Position, -100);
 
                 dropper = value;
             }

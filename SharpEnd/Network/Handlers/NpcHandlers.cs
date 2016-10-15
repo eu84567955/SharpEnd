@@ -29,7 +29,7 @@ namespace SharpEnd.Handlers
 
             if (File.Exists(string.Format("scripts/npcs/{0}.py", npc.Script)))
             {
-                NpcScript script = new NpcScript(player, npc.Script, npc.Identifier);
+                NpcScript script = new NpcScript(player, npc);
 
                 try
                 {
@@ -37,7 +37,7 @@ namespace SharpEnd.Handlers
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error while executing Npc script '{0}': {1}", npc.Script, e.Message);
+                    Log.Error("Error while executing Npc script '{0}': \n{1}", npc.Script, e.Message);
                 }
             }
             else

@@ -25,9 +25,11 @@ namespace SharpEnd.Game.Maps
         public int LinkIdentifier { get; private set; }
 
         public MapPlayers Players { get; private set; }
+        public MapFootholds Footholds { get; private set; }
         public MapMobs Mobs { get; private set; }
         public MapNpcs Npcs { get; private set; }
         public MapPortals Portals { get; private set; }
+        public MapDrops Drops { get; private set; }
 
         private int m_objectIdentifiers = 0;
 
@@ -53,10 +55,13 @@ namespace SharpEnd.Game.Maps
             LinkIdentifier = data.LinkIdentifier;
 
             Players = new MapPlayers(this);
+            Footholds = new MapFootholds(this);
             Mobs = new MapMobs(this);
             Npcs = new MapNpcs(this);
             Portals = new MapPortals(this);
+            Drops = new MapDrops(this);
 
+            data.Footholds.ForEach(f => Footholds.Add(new Foothold(f)));
             data.Mobs.ForEach(m => Mobs.Add(new Mob(m)));
             data.Npcs.ForEach(n => Npcs.Add(new Npc(n)));
             data.Portals.ForEach(p => Portals.Add(new Portal(p)));

@@ -80,7 +80,7 @@ namespace SharpEnd.Players
             }
 
             Map = MasterServer.Instance.GetMap(MapIdentifier);
-            // TODO: Set position based on the map spawn.
+            Position = Map.Portals.GetSpawnPoint(MapSpawnPoint).Position;
             Stance = 0;
             Foothold = 0;
 

@@ -20,14 +20,14 @@ namespace SharpEnd.Packets
                     .WriteShort(npc.MinimumClickX)
                     .WriteShort(npc.MaximumClickX)
                     .WriteBoolean(!npc.Hide)
-                    .WriteInt() // NOTE: Unknown
-                    .WriteByte() // NOTE: tPresentTimeState
-                    .WriteInt(-1) // NOTE: tPresent
-                    .WriteInt() // NOTICE: nNoticeBoardType
-                    .WriteInt() // NOTE: Unknown
-                    .WriteInt() // NOTE: Unknown
-                    .WriteString(string.Empty) // NOTE: Unknown
-                    .WriteByte(); // NOTE: Unknown
+                    .WriteInt() // NOTE: Unknown.
+                    .WriteByte() // NOTE: tPresentTimeState.
+                    .WriteInt(-1) // NOTE: tPresent.
+                    .WriteInt() // NOTICE: nNoticeBoardType.
+                    .WriteInt() // NOTE: Unknown.
+                    .WriteInt() // NOTE: Unknown.
+                    .WriteString(string.Empty) // NOTE: Unknown.
+                    .WriteByte(); // NOTE: Unknown.
 
                 return outPacket.ToArray();
             }
@@ -49,14 +49,14 @@ namespace SharpEnd.Packets
                     .WriteShort(npc.MinimumClickX)
                     .WriteShort(npc.MaximumClickX)
                     .WriteBoolean(!npc.Hide)
-                    .WriteInt() // NOTE: Unknown
-                    .WriteByte() // NOTE: tPresentTimeState
-                    .WriteInt(-1) // NOTE: tPresent
-                    .WriteInt() // NOTICE: nNoticeBoardType
-                    .WriteInt() // NOTE: Unknown
-                    .WriteInt() // NOTE: Unknown
-                    .WriteString(string.Empty) // NOTE: Unknown
-                    .WriteByte(); // NOTE: Unknown
+                    .WriteInt() // NOTE: Unknown.
+                    .WriteByte() // NOTE: tPresentTimeState.
+                    .WriteInt(-1) // NOTE: tPresent.
+                    .WriteInt() // NOTICE: nNoticeBoardType.
+                    .WriteInt() // NOTE: Unknown.
+                    .WriteInt() // NOTE: Unknown.
+                    .WriteString(string.Empty) // NOTE: Unknown.
+                    .WriteByte(); // NOTE: Unknown.
 
                 return outPacket.ToArray();
             }
@@ -107,16 +107,16 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_DIALOG)
-                    .WriteByte() // unexitable dialog, etc
+                    .WriteByte() // NOTE: Dialog type.
                     .WriteInt(identifier)
                     .WriteBoolean(false)
-                    .WriteByte() // type
-                    .WriteByte() // param
-                    .WriteByte() // color
+                    .WriteByte() // NOTE: Message type.
+                    .WriteByte() // NOTE: Parameters.
+                    .WriteByte() // NOTE: Color.
                     .WriteString(text)
-                    .WriteBoolean(false) // prev
-                    .WriteBoolean(false) // next
-                    .WriteInt(); // seconds
+                    .WriteBoolean(false) // NOTE: Previous button.
+                    .WriteBoolean(false) // NOTE: Next button.
+                    .WriteInt(); // NOTE: Seconds.
 
                 return outPacket.ToArray();
             }
