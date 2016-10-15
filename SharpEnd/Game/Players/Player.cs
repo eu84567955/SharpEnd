@@ -207,11 +207,6 @@ namespace SharpEnd.Players
 
         public void SetMap(int mapIdentifier, Portal portal = null)
         {
-            if (!MasterServer.Instance.Maps.ContainsKey(mapIdentifier))
-            {
-                return;
-            }
-
             Map newMap = MasterServer.Instance.GetMap(mapIdentifier);
 
             if (portal == null)

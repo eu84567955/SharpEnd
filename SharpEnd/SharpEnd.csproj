@@ -161,9 +161,12 @@
     <Compile Include="Enums\EWorldStatus.cs" />
     <Compile Include="Extensions\PacketExtensions.cs" />
     <Compile Include="Game\Data\NpcDataProvider.cs" />
+    <Compile Include="Game\Data\PetDataProvider.cs" />
+    <Compile Include="Game\Data\ReactorDataProvider.cs" />
     <Compile Include="Game\Maps\Foothold.cs" />
     <Compile Include="Game\Maps\Loot.cs" />
     <Compile Include="Game\Maps\MapFootholds.cs" />
+    <Compile Include="Game\Maps\MapReactors.cs" />
     <Compile Include="Game\Maps\Portal.cs" />
     <Compile Include="Game\Shops\Shop.cs" />
     <Compile Include="Game\Script\ItemScript.cs" />
@@ -192,10 +195,10 @@
     <Compile Include="Game\Maps\MapNpcs.cs" />
     <Compile Include="Game\Maps\MapMobs.cs" />
     <Compile Include="Game\Maps\Meso.cs" />
-    <Compile Include="Game\Maps\Mob.cs" />
+    <Compile Include="Game\Life\Mob.cs" />
     <Compile Include="Game\Maps\MovableLife.cs" />
-    <Compile Include="Game\Maps\Npc.cs" />
-    <Compile Include="Game\Maps\Reactor.cs" />
+    <Compile Include="Game\Life\Npc.cs" />
+    <Compile Include="Game\Life\Reactor.cs" />
     <Compile Include="Network\Migrations\MigrationRequest.cs" />
     <Compile Include="Network\Migrations\MigrationRequests.cs" />
     <Compile Include="Network\Acceptor.cs" />

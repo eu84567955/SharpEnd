@@ -1,10 +1,12 @@
-﻿using SharpEnd.Drawing;
+﻿using SharpEnd.Collections;
+using SharpEnd.Drawing;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace SharpEnd.Game.Data
 {
+    #region Data Classes
     public sealed class MapData
     {
         public sealed class MapFootholdData
@@ -135,6 +137,34 @@ namespace SharpEnd.Game.Data
             }
         }
 
+        public sealed class MapReactorData
+        {
+            public int Identifier { get; set; }
+            public bool Flip { get; set; }
+            public Point Position { get; set; }
+            public string Label { get; set; }
+            public int RespawnTime { get; set; }
+
+            public void Load(BinaryReader reader)
+            {
+                Identifier = reader.ReadInt32();
+                Flip = reader.ReadBoolean();
+                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
+                Label = reader.ReadString();
+                RespawnTime = reader.ReadInt32();
+            }
+
+            public void Write(BinaryWriter writer)
+            {
+                writer.Write(Identifier);
+                writer.Write(Flip);
+                writer.Write(Position.X);
+                writer.Write(Position.Y);
+                writer.Write(Label);
+                writer.Write(RespawnTime);
+            }
+        }
+
         public sealed class MapSeatData
         {
             public short Identifier;
@@ -180,7 +210,7 @@ namespace SharpEnd.Game.Data
         public List<MapFootholdData> Footholds { get; set; }
         public List<MapMobData> Mobs { get; set; }
         public List<MapNpcData> Npcs { get; set; }
-        //public List<MapReactorData> Reactors { get; set; }
+        public List<MapReactorData> Reactors { get; set; }
         public List<MapPortalData> Portals { get; set; }
         public List<MapSeatData> Seats { get; set; }
 
@@ -237,14 +267,14 @@ namespace SharpEnd.Game.Data
                 Npcs.Add(npc);
             }
 
-            /*int reactorsCount = pReader.ReadInt32();
+            int reactorsCount = reader.ReadInt32();
             Reactors = new List<MapReactorData>(reactorsCount);
             while (reactorsCount-- > 0)
             {
                 MapReactorData reactor = new MapReactorData();
-                reactor.Load(pReader);
+                reactor.Load(reader);
                 Reactors.Add(reactor);
-            }*/
+            }
 
             int portalsCount = reader.ReadInt32();
             Portals = new List<MapPortalData>(portalsCount);
@@ -300,8 +330,8 @@ namespace SharpEnd.Game.Data
             writer.Write(Npcs.Count);
             Npcs.ForEach(n => n.Save(writer));
 
-            /*pWriter.Write(Reactors.Count);
-            Reactors.ForEach(r => r.Write(pWriter));*/
+            writer.Write(Reactors.Count);
+            Reactors.ForEach(r => r.Write(writer));
 
             writer.Write(Portals.Count);
             Portals.ForEach(p => p.Save(writer));
@@ -310,28 +340,47 @@ namespace SharpEnd.Game.Data
             Seats.ForEach(s => s.Save(writer));
         }
     }
+    #endregion
 
-    internal sealed class MapDataProvider : Dictionary<int, MapData>
+    internal sealed class MapDataProvider : SafeKeyedCollection<int, MapData>
     {
-        public MapDataProvider() : base() { }
+        private static MapDataProvider instance;
 
-        public void Load()
+        public static MapDataProvider Instance
         {
-            using (FileStream stream = File.Open("data/Maps.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+            get
             {
-                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                return instance ?? (instance = new MapDataProvider());
+            }
+        }
+
+        private MapDataProvider() : base() { }
+
+        protected override int GetKeyForItem(MapData item)
+        {
+            return item.Identifier;
+        }
+
+        public new MapData this[int identifier]
+        {
+            get
+            {
+                if (!Contains(identifier))
                 {
-                    int count = reader.ReadInt32();
-
-                    while (count-- > 0)
+                    using (FileStream stream = File.Open(Path.Combine("data", "maps", identifier.ToString() + ".shd"), FileMode.Open, FileAccess.Read))
                     {
-                        MapData map = new MapData();
+                        using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                        {
+                            MapData map = new MapData();
 
-                        map.Load(reader);
+                            map.Load(reader);
 
-                        Add(map.Identifier, map);
+                            Add(map);
+                        }
                     }
                 }
+
+                return base[identifier];
             }
         }
     }

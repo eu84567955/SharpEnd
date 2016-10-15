@@ -1,11 +1,11 @@
 ﻿using SharpEnd.Collections;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace SharpEnd.Game.Data
 {
+    #region Data Classes
     public sealed class NpcData
     {
         public sealed class NpcShopData
@@ -138,33 +138,47 @@ namespace SharpEnd.Game.Data
             if (Shop != null) Shop.Save(writer);
         }
     }
+    #endregion
 
     internal sealed class NpcDataProvider : SafeKeyedCollection<int, NpcData>
     {
-        public NpcDataProvider() : base() { }
+        private static NpcDataProvider instance;
+
+        public static NpcDataProvider Instance
+        {
+            get
+            {
+                return instance ?? (instance = new NpcDataProvider());
+            }
+        }
+
+        private NpcDataProvider() : base() { }
 
         protected override int GetKeyForItem(NpcData item)
         {
             return item.Identifier;
         }
 
-        public void Load()
+        public new NpcData this[int identifier]
         {
-            using (FileStream stream = File.Open("data/Npcs.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+            get
             {
-                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                if (!Contains(identifier))
                 {
-                    int count = reader.ReadInt32();
-
-                    while (count-- > 0)
+                    using (FileStream stream = File.Open(Path.Combine("data", "npcs", identifier.ToString() + ".shd"), FileMode.Open, FileAccess.Read))
                     {
-                        NpcData npc = new NpcData();
+                        using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                        {
+                            NpcData npc = new NpcData();
 
-                        npc.Load(reader);
+                            npc.Load(reader);
 
-                        Add(npc);
+                            Add(npc);
+                        }
                     }
                 }
+
+                return base[identifier];
             }
         }
     }

@@ -1,8 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
-using SharpEnd.Data;
+using SharpEnd.Game.Data;
 using SharpEnd.Game.Maps;
 using SharpEnd.Packets;
-using SharpEnd.Servers;
 using SharpEnd.Utility;
 using System;
 
@@ -111,7 +110,7 @@ namespace SharpEnd.Players
 
             if (Inventory == EInventoryType.Equipment)
             {
-                ItemEquipData data = MasterServer.Instance.Items[Identifier].Equip;
+                ItemEquipData data = ItemDataProvider.Instance[Identifier].Equip;
 
                 Slots = data.Slots;
                 Strength = data.Strength;
@@ -228,7 +227,7 @@ namespace SharpEnd.Players
                 destination.Identifier == Identifier &&
                 GameLogicUtilities.IsStackable(Identifier))
             {
-                ushort maxPerStack = MasterServer.Instance.Items[Identifier].MaxSlotQuantity;
+                ushort maxPerStack = ItemDataProvider.Instance[Identifier].MaxSlotQuantity;
 
                 if (Quantity + destination.Quantity > maxPerStack)
                 {

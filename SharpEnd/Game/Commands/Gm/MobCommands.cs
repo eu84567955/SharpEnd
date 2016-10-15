@@ -1,6 +1,6 @@
-﻿using SharpEnd.Game.Maps;
+﻿using SharpEnd.Game.Life;
+using SharpEnd.Game.Maps;
 using SharpEnd.Players;
-using SharpEnd.Servers;
 using System.Collections.Generic;
 
 namespace SharpEnd.Game.Commands.Gm
@@ -10,7 +10,7 @@ namespace SharpEnd.Game.Commands.Gm
         [GmCommand("spawn", "Spawns the desired mob.")]
         public static void SpawnCommand(Player player, int mobIdentifier, int amount = 1)
         {
-            if (MasterServer.Instance.Mobs.ContainsKey(mobIdentifier))
+            if (true) // TODO: Check if the data files contain a file with this identifier.
             {
                 while (amount-- > 0)
                 {

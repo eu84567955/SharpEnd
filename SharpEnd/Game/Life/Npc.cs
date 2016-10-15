@@ -1,9 +1,11 @@
-﻿using SharpEnd.Game.Shops;
+﻿using SharpEnd.Game.Data;
+using SharpEnd.Game.Maps;
+using SharpEnd.Game.Shops;
 using SharpEnd.Players;
 using SharpEnd.Servers;
 using static SharpEnd.Game.Data.MapData;
 
-namespace SharpEnd.Game.Maps
+namespace SharpEnd.Game.Life
 {
     internal sealed class Npc : MapEntity, IControllable
     {
@@ -40,7 +42,7 @@ namespace SharpEnd.Game.Maps
         {
             Identifier = identifier;
 
-            var data = MasterServer.Instance.Npcs[Identifier];
+            var data = NpcDataProvider.Instance[Identifier];
 
             StorageCost = data.StorageCost;
             Script = data.Script;

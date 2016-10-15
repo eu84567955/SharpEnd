@@ -1,4 +1,5 @@
-﻿using SharpEnd.Packets;
+﻿using SharpEnd.Game.Life;
+using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Script;
 using System;
@@ -30,6 +31,11 @@ namespace SharpEnd.Game.Maps
             foreach (Npc npc in Map.Npcs)
             {
                 item.Send(NpcPackets.NpcSpawn(npc));
+            }
+
+            foreach (Reactor reactor in Map.Reactors)
+            {
+                item.Send(ReactorPackets.ReactorSpawn(reactor));
             }
 
             foreach (Drop drop in Map.Drops)

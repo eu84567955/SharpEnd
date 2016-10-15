@@ -1,5 +1,4 @@
 ﻿using SharpEnd.Players;
-using SharpEnd.Servers;
 
 namespace SharpEnd.Game.Commands.Gm
 {
@@ -8,7 +7,7 @@ namespace SharpEnd.Game.Commands.Gm
         [GmCommand("item", "Gives you the desired item.")]
         public static void ItemCommand(Player player, int itemIdentifier, ushort quantity = 1)
         {
-            if (MasterServer.Instance.Items.ContainsKey(itemIdentifier))
+            if (true) // TODO: Check if the data files contain a file with this identifier.
             {
                 player.Items.Add(new PlayerItem(itemIdentifier, quantity));
             }

@@ -1,11 +1,13 @@
-﻿using SharpEnd.Packets;
+﻿using SharpEnd.Game.Data;
+using SharpEnd.Game.Maps;
+using SharpEnd.Packets;
 using SharpEnd.Players;
 using SharpEnd.Servers;
 using System;
 using System.Collections.Generic;
 using static SharpEnd.Game.Data.MapData;
 
-namespace SharpEnd.Game.Maps
+namespace SharpEnd.Game.Life
 {
     internal sealed class Mob : MapEntity, IControllable
     {
@@ -56,7 +58,7 @@ namespace SharpEnd.Game.Maps
             Stance = 5; // TODO.
             CanDrop = true;
 
-            var data = MasterServer.Instance.Mobs[Identifier];
+            var data = MobDataProvider.Instance[Identifier];
 
             Level = data.Level;
             Health = MaxHealth = data.Health;

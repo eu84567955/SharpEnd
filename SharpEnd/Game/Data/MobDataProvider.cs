@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using SharpEnd.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SharpEnd.Data
+namespace SharpEnd.Game.Data
 {
+    #region Data Classes
     public sealed class MobData
     {
         public sealed class MobDropData
@@ -13,7 +15,7 @@ namespace SharpEnd.Data
             public int Maximum { get; set; }
             public ushort QuestIdentifier { get; set; }
             public int Chance { get; set; }
-            
+
             public void Load(BinaryReader reader)
             {
                 ItemIdentifier = reader.ReadInt32();
@@ -194,28 +196,47 @@ namespace SharpEnd.Data
             Drops.ForEach(d => d.Save(writer));
         }
     }
+    #endregion
 
-    internal sealed class MobDataProvider : Dictionary<int, MobData>
+    internal sealed class MobDataProvider : SafeKeyedCollection<int, MobData>
     {
-        public MobDataProvider() : base() { }
+        private static MobDataProvider instance;
 
-        public void Load()
+        public static MobDataProvider Instance
         {
-            using (FileStream stream = File.Open("data/Mobs.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+            get
             {
-                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                return instance ?? (instance = new MobDataProvider());
+            }
+        }
+
+        private MobDataProvider() : base() { }
+
+        protected override int GetKeyForItem(MobData item)
+        {
+            return item.Identifier;
+        }
+
+        public new MobData this[int identifier]
+        {
+            get
+            {
+                if (!Contains(identifier))
                 {
-                    int count = reader.ReadInt32();
-
-                    while (count-- > 0)
+                    using (FileStream stream = File.Open(Path.Combine("data", "mobs", identifier.ToString() + ".shd"), FileMode.Open, FileAccess.Read))
                     {
-                        MobData mob = new MobData();
+                        using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                        {
+                            MobData mob = new MobData();
 
-                        mob.Load(reader);
+                            mob.Load(reader);
 
-                        Add(mob.Identifier, mob);
+                            Add(mob);
+                        }
                     }
                 }
+
+                return base[identifier];
             }
         }
     }

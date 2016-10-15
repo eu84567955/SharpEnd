@@ -1,6 +1,6 @@
 ﻿using reNX;
 using reNX.NXProperties;
-using SharpEnd.Data;
+using SharpEnd.Game.Data;
 using SharpEnd.Game.Data;
 using System;
 using System.Collections.Generic;
@@ -12,8 +12,10 @@ namespace WvsData
 {
     internal static class NpcExport
     {
-        public static void Export(string path)
+        public static void Export(string inputPath, string outputPath)
         {
+            Console.Write(" > Exporting npcs... ");
+
             // NOTE: Npc shops are in separate file, we're reading them first into a dictionary.
             Dictionary<int, NpcShopData> shops = new Dictionary<int, NpcShopData>();
 
@@ -75,64 +77,60 @@ namespace WvsData
 
             Dictionary<int, NpcData> npcs = new Dictionary<int, NpcData>();
 
-            using (FileStream stream = File.Create("data/Npcs.bin"))
+            using (NXFile file = new NXFile(inputPath))
             {
-                using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII))
+                foreach (NXNode node in file.BaseNode)
                 {
-                    using (NXFile file = new NXFile(Path.Combine(path, "Npc.nx")))
+                    if (!node.ContainsChild("info"))
                     {
-                        foreach (NXNode node in file.BaseNode)
+                        continue;
+                    }
+
+                    int identifier = node.GetIdentifier<int>();
+
+                    if (npcs.ContainsKey(identifier))
+                    {
+                        continue;
+                    }
+
+                    NXNode infoNode = node["info"];
+
+                    NpcData npc = new NpcData();
+
+                    npc.Identifier = identifier;
+                    npc.StorageCost = infoNode.GetInt("trunkPut");
+
+                    string script = string.Empty;
+
+                    if (infoNode.ContainsChild("script"))
+                    {
+                        if (infoNode["script"].ChildCount > 0)
                         {
-                            if (!node.ContainsChild("info"))
-                            {
-                                continue;
-                            }
-
-                            int identifier = node.GetIdentifier<int>();
-
-                            if (npcs.ContainsKey(identifier))
-                            {
-                                Console.WriteLine("Duplicate npc {0}", identifier);
-
-                                continue;
-                            }
-
-                            NXNode infoNode = node["info"];
-
-                            NpcData npc = new NpcData();
-
-                            npc.Identifier = identifier;
-                            npc.StorageCost = infoNode.GetInt("trunkPut");
-
-                            string script = string.Empty;
-
-                            if (infoNode.ContainsChild("script"))
-                            {
-                                if (infoNode["script"].ChildCount > 0)
-                                {
-                                    script = infoNode["script"]["0"].GetString("script");
-                                }
-                            }
-
-                            npc.Script = script;
-
-                            if (shops.ContainsKey(identifier))
-                                npc.Shop = shops[identifier];
-
-                            npcs.Add(identifier, npc);
+                            script = infoNode["script"]["0"].GetString("script");
                         }
                     }
 
-                    writer.Write(npcs.Count);
+                    npc.Script = script;
 
-                    foreach (NpcData npc in npcs.Values)
+                    if (shops.ContainsKey(identifier))
+                        npc.Shop = shops[identifier];
+
+                    npcs.Add(identifier, npc);
+                }
+            }
+
+            foreach (NpcData npc in npcs.Values)
+            {
+                using (FileStream stream = File.Create(Path.Combine(outputPath, npc.Identifier.ToString() + ".shd")))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII))
                     {
                         npc.Save(writer);
                     }
-
-                    Console.WriteLine("Npcs: {0}", npcs.Count);
                 }
             }
+
+            Console.WriteLine("\t\tDone ({0}).", npcs.Count);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using SharpEnd.Players;
-using SharpEnd.Servers;
 
 namespace SharpEnd.Game.Commands.Gm
 {
@@ -8,7 +7,7 @@ namespace SharpEnd.Game.Commands.Gm
         [GmCommand("map", "Teleports you to the desired map.")]
         public static void MapCommand(Player player, int mapIdentifier, sbyte portal = 0)
         {
-            if (MasterServer.Instance.Maps.ContainsKey(mapIdentifier))
+            if (true) // TODO: Check if the data files contain a file with this identifier.
             {
                 player.SetMap(mapIdentifier);
             }

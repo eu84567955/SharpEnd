@@ -1,4 +1,4 @@
-﻿using SharpEnd.Game.Maps;
+﻿using SharpEnd.Game.Life;
 using SharpEnd.Network;
 
 namespace SharpEnd.Packets

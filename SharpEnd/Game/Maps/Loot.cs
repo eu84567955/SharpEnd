@@ -1,4 +1,4 @@
-﻿using static SharpEnd.Data.MobData;
+﻿using static SharpEnd.Game.Data.MobData;
 
 namespace SharpEnd.Game.Maps
 {

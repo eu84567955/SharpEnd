@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Game.Data;
+using SharpEnd.Game.Life;
 using SharpEnd.Players;
 
 namespace SharpEnd.Game.Maps
@@ -31,6 +32,7 @@ namespace SharpEnd.Game.Maps
         public MapMobs Mobs { get; private set; }
         public MapNpcs Npcs { get; private set; }
         public MapPortals Portals { get; private set; }
+        public MapReactors Reactors { get; private set; }
         public MapDrops Drops { get; private set; }
 
         private int m_objectIdentifiers = 0;
@@ -63,12 +65,14 @@ namespace SharpEnd.Game.Maps
             Mobs = new MapMobs(this);
             Npcs = new MapNpcs(this);
             Portals = new MapPortals(this);
+            Reactors = new MapReactors(this);
             Drops = new MapDrops(this);
 
             data.Footholds.ForEach(f => Footholds.Add(new Foothold(f)));
             data.Mobs.ForEach(m => Mobs.Add(new Mob(m)));
             data.Npcs.ForEach(n => Npcs.Add(new Npc(n)));
             data.Portals.ForEach(p => Portals.Add(new Portal(p)));
+            data.Reactors.ForEach(r => Reactors.Add(new Reactor(r)));
         }
 
         public int AssignObjectIdentifier()

@@ -1,8 +1,7 @@
 ﻿using reNX;
 using reNX.NXProperties;
-using SharpEnd.Data;
-using SharpEnd.Drawing;
 using SharpEnd.Game.Data;
+using SharpEnd.Drawing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,96 +12,96 @@ namespace WvsData
 {
     internal static class MapExport
     {
-        public static void Export(string path)
+        public static void Export(string inputPath, string outputPath)
         {
+            Console.Write(" > Exporting maps... ");
+
             Dictionary<int, MapData> maps = new Dictionary<int, MapData>();
 
-            using (FileStream stream = File.Create("data/Maps.bin"))
+            using (NXFile file = new NXFile(inputPath))
             {
-                using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII))
+                foreach (NXNode category in file.BaseNode["Map"])
                 {
-                    using (NXFile file = new NXFile(path + "/Map.nx"))
+                    if (category.Name.EndsWith(".img"))
                     {
-                        foreach (NXNode category in file.BaseNode["Map"])
-                        {
-                            if (category.Name.EndsWith(".img"))
-                            {
-                                continue;
-                            }
-
-                            foreach (NXNode node in category)
-                            {
-                                if (!node.ContainsChild("info"))
-                                {
-                                    continue;
-                                }
-
-                                int identifier = node.GetIdentifier<int>();
-
-                                if (maps.ContainsKey(identifier))
-                                {
-                                    Console.WriteLine("Duplicate map {0}", identifier);
-
-                                    continue;
-                                }
-
-                                NXNode infoNode = node["info"];
-
-                                MapData map = new MapData();
-
-                                map.Identifier = identifier;
-                                map.ShuffleName = infoNode.GetString("shuffleName");
-                                map.Music = infoNode.GetString("bgm");
-                                map.ReturnMapIdentifier = infoNode.GetInt("returnMap");
-                                map.ForcedReturnMapIdentifier = infoNode.GetInt("forcedReturn");
-                                map.EntryScript = infoNode.GetString("onUserEnter");
-                                map.InitialEntryScript = infoNode.GetString("onFirstUserEnter");
-
-                                map.Footholds = new List<MapFootholdData>();
-                                if (node.ContainsChild("foothold"))
-                                {
-                                    ExportFootholds(map, node["foothold"]);
-                                }
-
-                                map.Mobs = new List<MapMobData>();
-                                map.Npcs = new List<MapNpcData>();
-                                if (node.ContainsChild("life"))
-                                {
-                                    ExportSpawns(map, node["life"]);
-                                }
-
-                                map.Portals = new List<MapPortalData>();
-                                if (node.ContainsChild("portal"))
-                                {
-                                    ExportPortals(map, node["portal"]);
-                                }
-
-                                if (node.ContainsChild("reactor"))
-                                {
-                                    ExportReactors(map, node["reactor"]);
-                                }
-
-                                map.Seats = new List<MapSeatData>();
-                                if (node.ContainsChild("seat"))
-                                {
-                                    ExportSeats(map, node["seat"]);
-                                }
-
-                                maps.Add(identifier, map);
-                            }
-                        }
+                        continue;
                     }
 
-                    writer.Write(maps.Count);
+                    foreach (NXNode node in category)
+                    {
+                        if (!node.ContainsChild("info"))
+                        {
+                            continue;
+                        }
 
-                    foreach (MapData map in maps.Values)
+                        int identifier = node.GetIdentifier<int>();
+
+                        if (maps.ContainsKey(identifier))
+                        {
+                            continue;
+                        }
+
+                        NXNode infoNode = node["info"];
+
+                        MapData map = new MapData();
+
+                        map.Identifier = identifier;
+                        map.ShuffleName = infoNode.GetString("shuffleName");
+                        map.Music = infoNode.GetString("bgm");
+                        map.ReturnMapIdentifier = infoNode.GetInt("returnMap");
+                        map.ForcedReturnMapIdentifier = infoNode.GetInt("forcedReturn");
+                        map.EntryScript = infoNode.GetString("onUserEnter");
+                        map.InitialEntryScript = infoNode.GetString("onFirstUserEnter");
+
+                        map.Footholds = new List<MapFootholdData>();
+                        if (node.ContainsChild("foothold"))
+                        {
+                            ExportFootholds(map, node["foothold"]);
+                        }
+
+                        map.Mobs = new List<MapMobData>();
+                        map.Npcs = new List<MapNpcData>();
+                        if (node.ContainsChild("life"))
+                        {
+                            ExportSpawns(map, node["life"]);
+                        }
+
+                        map.Portals = new List<MapPortalData>();
+                        if (node.ContainsChild("portal"))
+                        {
+                            ExportPortals(map, node["portal"]);
+                        }
+
+                        map.Reactors = new List<MapReactorData>();
+                        if (node.ContainsChild("reactor"))
+                        {
+                            ExportReactors(map, node["reactor"]);
+                        }
+
+                        map.Seats = new List<MapSeatData>();
+                        if (node.ContainsChild("seat"))
+                        {
+                            ExportSeats(map, node["seat"]);
+                        }
+
+                        maps.Add(identifier, map);
+                    }
+                }
+            }
+
+            foreach (MapData map in maps.Values)
+            {
+
+                using (FileStream stream = File.Create(Path.Combine(outputPath, map.Identifier.ToString() + ".shd")))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII))
                     {
                         map.Save(writer);
                     }
-
-                    Console.WriteLine("Maps: {0}", maps.Count);
                 }
             }
+
+            Console.WriteLine("\t\tDone ({0}).", maps.Count);
         }
 
         private static void ExportFootholds(MapData data, NXNode footholdNode)
@@ -203,12 +202,24 @@ namespace WvsData
 
         private static void ExportReactors(MapData map, NXNode reactorNode)
         {
-            // TODO: Reactors.
+            foreach (NXNode node in reactorNode)
+            {
+                MapReactorData reactor = new MapReactorData();
+
+                reactor.Identifier = int.Parse(node.GetString("id"));
+                reactor.Flip = node.GetBoolean("f");
+                reactor.Position = new Point(node.GetShort("x"), node.GetShort("y"));
+                reactor.Label = node.GetString("name");
+                reactor.RespawnTime = node.GetInt("reactorTime");
+
+                map.Reactors.Add(reactor);
+            }
         }
 
         private static void ExportSeats(MapData map, NXNode seatNode)
         {
-            // TODO: Seats.
+            // TODO: Seats' node is a WzVectorProperty, and therefore reNX can't load it.
+            // Ask angelsl how to load it and then iterate over each one.
         }
     }
 }

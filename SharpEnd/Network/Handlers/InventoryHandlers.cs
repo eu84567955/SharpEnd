@@ -1,4 +1,4 @@
-﻿using SharpEnd.Data;
+﻿using SharpEnd.Game.Data;
 using SharpEnd.Drawing;
 using SharpEnd.Game.Maps;
 using SharpEnd.Network;
@@ -76,7 +76,7 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            ItemConsumeData consume = MasterServer.Instance.Items[itemIdentifier].Consume;
+            ItemConsumeData consume = ItemDataProvider.Instance[itemIdentifier].Consume;
 
             // TODO: Check for map limitiations.
 

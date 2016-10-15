@@ -1,7 +1,7 @@
 ﻿using reNX.NXProperties;
 using System;
 
-namespace SharpEnd.Data
+namespace SharpEnd.Game.Data
 {
     public static class NXExtensions
     {

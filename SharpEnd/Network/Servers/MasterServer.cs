@@ -1,4 +1,4 @@
-﻿using SharpEnd.Data;
+﻿using SharpEnd.Game.Data;
 using SharpEnd.Game.Commands;
 using SharpEnd.Game.Data;
 using SharpEnd.Game.Maps;
@@ -22,11 +22,7 @@ namespace SharpEnd.Servers
         public HandlerStore Handlers { get; private set; }
 
         public MigrationRequests Migrations { get; private set; }
-
-        public ItemDataProvider Items { get; private set; }
-        public MobDataProvider Mobs { get; private set; }
-        public NpcDataProvider Npcs { get; private set; }
-        public MapDataProvider Maps { get; private set; }
+        
         public Commands Commands { get; private set; }
 
         private MasterServer()
@@ -44,10 +40,6 @@ namespace SharpEnd.Servers
 
             Migrations = new MigrationRequests();
 
-            Items = new ItemDataProvider();
-            Maps = new MapDataProvider();
-            Mobs = new MobDataProvider();
-            Npcs = new NpcDataProvider();
             Commands = new Commands();
         }
 
@@ -70,26 +62,7 @@ namespace SharpEnd.Servers
         private void LoadData()
         {
             Handlers.Load();
-
-            Stopwatch sw = Stopwatch.StartNew();
-
-            try
-            {
-                Items.Load();
-                Mobs.Load();
-                Npcs.Load();
-                Maps.Load();
-            }
-            catch
-            {
-                throw new Exception("The data files are corrupt.");
-            }
-
             Commands.Load();
-
-            sw.Stop();
-
-            Log.Inform("Maple data loaded in {0:N3} seconds.", sw.Elapsed.TotalSeconds);
         }
 
         public void Shutdown()
@@ -111,7 +84,7 @@ namespace SharpEnd.Servers
         {
             if (!maps.ContainsKey(identifier))
             {
-                var data = Maps[identifier];
+                var data = MapDataProvider.Instance[identifier];
 
                 maps.Add(identifier, new Map(data));
             }

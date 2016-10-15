@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using SharpEnd.Collections;
 using System.IO;
 using System.Text;
 
-namespace SharpEnd.Data
+namespace SharpEnd.Game.Data
 {
+    #region Data Classes
     public class ItemData
     {
         public int Identifier { get; set; }
@@ -195,51 +196,47 @@ namespace SharpEnd.Data
             writer.Write(SenseExp);
         }
     }
+    #endregion
 
-    /*internal sealed class ItemPetData : ItemData
+    internal sealed class ItemDataProvider : SafeKeyedCollection<int, ItemData>
     {
-        public bool IsMultiable { get; set; }
-        public bool IsPermanent { get; set; }
-        public bool HasPickupItem { get; set; }
-        public bool HasAutoBuff { get; set; }
-        public int Life { get; set; }
-        public int Hunger { get; set; }
+        private static ItemDataProvider instance;
 
-        /*public override void Load(NXNode infoNode, ushort maxSlotQuantity = 1)
+        public static ItemDataProvider Instance
         {
-            base.Load(infoNode, maxSlotQuantity);
-
-            IsMultiable = infoNode.GetBoolean("multiPet");
-            IsPermanent = infoNode.GetBoolean("permanent");
-            HasPickupItem = infoNode.GetBoolean("pickupItem");
-            HasAutoBuff = infoNode.GetBoolean("autoBuff");
-            Life = infoNode.GetInt("life");
-            Hunger = infoNode.GetInt("hungry");
-        }
-    }
-       */
-
-    internal sealed class ItemDataProvider : Dictionary<int, ItemData>
-    {
-        public ItemDataProvider() : base() { }
-
-        public void Load()
-        {
-            using (FileStream stream = File.Open("data/Items.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+            get
             {
-                using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                return instance ?? (instance = new ItemDataProvider());
+            }
+        }
+
+        private ItemDataProvider() : base() { }
+
+        protected override int GetKeyForItem(ItemData item)
+        {
+            return item.Identifier;
+        }
+
+        public new ItemData this[int identifier]
+        {
+            get
+            {
+                if (!Contains(identifier))
                 {
-                    int count = reader.ReadInt32();
-
-                    while (count-- > 0)
+                    using (FileStream stream = File.Open(Path.Combine("data", "items", identifier.ToString() + ".shd"), FileMode.Open, FileAccess.Read))
                     {
-                        ItemData item = new ItemData();
+                        using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
+                        {
+                            ItemData item = new ItemData();
 
-                        item.Load(reader);
+                            item.Load(reader);
 
-                        Add(item.Identifier, item);
+                            Add(item);
+                        }
                     }
                 }
+
+                return base[identifier];
             }
         }
     }

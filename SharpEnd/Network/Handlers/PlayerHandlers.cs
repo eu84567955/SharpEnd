@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Drawing;
+using SharpEnd.Game.Life;
 using SharpEnd.Game.Maps;
 using SharpEnd.Network;
 using SharpEnd.Packets;
