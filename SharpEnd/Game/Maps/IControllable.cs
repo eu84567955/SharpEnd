@@ -1,8 +1,8 @@
-﻿using SharpEnd.Players;
+﻿using SharpEnd.Game.Players;
 
 namespace SharpEnd.Game.Maps
 {
-    internal interface IControllable
+    public interface IControllable
     {
         Player Controller { get; set; }
     }

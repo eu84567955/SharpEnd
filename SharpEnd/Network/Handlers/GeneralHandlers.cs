@@ -4,30 +4,30 @@ using System;
 
 namespace SharpEnd.Handlers
 {
-    internal static class GeneralHandlers
+    public static class GeneralHandlers
     {
         [PacketHandler(EHeader.CMSG_PRIVATE_SERVER_AUTH)]
-        public static void PrivateServerAuthHandler(Client client, InPacket inPacket)
+        public static void PrivateServerAuthHandler(GameClient client, InPacket inPacket)
         {
             int request = inPacket.ReadInt();
-            int response = request ^ (int)EHeader.SMSG_PRIVATE_SERVER_AUTH;
+            int response = request ^ (ushort)EHeader.SMSG_PRIVATE_SERVER_AUTH;
 
             client.Send(LoginPackets.PrivateServerAuth(response));
         }
 
         // TODO: Handle every type of error code.
         [PacketHandler(EHeader.CMSG_CLIENT_ERROR)]
-        public static void ClientErrorHandler(Client client, InPacket inPacket)
+        public static void ClientErrorHandler(GameClient client, InPacket inPacket)
         {
             ushort type = inPacket.ReadUShort();
             int errorCode = inPacket.ReadInt();
 
             if (errorCode == 38)
             {
-                inPacket.ReadUShort(); // NOTE: Packet length
-                inPacket.Skip(4); // NOTE: Unknown
+                inPacket.ReadUShort(); // NOTE: Packet length.
+                inPacket.Skip(4); // NOTE: Unknown.
                 ushort header = inPacket.ReadUShort();
-                inPacket.ReadLeftoverBytes(); // NOTE: Packet data
+                inPacket.ReadLeftoverBytes(); // NOTE: Packet data.
 
                 if (Enum.IsDefined(typeof(EHeader), inPacket.Header))
                 {
@@ -41,9 +41,9 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_BUTTON_PRESS)]
-        public static void ButtonPressHandler(Client client, InPacket inPacket)
+        public static void ButtonPressHandler(GameClient client, InPacket inPacket)
         {
-            // TODO: Handle button presses (useful against auto-clickers)
+            // TODO: Handle button presses (useful against auto-clickers).
         }
     }
 }

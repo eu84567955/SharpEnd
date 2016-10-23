@@ -3,7 +3,7 @@ using SharpEnd.Network;
 
 namespace SharpEnd.Packets
 {
-    internal static class ReactorPackets
+    public static class ReactorPackets
     {
         public static byte[] ReactorSpawn(Reactor reactor)
         {
@@ -11,11 +11,11 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_REACTOR_SPAWN)
-                    .WriteInt(reactor.ObjectIdentifier)
-                    .WriteInt(reactor.Identifier)
-                    .WriteSByte(reactor.State)
+                    .WriteInt(reactor.ObjectID)
+                    .WriteInt(reactor.Id)
+                    .WriteByte() // TODO: State.
                     .WritePoint(reactor.Position)
-                    .WriteSByte(reactor.Stance)
+                    .WriteByte(reactor.Stance)
                     .WriteString(reactor.Label);
 
                 return outPacket.ToArray();

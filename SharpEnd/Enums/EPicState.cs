@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EPICState : byte
+    public enum EPICState : byte
     {
         Register,
         Assigned,

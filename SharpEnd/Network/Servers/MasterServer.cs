@@ -1,95 +1,92 @@
 ﻿using SharpEnd.Game.Data;
-using SharpEnd.Game.Commands;
-using SharpEnd.Game.Data;
-using SharpEnd.Game.Maps;
-using SharpEnd.Migrations;
+using SharpEnd.IO;
 using SharpEnd.Utility;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SharpEnd.Servers
+namespace SharpEnd.Network.Servers
 {
-    internal sealed class MasterServer
+    public sealed class MasterServer
     {
-        public static MasterServer Instance { get; } = new MasterServer();
+        private static MasterServer instance;
 
-        public bool Running { get; private set; }
+        public static MasterServer Instance
+        {
+            get
+            {
+                return instance ?? (instance = new MasterServer());
+            }
+        }
 
-        public LoginServer Login { get; private set; }
-        public WorldServer[] Worlds { get; private set; }
-
-        public HandlerStore Handlers { get; private set; }
-
-        public MigrationRequests Migrations { get; private set; }
-        
-        public Commands Commands { get; private set; }
+        private bool m_running;
+        private LoginServer m_login;
+        private WorldServer[] m_worlds;
 
         private MasterServer()
         {
-            Login = new LoginServer(8484);
+            m_login = new LoginServer();
 
-            Worlds = new WorldServer[1];
+            int worldCount = Config.Instance.WorldConfig.Length;
 
-            for (byte i = 0; i < 1; i++)
+            m_worlds = new WorldServer[worldCount];
+
+            for (byte i = 0; i < worldCount; i++)
             {
-                Worlds[i] = new WorldServer(i, 8585, 1);
+                m_worlds[i] = new WorldServer(i);
             }
-
-            Handlers = new HandlerStore();
-
-            Migrations = new MigrationRequests();
-
-            Commands = new Commands();
         }
+
+        public bool IsRunning { get { return m_running; } }
+        public LoginServer Login { get { return m_login; } }
+        public WorldServer[] Worlds { get { return m_worlds; } }
 
         public void Run()
         {
+            HandlerStore.Instance.Initialize();
+
             LoadData();
 
-            Login.Run();
+            m_login.Run();
 
-            foreach (WorldServer world in Worlds)
+            foreach (WorldServer world in m_worlds)
             {
                 world.Run();
             }
 
-            Running = true;
+            m_running = true;
 
-            Log.Success("SharpEnd is online.");
+            Log.Success("SharpEnd started.");
         }
 
         private void LoadData()
         {
-            Handlers.Load();
-            Commands.Load();
+            Stopwatch sw = Stopwatch.StartNew();
+
+            BeautyDataProvider.Instance.LoadData();
+            EquipDataProvider.Instance.LoadData();
+            MobDataProvider.Instance.LoadData();
+            NpcDataProvider.Instance.LoadData();
+            ReactorDataProvider.Instance.LoadData();
+            QuestDataProvider.Instance.LoadData();
+            MapDataProvider.Instance.LoadData();
+            MountDataProvider.Instance.LoadData();
+
+            sw.Stop();
+
+            Log.Inform("Maple data loaded in {0:N3} seconds.", sw.Elapsed.TotalSeconds);
         }
 
         public void Shutdown()
         {
-            Login.Shutdown();
+            m_login.Shutdown();
 
-            foreach (WorldServer world in Worlds)
+            foreach (WorldServer world in m_worlds)
             {
                 world.Shutdown();
             }
 
-            Running = false;
+            m_running = false;
 
-            Log.Inform("SharpEnd is offline.");
-        }
-
-        private Dictionary<int, Map> maps = new Dictionary<int, Map>();
-        public Map GetMap(int identifier)
-        {
-            if (!maps.ContainsKey(identifier))
-            {
-                var data = MapDataProvider.Instance[identifier];
-
-                maps.Add(identifier, new Map(data));
-            }
-
-            return maps[identifier];
+            Log.Inform("SharpEnd stopped.");
         }
     }
 }

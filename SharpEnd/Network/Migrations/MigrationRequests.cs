@@ -2,23 +2,23 @@
 
 namespace SharpEnd.Migrations
 {
-    internal sealed class MigrationRequests : List<MigrationRequest>
+    public sealed class MigrationRequests : List<MigrationRequest>
     {
         public MigrationRequests() : base() { }
 
-        public bool Contains(int accountIdentifier)
+        public bool Contains(int accountID)
         {
-            return Exists(r => r.AccountIdentifier == accountIdentifier);
+            return Exists(r => r.AccountID == accountID);
         }
 
-        public void Register(int playerIdentifier, int accountIdentifier, string host)
+        public void Register(int playerID, int accountID, string host)
         {
-            Add(new MigrationRequest(playerIdentifier, accountIdentifier, host));
+            Add(new MigrationRequest(playerID, accountID, host));
         }
 
-        public int Validate(int playerIdentifier, string host)
+        public int Validate(int playerID, string host)
         {
-            MigrationRequest request = Find(r => r.PlayerIdentifier == playerIdentifier/* && r.Host == host*/);
+            MigrationRequest request = Find(r => r.PlayerID == playerID/* && r.Host == host*/);
 
             if (request == null)
             {
@@ -27,7 +27,7 @@ namespace SharpEnd.Migrations
 
             Remove(request);
 
-            return request.AccountIdentifier;
+            return request.AccountID;
         }
     }
 }

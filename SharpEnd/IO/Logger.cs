@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SharpEnd
 {
-    internal enum ELogType : byte
+    public enum ELogType : byte
     {
         Info,
         Warning,
@@ -11,7 +11,7 @@ namespace SharpEnd
         Debug,
     }
 
-    internal static class Log
+    public static class Log
     {
         private const byte LabelWidth = 11;
 
@@ -25,9 +25,11 @@ namespace SharpEnd
 
         public static void Entitle()
         {
+            Console.Title = "SharpEnd";
+
             SkipLine();
 
-            Console.WriteLine(" > SharpEnd v1.0");
+            Console.WriteLine(" > SharpEnd (MapleStory {0} v.{1}.{2})", Application.Version.Localisation.ToString(), Application.Version.Version, Application.Version.Patch);
 
             SkipLine();
         }
@@ -44,7 +46,7 @@ namespace SharpEnd
 
         public static void Error(Exception exception)
         {
-            Error(exception.Message); // TODO: Exception stack trace configuration.
+            Error(true ? exception.ToString() : exception.Message); // TODO: Exception stack trace configuration.
         }
 
         public static void Error(string value, params object[] args)
@@ -57,6 +59,42 @@ namespace SharpEnd
             WriteItem("Success", ConsoleColor.Green, value, args);
 
             Log.SkipLine();
+        }
+
+        public static void Hex(string label, byte[] value, params object[] args)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(string.Format(label, args));
+            sb.Append('\n');
+
+            if (value == null || value.Length == 0)
+            {
+                sb.Append("(Empty)");
+            }
+            else
+            {
+                int lineSeparation = 0;
+
+                foreach (byte b in value)
+                {
+                    if (lineSeparation == 16)
+                    {
+                        sb.Append('\n');
+                        lineSeparation = 0;
+                    }
+
+                    sb.AppendFormat("{0:X2} ", b);
+                    lineSeparation++;
+                }
+            }
+
+            Log.WriteItem("Hex", ConsoleColor.Magenta, sb.ToString());
+        }
+
+        public static void Hex(string label, byte b, params object[] args)
+        {
+            Log.Hex(label, new byte[] { b }, args);
         }
 
         public static void SkipLine()

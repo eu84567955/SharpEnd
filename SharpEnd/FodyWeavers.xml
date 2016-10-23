@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Weavers>
+  <Costura>
+    <IncludeAssemblies>
+      reNX
+      IronPython
+      IronPython.Modules
+      Microsoft.Dynamic
+      Microsoft.Scripting
+      Microsoft.Scripting.Metadata
+      MySql.Data
+      Newtonsoft.Json
+    </IncludeAssemblies>
+  </Costura>
+</Weavers>

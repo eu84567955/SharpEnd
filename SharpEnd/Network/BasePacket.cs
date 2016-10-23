@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SharpEnd.Network
 {
-    internal abstract class BasePacket : IDisposable
+    public abstract class BasePacket : IDisposable
     {
         public EHeader Header { get; protected set; }
 
@@ -44,7 +44,7 @@ namespace SharpEnd.Network
 
         protected virtual void CustomDispose()
         {
-            // NOTE: Intentionally left blank
+            // NOTE: Intentionally left blank.
         }
 
         public void Dispose()

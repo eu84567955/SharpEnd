@@ -9,7 +9,7 @@ namespace SharpEnd.Utility
         private MySqlConnection mConnection;
         private MySqlDataReader mReader;
 
-        internal DatabaseQuery(MySqlConnection pConnection, MySqlDataReader pReader)
+        public DatabaseQuery(MySqlConnection pConnection, MySqlDataReader pReader)
         {
             mConnection = pConnection;
             mReader = pReader;

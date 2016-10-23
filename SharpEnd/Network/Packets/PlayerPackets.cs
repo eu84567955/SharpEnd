@@ -1,17 +1,18 @@
 ﻿using SharpEnd.Network;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 using SharpEnd.Utility;
 using System.Collections.Generic;
+using SharpEnd.Packets.Helpers;
 
 namespace SharpEnd.Packets
 {
-    internal static class PlayerPackets
+    public static class PlayerPackets
     {
         public static byte[] PlayerUpdate(Player player, EPlayerUpdate bits = EPlayerUpdate.None, bool itemReaction = false)
         {
             using (OutPacket outPacket = new OutPacket())
             {
-                outPacket
+                /*outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_UPDATE)
                     .WriteBoolean(itemReaction)
                     .WriteULong((ulong)bits);
@@ -67,7 +68,7 @@ namespace SharpEnd.Packets
                     .WriteByte() // NOTE: Unknown
                     .WriteByte() // NOTE: Unknown
                     .WriteByte() // NOTE: Unknown
-                    .WriteByte(); // NOTE: Unknown
+                    .WriteByte(); // NOTE: Unknown*/
 
                 return outPacket.ToArray();
             }
@@ -99,8 +100,8 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_SPAWN)
-                    .WriteInt(player.Identifier)
-                    .WriteByte(player.Stats.Level)
+                    .WriteInt(player.Id)
+                    .WriteByte(player.Level)
                     .WriteString(player.Name)
                     .WriteString(string.Empty); // NOTE: Ultimate Explorer
 
@@ -128,13 +129,13 @@ namespace SharpEnd.Packets
                     outPacket.WriteHexString("01 1A B7 01 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 47 84 B0 C2 00 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 00 00 00 00 00 00 00 00 00 01 1A B7 01 00 00 00 00 00 00 00 00 00 00 00");
                 }
 
-                HelpPackets.AddPlayerDisplay(outPacket, player);
+                PlayerPacketHelper.AddPlayerDisplay(outPacket, player);
 
                 outPacket
                     .WriteHexString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
                     .WritePoint(player.Position)
-                    .WriteSByte(player.Stance)
-                    .WriteUShort(player.Foothold)
+                    .WriteByte(player.Stance)
+                    .WriteShort(player.Foothold)
                     .WriteHexString("00 00 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
 
                 // NOTE: Farm
@@ -156,13 +157,13 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerDespawn(int playerIdentifier)
+        public static byte[] PlayerDespawn(int playerID)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_DESPAWN)
-                    .WriteInt(playerIdentifier);
+                    .WriteInt(playerID);
 
                 return outPacket.ToArray();
             }

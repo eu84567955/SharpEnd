@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EQuestAction : sbyte
+    public enum EQuestAction : sbyte
     {
         RestoreLostItem,
         Start,

@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Packets
 {
-    internal static class MessagePackets
+    public static class MessagePackets
     {
         public static byte[] Notification(string text, ENoticeType type)
         {
@@ -12,7 +12,7 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_NOTIFICATION)
                     .WriteByte((byte)type);
 
-                if (type == ENoticeType.Header)
+                if (type == ENoticeType.Ticker)
                 {
                     outPacket.WriteBoolean(!string.IsNullOrEmpty(text));
                 }

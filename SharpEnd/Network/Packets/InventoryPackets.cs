@@ -1,10 +1,11 @@
 ﻿using SharpEnd.Network;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 using SharpEnd.Utility;
+using SharpEnd.Packets.Helpers;
 
 namespace SharpEnd.Packets
 {
-    internal struct InventoryOperation
+    public struct InventoryOperation
     {
         public EInventoryOperation Type { get; set; }
         public PlayerItem Item { get; set; }
@@ -12,7 +13,7 @@ namespace SharpEnd.Packets
         public short CurrentSlot { get; set; }
     }
 
-    internal static class InventoryPackets
+    public static class InventoryPackets
     {
         public static byte[] InventoryOperation(bool unknown, params InventoryOperation[] operations)
         {
@@ -30,12 +31,12 @@ namespace SharpEnd.Packets
                     outPacket
                         .WriteByte() // NOTE: Unknown
                         .WriteByte((byte)operation.Type)
-                        .WriteByte((byte)GameLogicUtilities.GetInventory(operation.Item.Identifier));
+                        .WriteByte((byte)GameLogicUtilities.GetInventory(operation.Item.ID));
 
                     switch (operation.Type)
                     {
                         case EInventoryOperation.AddItem:
-                            HelpPackets.AddItemInfo(outPacket, operation.CurrentSlot, operation.Item, true);
+                            PlayerPacketHelper.AddItemInfo(outPacket, operation.CurrentSlot, operation.Item, true);
                             break;
 
                         case EInventoryOperation.ModifyQuantity:

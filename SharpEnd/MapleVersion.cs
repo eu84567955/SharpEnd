@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal struct MapleVersion
+    public struct MapleVersion
     {
         public ushort Version { get; set; }
         public string Patch { get; set; }

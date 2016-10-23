@@ -1,25 +1,25 @@
 ﻿using SharpEnd.Game.Life;
 using SharpEnd.Game.Maps;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 using System.Collections.Generic;
 
 namespace SharpEnd.Game.Commands.Gm
 {
-    internal static class MobCommands
+    public static class MobCommands
     {
         [GmCommand("spawn", "Spawns the desired mob.")]
-        public static void SpawnCommand(Player player, int mobIdentifier, int amount = 1)
+        public static void SpawnCommand(Player player, int mobID, int amount = 1)
         {
             if (true) // TODO: Check if the data files contain a file with this identifier.
             {
                 while (amount-- > 0)
                 {
-                    player.Map.Mobs.Add(new Mob(mobIdentifier, player));
+                    //player.Map.Mobs.Add(new Mob(mobID, player));
                 }
             }
             else
             {
-                player.Notify("[Command] Invalid mob.");
+                //player.Notify("[Command] Invalid mob.");
             }
         }
 
@@ -35,7 +35,7 @@ namespace SharpEnd.Game.Commands.Gm
 
             foreach (Mob mob in toKill)
             {
-                mob.Die();
+                //mob.Die();
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EFieldEffect : byte
+    public enum EFieldEffect : byte
     {
         FieldEffect_Summon = 0x0,
         FieldEffect_Tremble = 0x1,

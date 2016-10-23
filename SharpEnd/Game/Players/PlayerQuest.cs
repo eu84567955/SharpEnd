@@ -1,4 +1,4 @@
-﻿namespace SharpEnd.Players
+﻿namespace SharpEnd.Game.Players
 {
     class PlayerQuest
     {

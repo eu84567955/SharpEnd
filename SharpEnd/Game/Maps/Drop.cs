@@ -1,10 +1,10 @@
 ﻿using SharpEnd.Drawing;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 using SharpEnd.Threading;
 
 namespace SharpEnd.Game.Maps
 {
-    internal abstract class Drop : MapEntity
+    public abstract class Drop : MapEntity
     {
         private MapEntity dropper;
 

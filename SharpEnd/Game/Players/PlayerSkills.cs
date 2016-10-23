@@ -3,9 +3,9 @@ using SharpEnd.Packets;
 using SharpEnd.Utility;
 using System.Collections.Generic;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal sealed class PlayerSkills : List<PlayerSkill>
+    public sealed class PlayerSkills : List<PlayerSkill>
     {
         public Player Parent { get; private set; }
 
@@ -25,10 +25,10 @@ namespace SharpEnd.Players
 
             base.Add(skill);
 
-            if (Parent.IsInitialized)
+            /*if (Parent.IsInitialized)
             {
                 Parent.Send(SkillPackets.AddSkill(skill));
-            }
+            }*/
         }
 
         public new void Remove(PlayerSkill skill)

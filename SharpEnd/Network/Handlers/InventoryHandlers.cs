@@ -1,31 +1,28 @@
-﻿using SharpEnd.Game.Data;
-using SharpEnd.Drawing;
+﻿using SharpEnd.Drawing;
 using SharpEnd.Game.Maps;
 using SharpEnd.Network;
-using SharpEnd.Packets;
-using SharpEnd.Players;
-using SharpEnd.Servers;
+using SharpEnd.Game.Players;
 using SharpEnd.Utility;
 using System.Collections.Generic;
 
 namespace SharpEnd.Handlers
 {
-    internal static class InventoryHandlers
+    public static class InventoryHandlers
     {
         [PacketHandler(EHeader.CMSG_INVENTORY_SORT)]
-        public static void SortHandler(Client client, InPacket inPacket)
+        public static void SortHandler(GameClient client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: Ticks.
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_GATHER)]
-        public static void GatherHandler(Client client, InPacket inPacket)
+        public static void GatherHandler(GameClient client, InPacket inPacket)
         {
             inPacket.ReadInt(); // NOTE: Ticks.
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_OPERATION)]
-        public static void OperationHandler(Client client, InPacket inPacket)
+        public static void OperationHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -61,22 +58,22 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_CONSUME)]
-        public static void InventoryConsumeHandler(Client client, InPacket inPacket)
+        public static void InventoryConsumeHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
             inPacket.Skip(4); // NOTE: Ticks.
             short slot = inPacket.ReadShort();
-            int itemIdentifier = inPacket.ReadInt();
+            int itemID = inPacket.ReadInt();
 
             PlayerItem item = player.Items[EInventoryType.Use, slot];
 
-            if (item == null || itemIdentifier != item.Slot)
+            if (item == null || itemID != item.Slot)
             {
                 return;
             }
 
-            ItemConsumeData consume = ItemDataProvider.Instance[itemIdentifier].Consume;
+            /*ItemConsumeData consume = null;// ItemDataProvider.Instance[itemID].Consume;
 
             // TODO: Check for map limitiations.
 
@@ -102,12 +99,12 @@ namespace SharpEnd.Handlers
 
             if (consume.MoveTo != 0)
             {
-                player.SetMap(consume.MoveTo);
-            }
+                //player.SetMap(consume.MoveTo);
+            }*/
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_MESO_DROP)]
-        public static void MesoDropHandler(Client client, InPacket inPacket)
+        public static void MesoDropHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -131,20 +128,20 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_INVENTORY_PICKUP)]
-        public static void PickupHandler(Client client, InPacket inPacket)
+        public static void PickupHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
             inPacket.ReadInt(); // NOTE: Ticks
             inPacket.Skip(1);
             Point position = inPacket.ReadPoint();
-            int objectIdentifier = inPacket.ReadInt();
+            int objectID = inPacket.ReadInt();
 
             Drop drop;
 
             try
             {
-                drop = player.Map.Drops[objectIdentifier];
+                drop = player.Map.Drops[objectID];
             }
             catch (KeyNotFoundException)
             {
@@ -162,7 +159,7 @@ namespace SharpEnd.Handlers
                 }
                 else if (drop is PlayerItem)
                 {
-                    if (GameLogicUtilities.IsMonsterCard(((PlayerItem)drop).Identifier))
+                    if (GameLogicUtilities.IsMonsterCard(((PlayerItem)drop).ID))
                     {
                         // TODO: Monster Book handling.
                     }
@@ -176,7 +173,7 @@ namespace SharpEnd.Handlers
 
                 player.Map.Drops.Remove(drop);
 
-                player.Send(DropPackets.DropGain(drop));
+                //player.Send(DropPackets.DropGain(drop));
             }
         }
     }

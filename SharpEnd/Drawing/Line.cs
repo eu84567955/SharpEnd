@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd.Drawing
 {
-    internal sealed class Line
+    public sealed class Line
     {
         public Point Point1 { get; private set; }
         public Point Point2 { get; private set; }

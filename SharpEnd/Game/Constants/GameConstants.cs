@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd.Game.Constants
 {
-    internal static class GameConstants
+    public static class GameConstants
     {
         private static readonly ulong[] PlayerExperience = {
             // NOTE: Levels 0 to 49.

@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EShaMode
+    public enum EShaMode
     {
         SHA1,
         SHA256,

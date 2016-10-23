@@ -2,18 +2,19 @@
 using SharpEnd.Extensions;
 using SharpEnd.Network;
 using SharpEnd.Packets;
-using SharpEnd.Players;
 using SharpEnd.Security;
-using SharpEnd.Servers;
+using SharpEnd.Network.Servers;
 using SharpEnd.Utility;
 using System.Collections.Generic;
+using SharpEnd.Game;
+using System;
 
 namespace SharpEnd.Handlers
 {
-    internal static class LoginHandlers
+    public static class LoginHandlers
     {
         [PacketHandler(EHeader.CMSG_VERSION_INFORMATION)]
-        public static void VersionInformationHandler(Client client, InPacket inPacket)
+        public static void VersionInformationHandler(GameClient client, InPacket inPacket)
         {
             ELocalisation localisation = (ELocalisation)inPacket.ReadByte();
             ushort version = inPacket.ReadUShort();
@@ -27,26 +28,32 @@ namespace SharpEnd.Handlers
             }
         }
 
-        [PacketHandler(EHeader.CMSG_AUTH_SERVER)]
-        public static void AuthServerHandler(Client client, InPacket inPacket)
-        {
-            client.Send(LoginPackets.AuthServer(false));
-        }
-
-        [PacketHandler(EHeader.CMSG_CLIENT_START)]
-        public static void StartHandler(Client client, InPacket inPacket)
-        {
-            client.Send(LoginPackets.Start());
-        }
-
-        [PacketHandler(EHeader.CMSG_STRANGE_DATA)]
-        public static void StrangeDataHandler(Client client, InPacket inPacket)
+        [PacketHandler(EHeader.CMSG_UNKNOWN)]
+        public static void UnknownHandler(GameClient client, InPacket inPacket)
         {
             // NOTE: Intentionally left blank.
         }
 
+        [PacketHandler(EHeader.CMSG_STRANGE_DATA)]
+        public static void StrangeDataHandler(GameClient client, InPacket inPacket)
+        {
+            // NOTE: Intentionally left blank.
+        }
+
+        [PacketHandler(EHeader.CMSG_APPLY_HOTFIX)]
+        public static void ApplyHotfixHandler(GameClient client, InPacket inPacket)
+        {
+            client.Send(LoginPackets.ApplyHotfix());
+        }
+
+        [PacketHandler(EHeader.CMSG_NMCO)]
+        public static void NMCOHandler(GameClient client, InPacket inPacket)
+        {
+            client.Send(LoginPackets.NMCOResult(true));
+        }
+
         [PacketHandler(EHeader.CMSG_AUTHENTICATION)]
-        public static void AuthenticationHandler(Client client, InPacket inPacket)
+        public static void AuthenticationHandler(GameClient client, InPacket inPacket)
         {
             inPacket.ReadByte();
             string password = inPacket.ReadString();
@@ -54,7 +61,7 @@ namespace SharpEnd.Handlers
 
             Account account = null;
 
-            using (DatabaseQuery query = Database.Query("SELECT * FROM account WHERE username=@username", new MySqlParameter("username", username)))
+            using (DatabaseQuery query = Database.Query("SELECT * FROM accounts WHERE username=@username", new MySqlParameter("username", username)))
             {
                 if (!query.NextRow())
                 {
@@ -73,20 +80,16 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            if (MasterServer.Instance.Migrations.Contains(account.Identifier))
-            {
-                client.Send(LoginPackets.LoginError(7));
-
-                return;
-            }
+            // TODO: Check if any of the ChannelServer instances contain the account in their player storage.
+            // Check if any of them contain the account in the migration process as well.
 
             client.Account = account;
 
             client.Send(LoginPackets.LoginSuccess(client));
         }
 
-        [PacketHandler(EHeader.CMSG_WORLD_LIST)]
-        public static void WorldListHandler(Client client, InPacket inPacket)
+        [PacketHandler(EHeader.CMSG_WORLD_LIST), PacketHandler(EHeader.CMSG_WORLD_LIST_RELIST)]
+        public static void WorldListHandler(GameClient client, InPacket inPacket)
         {
             foreach (WorldServer world in MasterServer.Instance.Worlds)
             {
@@ -94,16 +97,22 @@ namespace SharpEnd.Handlers
             }
 
             client.Send(LoginPackets.WorldEnd());
+            client.Send(LoginPackets.HighlightWorld(0)); // TODO: Get the world with the last logged in player.
+            client.Send(LoginPackets.RecommendedWorld(true, 0, "Try Scania!@The newest world@on the server.")); // TODO: Configuration for this.
         }
 
         [PacketHandler(EHeader.CMSG_WORLD_STATUS)]
-        public static void WorldStatusHandler(Client client, InPacket inPacket)
+        public static void WorldStatusHandler(GameClient client, InPacket inPacket)
         {
-            byte identifier = inPacket.ReadByte();
+            byte worldId = inPacket.ReadByte();
 
-            WorldServer world = MasterServer.Instance.Worlds[identifier];
+            WorldServer world;
 
-            if (world == null)
+            try
+            {
+                world = MasterServer.Instance.Worlds[worldId];
+            }
+            catch (IndexOutOfRangeException)
             {
                 return;
             }
@@ -112,48 +121,77 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_LIST)]
-        public static void PlayerListHandler(Client client, InPacket inPacket)
+        public static void PlayerListHandler(GameClient client, InPacket inPacket)
         {
             inPacket.ReadByte(); // NOTE: Connection method (GameLaunching, WebStart, etcetera).
-            byte worldIdentifier = inPacket.ReadByte();
-            byte channelIdentifier = inPacket.ReadByte();
+            byte worldId = inPacket.ReadByte();
+
+            WorldServer world;
+
+            try
+            {
+                world = MasterServer.Instance.Worlds[worldId];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return;
+            }
+
+            byte channelId = inPacket.ReadByte();
+
+            ChannelServer channel;
+
+            try
+            {
+                channel = MasterServer.Instance.Worlds[worldId][channelId];
+            }
+            catch (KeyNotFoundException)
+            {
+                return;
+            }
+
             inPacket.ReadInt(); // NOTE: LAN address.
 
-            // TODO: Validate world/channel identifier.
+            client.World = worldId;
+            client.Channel = channelId;
 
-            client.WorldIdentifier = worldIdentifier;
-            client.ChannelIdentifier = channelIdentifier;
-
-            byte count = (byte)(long)Database.Scalar("SELECT COUNT(*) FROM player WHERE account_identifier=@account_identifier", new MySqlParameter("account_identifier", client.Account.Identifier));
-
-            using (DatabaseQuery query = Database.Query("SELECT * FROM player WHERE account_identifier=@account_identifier", new MySqlParameter("account_identifier", client.Account.Identifier)))
+            byte count = (byte)(long)Database.Scalar("SELECT COUNT(*) FROM players WHERE account_id=@account_id", new MySqlParameter("account_id", client.Account.Id));
+            
+            if (!client.Account.ContainsVariable("character_slots"))
             {
-                client.Send(LoginPackets.PlayerList(count, query, client.Account.PICState));
+                client.Account.SetVariable("character_slots", MasterServer.Instance.Login.DefaultCharacterSlots);
+            }
+            
+            int characterSlots = client.Account.GetVariable<int>("character_slots");
+            
+            using (DatabaseQuery query = Database.Query("SELECT * FROM players WHERE account_id=@account_id", new MySqlParameter("account_id", client.Account.Id)))
+            {
+                client.Send(LoginPackets.PlayerList(count, query, characterSlots));
             }
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_NAME_CHECK)]
-        public static void PlayerNameCheckHandler(Client client, InPacket inPacket)
+        public static void PlayerNameCheckHandler(GameClient client, InPacket inPacket)
         {
             string name = inPacket.ReadString();
 
             bool unusable = name.IsAlphaNumeric() ||
                             name.Length < 4 ||
                             name.Length > 16 ||
-                            (long)Database.Scalar("SELECT COUNT(*) FROM player WHERE name=@name", new MySqlParameter("@name", name)) != 0;
+                            (long)Database.Scalar("SELECT COUNT(*) FROM players WHERE name=@name", new MySqlParameter("@name", name)) != 0;
 
             client.Send(LoginPackets.PlayerNameCheck(name, unusable));
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_CREATE)]
-        public static void PlayerCreateHandler(Client client, InPacket inPacket)
+        public static void PlayerCreateHandler(GameClient client, InPacket inPacket)
         {
             string name = inPacket.ReadString();
 
             bool unusable = name.IsAlphaNumeric() ||
                             name.Length < 4 ||
                             name.Length > 16 ||
-                            (long)Database.Scalar("SELECT COUNT(*) FROM player WHERE name=@name", new MySqlParameter("@name", name)) != 0;
+                            (long)Database.Scalar("SELECT COUNT(*) FROM players WHERE name=@name", new MySqlParameter("@name", name)) != 0;
 
             if (unusable)
             {
@@ -209,34 +247,34 @@ namespace SharpEnd.Handlers
                 skin = (byte)objects[i++];
             }
 
-            List<int> itemIdentifiers = new List<int>();
+            List<int> itemIDs = new List<int>();
 
             for (int j = i; j < objects.Count; j++)
             {
-                itemIdentifiers.Add(objects[j]);
+                itemIDs.Add(objects[j]);
             }
 
             if (true) // TODO: Validate player creation.
             {
-                int playerIdentifier = Database.InsertAndReturnIdentifier("INSERT INTO player(account_identifier,name,gender,skin,face,hair,job,sub_job) " +
-                                         "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job,@sub_job)",
-                                         new MySqlParameter("@account_identifier", client.Account.Identifier),
-                                         new MySqlParameter("@name", name),
-                                         new MySqlParameter("@gender", gender),
-                                         new MySqlParameter("@skin", skin),
-                                         new MySqlParameter("@face", face),
-                                         new MySqlParameter("@hair", hair),
-                                         new MySqlParameter("@job", (ushort)job),
-                                         new MySqlParameter("@sub_job", subJob));
-
-                foreach (int itemIdentifier in itemIdentifiers)
+                int playerID = Database.InsertAndReturnID("INSERT INTO players(account_id,world_id,name,gender,skin,face,hair,job) " +
+                                         "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job)",
+                                         new MySqlParameter("account_id", client.Account.Id),
+                                         new MySqlParameter("world_id", client.World),
+                                         new MySqlParameter("name", name),
+                                         new MySqlParameter("gender", gender),
+                                         new MySqlParameter("skin", skin),
+                                         new MySqlParameter("face", face),
+                                         new MySqlParameter("hair", hair),
+                                         new MySqlParameter("job", (ushort)job));
+                /*
+                foreach (int itemID in itemIDs)
                 {
-                    PlayerItem item = new PlayerItem(itemIdentifier, equipped: true);
+                    PlayerItem item = new PlayerItem(itemID, equipped: true);
 
                     Database.Execute("INSERT INTO player_item " +
                                      "VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @creator, @flags)",
-                                     new MySqlParameter("player_identifier", playerIdentifier),
-                                     new MySqlParameter("item_identifier", item.Identifier),
+                                     new MySqlParameter("player_identifier", playerID),
+                                     new MySqlParameter("item_identifier", item.ID),
                                      new MySqlParameter("inventory_slot", item.Slot),
                                      new MySqlParameter("quantity", item.Quantity),
                                      new MySqlParameter("slots", item.Slots),
@@ -268,13 +306,14 @@ namespace SharpEnd.Handlers
 
                     Database.Execute("INSERT INTO player_keymap " +
                                      "VALUES(@player_identifier, @key_identifier, @type, @action)",
-                                     new MySqlParameter("player_identifier", playerIdentifier),
+                                     new MySqlParameter("player_identifier", playerID),
                                      new MySqlParameter("key_identifier", key.Item1),
                                      new MySqlParameter("type", (byte)key.Item2),
                                      new MySqlParameter("action", key.Item3));
                 }
+                */
 
-                using (DatabaseQuery query = Database.Query("SELECT * FROM player WHERE identifier=@identifier", new MySqlParameter("identifier", playerIdentifier)))
+                using (DatabaseQuery query = Database.Query("SELECT * FROM players WHERE player_id=@player_id", new MySqlParameter("player_id", playerID)))
                 {
                     query.NextRow();
 
@@ -287,35 +326,36 @@ namespace SharpEnd.Handlers
             }
         }
 
+        // TODO: Combine all player selection handlers to one.
         [PacketHandler(EHeader.CMSG_PLAYER_SELECT_PIC)]
-        public static void PlayerSelectPicHandler(Client client, InPacket inPacket)
+        public static void PlayerSelectPicHandler(GameClient client, InPacket inPacket)
         {
             string pic = inPacket.ReadString();
 
-            if (ShaCryptograph.Encrypt(EShaMode.SHA512, pic) != client.Account.PIC)
+            if (ShaCryptograph.Encrypt(EShaMode.SHA512, pic) != client.Account.Pic)
             {
                 // TODO: Send invalid pic packet.
             }
 
-            int playerIdentifier = inPacket.ReadInt();
+            int playerID = inPacket.ReadInt();
 
-            MasterServer.Instance.Migrations.Register(playerIdentifier, client.Account.Identifier, client.Host);
+            ChannelServer destination = MasterServer.Instance.Worlds[client.World][client.Channel];
 
-            ushort port = 8585;
+            destination.Migrations.Register(playerID, client.Account.Id, client.Host);
 
-            client.Send(LoginPackets.ServerIP(port, playerIdentifier));
+            client.Send(LoginPackets.ServerIP(destination.Port, playerID));
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_SELECT)]
-        public static void PlayerSelectHandler(Client client, InPacket inPacket)
+        public static void PlayerSelectHandler(GameClient client, InPacket inPacket)
         {
-            int playerIdentifier = inPacket.ReadInt();
+            int playerID = inPacket.ReadInt();
 
-            MasterServer.Instance.Migrations.Register(playerIdentifier, client.Account.Identifier, client.Host);
+            ChannelServer destination = MasterServer.Instance.Worlds[client.World][client.Channel];
 
-            ushort port = 8585;
+            destination.Migrations.Register(playerID, client.Account.Id, client.Host);
 
-            client.Send(LoginPackets.ServerIP(port, playerIdentifier));
+            client.Send(LoginPackets.ServerIP(destination.Port, playerID));
         }
     }
 }

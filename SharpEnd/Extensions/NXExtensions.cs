@@ -5,7 +5,17 @@ namespace SharpEnd.Game.Data
 {
     public static class NXExtensions
     {
-        public static T GetIdentifier<T>(this NXNode node)
+        public static int GetCount(this NXNode node)
+        {
+            if (node == null || node.Name.Contains(".img"))
+                return 1;
+            int count = 0;
+            foreach (NXNode sub in node)
+                count += GetCount(sub);
+            return count;
+        }
+
+        public static T GetID<T>(this NXNode node)
         {
             return (T)Convert.ChangeType(node.Name.Replace(".img", ""), typeof(T));
         }

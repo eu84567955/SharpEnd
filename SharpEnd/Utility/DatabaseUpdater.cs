@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd.Utility
 {
-    internal static class DatabaseUpdater
+    public static class DatabaseUpdater
     {
 
     }

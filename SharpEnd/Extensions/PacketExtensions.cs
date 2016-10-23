@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Extensions
 {
-    internal static class PacketExtensions
+    public static class PacketExtensions
     {
         public static void WriteFlaggedValue(this OutPacket outPacket, uint flag, sbyte value, ref uint output)
         {

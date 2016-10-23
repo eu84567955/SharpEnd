@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EAccountLevel : byte
+    public enum EAccountLevel : byte
     {
         Player,
         Gm,

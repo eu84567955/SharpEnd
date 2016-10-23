@@ -1,13 +1,14 @@
 ﻿using MySql.Data.MySqlClient;
 using SharpEnd.Network;
 using SharpEnd.Packets;
+using SharpEnd.Packets.Helpers;
 using SharpEnd.Utility;
 using System;
 using System.Collections.Generic;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal sealed class PlayerItems : List<PlayerItem>
+    public sealed class PlayerItems : List<PlayerItem>
     {
         public Player Parent { get; private set; }
 
@@ -19,18 +20,10 @@ namespace SharpEnd.Players
         public byte EtceteraSlots { get; set; }
         public byte CashSlots { get; set; }
 
-        public PlayerItems(Player player, DatabaseQuery query, long meso, byte equipmentSlots, byte usableSlots, byte setupSlots, byte etceteraSlots, byte cashSlots)
+        public PlayerItems(Player player, DatabaseQuery query)
             : base()
         {
             Parent = player;
-
-            Meso = meso;
-
-            EquipmentSlots = equipmentSlots;
-            UsableSlots = usableSlots;
-            SetupSlots = setupSlots;
-            EtceteraSlots = etceteraSlots;
-            CashSlots = cashSlots;
 
             while (query.NextRow())
             {
@@ -40,7 +33,7 @@ namespace SharpEnd.Players
 
         public void Save()
         {
-            Database.Execute("DELETE FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.Identifier));
+            Database.Execute("DELETE FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.Id));
 
             foreach (PlayerItem item in this)
             {
@@ -61,7 +54,7 @@ namespace SharpEnd.Players
 
                 base.Add(item);
 
-                if (Parent.IsInitialized)
+                /*if (Parent.IsInitialized)
                 {
                     Parent.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
                     {
@@ -70,18 +63,18 @@ namespace SharpEnd.Players
                         OldSlot = 0,
                         CurrentSlot = item.Slot
                     }));
-                }
+                }*/
             }
         }
 
         public new void Remove(PlayerItem item)
         {
-            Parent.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+            /*Parent.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
             {
                 Type = EInventoryOperation.RemoveItem,
                 Item = item,
                 CurrentSlot = item.Slot
-            }));
+            }));*/
 
             bool wasEquipped = item.IsEquipped;
 
@@ -100,7 +93,7 @@ namespace SharpEnd.Players
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
-                .WriteInt(Parent.Identifier)
+                .WriteInt(Parent.Id)
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
@@ -121,19 +114,19 @@ namespace SharpEnd.Players
 
             foreach (PlayerItem item in GetEquipped(EEquippedQueryMode.Normal))
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item, true);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item, true);
             }
             outPacket.WriteShort();
 
             foreach (PlayerItem item in GetEquipped(EEquippedQueryMode.Cash))
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item, true);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item, true);
             }
             outPacket.WriteShort();
 
             foreach (PlayerItem item in this[EInventoryType.Equipment])
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item, true);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item, true);
             }
             outPacket.WriteShort();
 
@@ -146,25 +139,25 @@ namespace SharpEnd.Players
 
             foreach (PlayerItem item in this[EInventoryType.Use])
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item);
             }
             outPacket.WriteByte();
 
             foreach (PlayerItem item in this[EInventoryType.Setup])
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item);
             }
             outPacket.WriteByte();
 
             foreach (PlayerItem item in this[EInventoryType.Etc])
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item);
             }
             outPacket.WriteByte();
 
             foreach (PlayerItem item in this[EInventoryType.Cash])
             {
-                HelpPackets.AddItemInfo(outPacket, item.Slot, item);
+                PlayerPacketHelper.AddItemInfo(outPacket, item.Slot, item);
             }
             outPacket.WriteByte();
 
@@ -183,7 +176,7 @@ namespace SharpEnd.Players
 
                 if (position < 100 && !visibleLayer.ContainsKey(position))
                 {
-                    visibleLayer[position] = item.Identifier;
+                    visibleLayer[position] = item.ID;
                 }
                 else if (position > 100 && position != 111)
                 {
@@ -194,11 +187,11 @@ namespace SharpEnd.Players
                         hiddenLayer[position] = visibleLayer[position];
                     }
 
-                    visibleLayer[position] = item.Identifier;
+                    visibleLayer[position] = item.ID;
                 }
                 else if (visibleLayer.ContainsKey(position))
                 {
-                    hiddenLayer[position] = item.Identifier;
+                    hiddenLayer[position] = item.ID;
                 }
             }
 
@@ -236,7 +229,7 @@ namespace SharpEnd.Players
         {
             Meso = Math.Min(amount, 9999999999);
 
-            Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
+            //Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
         }
 
         public bool ModifyMeso(int mod, bool sendPacket = false)
@@ -260,7 +253,7 @@ namespace SharpEnd.Players
                 Meso += mod;
             }
 
-            Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
+           // Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
 
             return true;
         }

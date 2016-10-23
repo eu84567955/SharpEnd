@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SharpEnd.Network
 {
-    internal sealed class InPacket : BasePacket
+    public sealed class InPacket : BasePacket
     {
         private BinaryReader m_reader;
 

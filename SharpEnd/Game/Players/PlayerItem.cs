@@ -5,13 +5,13 @@ using SharpEnd.Packets;
 using SharpEnd.Utility;
 using System;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal sealed class PlayerItem : Drop
+    public sealed class PlayerItem : Drop
     {
         public PlayerItems Parent { get; set; }
 
-        public int Identifier { get; private set; }
+        public int ID { get; private set; }
         public short Slot { get; set; }
         public ushort Quantity { get; set; }
         public DateTime Expiration { get; private set; }
@@ -47,7 +47,7 @@ namespace SharpEnd.Players
         {
             get
             {
-                return GameLogicUtilities.GetInventory(Identifier);
+                return GameLogicUtilities.GetInventory(ID);
             }
         }
 
@@ -61,7 +61,7 @@ namespace SharpEnd.Players
 
         public PlayerItem(DatabaseQuery query)
         {
-            Identifier = query.Get<int>("item_identifier");
+            ID = query.Get<int>("item_identifier");
 
             Slot = query.Get<short>("inventory_slot");
 
@@ -93,7 +93,7 @@ namespace SharpEnd.Players
         public PlayerItem(int identifier, ushort quantity = 1, bool equipped = false)
             : base()
         {
-            Identifier = identifier;
+            /*ID = identifier;
 
             if (equipped)
             {
@@ -110,34 +110,34 @@ namespace SharpEnd.Players
 
             if (Inventory == EInventoryType.Equipment)
             {
-                ItemEquipData data = ItemDataProvider.Instance[Identifier].Equip;
+                ItemEquipData data = ItemDataProvider.Instance[ID].Equip;
 
-                Slots = data.Slots;
-                Strength = data.Strength;
-                Dexterity = data.Dexterity;
-                Intelligence = data.Intelligence;
-                Luck = data.Luck;
-                Health = data.MaxHealth;
-                Mana = data.MaxMana;
-                WeaponAttack = data.WeaponAttack;
-                MagicAttack = data.MagicAttack;
-                WeaponDefense = data.WeaponDefense;
-                MagicDefense = data.MagicDefense;
-                Accuracy = data.Accuracy;
-                Avoidability = data.Avoidability;
-                Hands = data.Hands;
-                Speed = data.Speed;
-                Jump = data.Jump;
-            }
+                Slots = data.m_slots;
+                Strength = data.m_strength;
+                Dexterity = data.m_dexterity;
+                Intelligence = data.m_intelligence;
+                Luck = data.m_luck;
+                Health = data.m_hp;
+                Mana = data.m_mp;
+                WeaponAttack = data.m_weaponAttack;
+                MagicAttack = data.m_magicAttack;
+                WeaponDefense = data.m_weaponDefense;
+                MagicDefense = data.m_magicDefense;
+                Accuracy = data.m_accuracy;
+                Avoidability = data.m_avoidability;
+                Hands = data.m_hands;
+                Speed = data.m_seed;
+                Jump = data.m_jump;
+            }*/
         }
 
         public void Save()
         {
             Database.Execute(@"INSERT INTO `player_item` 
                              VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @expiration, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @creator, @flags);",
-                             new MySqlParameter("player_identifier", Player.Identifier),
+                             new MySqlParameter("player_identifier", Player.Id),
                              new MySqlParameter("inventory_slot", Slot),
-                             new MySqlParameter("item_identifier", Identifier),
+                             new MySqlParameter("item_identifier", ID),
                              new MySqlParameter("quantity", Quantity),
                              new MySqlParameter("expiration", Expiration),
                              new MySqlParameter("slots", Slots),
@@ -183,13 +183,14 @@ namespace SharpEnd.Players
 
             Slot = destinationSlot;
 
-            Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+            /*//player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
             {
                 Type = EInventoryOperation.ModifySlot,
                 Item = this,
                 CurrentSlot = sourceSlot,
                 OldSlot = destinationSlot
             }));
+    */
         }
 
         public void Unequip(short destinationSlot = 0)
@@ -208,33 +209,33 @@ namespace SharpEnd.Players
 
             Slot = destinationSlot;
 
-            Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+            /*//player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
             {
                 Type = EInventoryOperation.ModifySlot,
                 Item = this,
                 CurrentSlot = sourceSlot,
                 OldSlot = destinationSlot
-            }));
+            }));*/
         }
 
         public void Move(short destinationSlot)
         {
-            short sourceSlot = Slot;
+            /*short sourceSlot = Slot;
 
             PlayerItem destination = Parent[Inventory, destinationSlot];
 
             if (destination != null &&
-                destination.Identifier == Identifier &&
-                GameLogicUtilities.IsStackable(Identifier))
+                destination.ID == ID &&
+                GameLogicUtilities.IsStackable(ID))
             {
-                ushort maxPerStack = ItemDataProvider.Instance[Identifier].MaxSlotQuantity;
+                ushort maxPerStack = ItemDataProvider.Instance[ID].MaxSlotQuantity;
 
                 if (Quantity + destination.Quantity > maxPerStack)
                 {
                     Quantity -= (ushort)(maxPerStack - destination.Quantity);
                     destination.Quantity = maxPerStack;
 
-                    Player.Send(InventoryPackets.InventoryOperation(true,
+                   /* //player.Send(InventoryPackets.InventoryOperation(true,
                     new InventoryOperation()
                     {
                         Type = EInventoryOperation.ModifyQuantity,
@@ -252,13 +253,13 @@ namespace SharpEnd.Players
                 {
                     destination.Quantity += Quantity;
 
-                    Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                    /player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
                     {
                         Type = EInventoryOperation.ModifyQuantity,
                         Item = destination,
                         CurrentSlot = destinationSlot
                     }));
-
+                    
                     Parent.Remove(this);
                 }
             }
@@ -271,14 +272,14 @@ namespace SharpEnd.Players
 
                 Slot = destinationSlot;
 
-                Player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
+                /player.Send(InventoryPackets.InventoryOperation(true, new InventoryOperation()
                 {
                     Type = EInventoryOperation.ModifySlot,
                     Item = this,
                     CurrentSlot = sourceSlot,
                     OldSlot = destinationSlot
                 }));
-            }
+            }*/
         }
 
         public void Drop(ushort quantity)
@@ -302,59 +303,59 @@ namespace SharpEnd.Players
         {
             short slot = 0;
 
-            if (Identifier >= 1000000 && Identifier < 1010000)
+            if (ID >= 1000000 && ID < 1010000)
             {
                 slot -= 1;
             }
-            else if (Identifier >= 1010000 && Identifier < 1020000)
+            else if (ID >= 1010000 && ID < 1020000)
             {
                 slot -= 2;
             }
-            else if (Identifier >= 1020000 && Identifier < 1030000)
+            else if (ID >= 1020000 && ID < 1030000)
             {
                 slot -= 3;
             }
-            else if (Identifier >= 1030000 && Identifier < 1040000)
+            else if (ID >= 1030000 && ID < 1040000)
             {
                 slot -= 4;
             }
-            else if (Identifier >= 1040000 && Identifier < 1060000)
+            else if (ID >= 1040000 && ID < 1060000)
             {
                 slot -= 5;
             }
-            else if (Identifier >= 1060000 && Identifier < 1070000)
+            else if (ID >= 1060000 && ID < 1070000)
             {
                 slot -= 6;
             }
-            else if (Identifier >= 1070000 && Identifier < 1080000)
+            else if (ID >= 1070000 && ID < 1080000)
             {
                 slot -= 7;
             }
-            else if (Identifier >= 1080000 && Identifier < 1090000)
+            else if (ID >= 1080000 && ID < 1090000)
             {
                 slot -= 8;
             }
-            else if (Identifier >= 1102000 && Identifier < 1103000)
+            else if (ID >= 1102000 && ID < 1103000)
             {
                 slot -= 9;
             }
-            else if (Identifier >= 1092000 && Identifier < 1100000)
+            else if (ID >= 1092000 && ID < 1100000)
             {
                 slot -= 10;
             }
-            else if (Identifier >= 1300000 && Identifier < 1800000)
+            else if (ID >= 1300000 && ID < 1800000)
             {
                 slot -= 11;
             }
-            else if (Identifier >= 1112000 && Identifier < 1120000)
+            else if (ID >= 1112000 && ID < 1120000)
             {
                 slot -= 12;
             }
-            else if (Identifier >= 1122000 && Identifier < 1123000)
+            else if (ID >= 1122000 && ID < 1123000)
             {
                 slot -= 17;
             }
-            else if (Identifier >= 1900000 && Identifier < 2000000)
+            else if (ID >= 1900000 && ID < 2000000)
             {
                 slot -= 18;
             }

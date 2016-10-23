@@ -4,26 +4,18 @@ using System.Net.Sockets;
 
 namespace SharpEnd.Network
 {
-    internal sealed class Acceptor
+    public sealed class Acceptor
     {
-        public ushort Port { get; private set; }
-
+        private ushort m_port;
         private readonly TcpListener m_listener;
-
         private bool m_disposed;
 
-        public Action<Socket> OnClientAccepted;
-
-        public Acceptor(ushort port)
-            : this(IPAddress.Any, port)
-        {
-        }
+        public Acceptor(ushort port) : this(IPAddress.Any, port) { }
 
         public Acceptor(IPAddress ip, ushort port)
         {
-            Port = port;
+            m_port = port;
             m_listener = new TcpListener(ip, port);
-            OnClientAccepted = null;
             m_disposed = false;
         }
 
@@ -42,12 +34,9 @@ namespace SharpEnd.Network
         {
             if (m_disposed) { return; }
 
-            Socket client = m_listener.EndAcceptSocket(iar);
-
-            OnClientAccepted?.Invoke(client);
+            new GameClient(m_listener.EndAcceptSocket(iar));
 
             m_listener.BeginAcceptSocket(EndAccept, null);
-
         }
 
         public void Dispose()

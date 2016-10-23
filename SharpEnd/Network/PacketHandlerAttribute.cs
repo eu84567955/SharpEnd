@@ -2,13 +2,18 @@
 
 namespace SharpEnd.Network
 {
-    internal delegate void PacketProcessor(Client pClient, InPacket inPacket);
+    public delegate void PacketProcessor(GameClient client, InPacket inPacket);
 
-    internal sealed class PacketHandlerAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public sealed class PacketHandlerAttribute : Attribute
     {
-        public readonly EHeader Opcode;
-        public PacketProcessor Processor;
+        private EHeader m_header;
 
-        public PacketHandlerAttribute(EHeader pOpcode) { Opcode = pOpcode; }
+        public PacketHandlerAttribute(EHeader header)
+        {
+            m_header = header;
+        }
+
+        public EHeader Header { get { return m_header; } }
     }
 }

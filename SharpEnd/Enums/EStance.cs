@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EStance : byte
+    public enum EStance : byte
     {
         WalkRight = 0,
         Unknown = 1,

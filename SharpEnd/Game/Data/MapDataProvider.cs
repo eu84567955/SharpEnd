@@ -1,387 +1,394 @@
-﻿using SharpEnd.Collections;
-using SharpEnd.Drawing;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace SharpEnd.Game.Data
 {
+    internal sealed class MapDataProvider
+    {
+        private static MapDataProvider instance;
+
+        public static MapDataProvider Instance { get { return instance ?? (instance = new MapDataProvider()); } }
+
+        private Dictionary<int, MapData> m_maps;
+
+        private MapDataProvider()
+        {
+            m_maps = new Dictionary<int, MapData>();
+        }
+
+        public void LoadData()
+        {
+            using (FileStream stream = File.OpenRead(Path.Combine("data", "maps.bin")))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    int count = reader.ReadInt32();
+
+                    while (count-- > 0)
+                    {
+                        MapData map = new MapData();
+                        map.Load(reader);
+                        m_maps[map.ID] = map;
+                    }
+                }
+            }
+        }
+
+        public bool IsValidMap(int mapID)
+        {
+            return m_maps.ContainsKey(mapID);
+        }
+
+        public MapData GetMapData(int mapID)
+        {
+            return m_maps[mapID];
+        }
+    }
+
     #region Data Classes
     public sealed class MapData
     {
-        public sealed class MapFootholdData
+        private int m_id;
+        private bool m_town;
+        private bool m_swim;
+        private bool m_clock;
+        private bool m_everlasting;
+        private bool m_personalShop;
+        private bool m_allMoveCheck;
+        private double m_recovery;
+        private int m_returnMap;
+        private int m_forcedMap;
+        private int m_limit;
+        private int m_autoDecHp;
+        private int m_autoDecMp;
+        private int m_protectItem;
+        private List<MapSeatData> m_seats;
+        private List<MapPortalData> m_portals;
+        private List<MapSpawnData> m_spawns;
+        private List<MapFootholdData> m_footholds;
+        private List<MapReactorData> m_reactors;
+
+        public int ID { get { return m_id; } set { m_id = value; } }
+        public bool Town { get { return m_town; } set { m_town = value; } }
+        public bool Swim { get { return m_swim; } set { m_swim = value; } }
+        public bool Clock { get { return m_clock; } set { m_clock = value; } }
+        public bool Everlasting { get { return m_everlasting; } set { m_everlasting = value; } }
+        public bool PersonalShop { get { return m_personalShop; } set { m_personalShop = value; } }
+        public bool AllMoveCheck { get { return m_allMoveCheck; } set { m_allMoveCheck = value; } }
+        public double Recovery { get { return m_recovery; } set { m_recovery = value; } }
+        public int ReturnMap { get { return m_returnMap; } set { m_returnMap = value; } }
+        public int ForcedMap { get { return m_forcedMap; } set { m_forcedMap = value; } }
+        public int Limit { get { return m_limit; } set { m_limit = value; } }
+        public int AutoDecHp { get { return m_autoDecHp; } set { m_autoDecHp = value; } }
+        public int AutoDecMp { get { return m_autoDecMp; } set { m_autoDecMp = value; } }
+        public int ProtectItem { get { return m_protectItem; } set { m_protectItem = value; } }
+        public List<MapSeatData> Seats { get { return m_seats; } set { m_seats = value; } }
+        public List<MapPortalData> Portals { get { return m_portals; } set { m_portals = value; } }
+        public List<MapSpawnData> Spawns { get { return m_spawns; } set { m_spawns = value; } }
+        public List<MapFootholdData> Footholds { get { return m_footholds; } set { m_footholds = value; } }
+        public List<MapReactorData> Reactors { get { return m_reactors; } set { m_reactors = value; } }
+
+        public MapData()
         {
-            public ushort Identifier;
-            public ushort NextIdentifier;
-            public ushort PreviousIdentifier;
-            public short DragForce;
-            public Point Point1;
-            public Point Point2;
-
-            public void Load(BinaryReader reader)
-            {
-                Identifier = reader.ReadUInt16();
-                NextIdentifier = reader.ReadUInt16();
-                PreviousIdentifier = reader.ReadUInt16();
-                DragForce = reader.ReadInt16();
-                Point1 = new Point(reader.ReadInt16(), reader.ReadInt16());
-                Point2 = new Point(reader.ReadInt16(), reader.ReadInt16());
-            }
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(Identifier);
-                writer.Write(NextIdentifier);
-                writer.Write(PreviousIdentifier);
-                writer.Write(DragForce);
-                writer.Write(Point1.X);
-                writer.Write(Point1.Y);
-                writer.Write(Point2.X);
-                writer.Write(Point2.Y);
-            }
+            m_seats = new List<MapSeatData>();
+            m_portals = new List<MapPortalData>();
+            m_spawns = new List<MapSpawnData>();
+            m_footholds = new List<MapFootholdData>();
+            m_reactors = new List<MapReactorData>();
         }
-
-        public sealed class MapMobData
-        {
-            public int Identifier;
-            public Point Position;
-            public ushort Foothold;
-            public bool Flip;
-            public bool Hide;
-            public int RespawnTime;
-
-            public void Load(BinaryReader reader)
-            {
-                Identifier = reader.ReadInt32();
-                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
-                Foothold = reader.ReadUInt16();
-                Flip = reader.ReadBoolean();
-                Hide = reader.ReadBoolean();
-                RespawnTime = reader.ReadInt32();
-            }
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(Identifier);
-                writer.Write(Position.X);
-                writer.Write(Position.Y);
-                writer.Write(Foothold);
-                writer.Write(Flip);
-                writer.Write(Hide);
-                writer.Write(RespawnTime);
-            }
-        }
-
-        public sealed class MapNpcData
-        {
-            public int Identifier;
-            public bool Flip;
-            public bool Hide;
-            public Point Position;
-            public ushort Foothold;
-            public short MinimumClickX;
-            public short MaximumClickX;
-
-            public void Load(BinaryReader reader)
-            {
-                Identifier = reader.ReadInt32();
-                Flip = reader.ReadBoolean();
-                Hide = reader.ReadBoolean();
-                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
-                Foothold = reader.ReadUInt16();
-                MinimumClickX = reader.ReadInt16();
-                MaximumClickX = reader.ReadInt16();
-            }
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(Identifier);
-                writer.Write(Flip);
-                writer.Write(Hide);
-                writer.Write(Position.X);
-                writer.Write(Position.Y);
-                writer.Write(Foothold);
-                writer.Write(MinimumClickX);
-                writer.Write(MaximumClickX);
-            }
-        }
-
-        public sealed class MapPortalData
-        {
-            public sbyte Identifier;
-            public Point Position;
-            public string Label;
-            public int ToMap;
-            public string ToName;
-            public string Script;
-
-            public void Load(BinaryReader reader)
-            {
-                Identifier = reader.ReadSByte();
-                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
-                Label = reader.ReadString();
-                ToMap = reader.ReadInt32();
-                ToName = reader.ReadString();
-                Script = reader.ReadString();
-            }
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(Identifier);
-                writer.Write(Position.X);
-                writer.Write(Position.Y);
-                writer.Write(Label);
-                writer.Write(ToMap);
-                writer.Write(ToName);
-                writer.Write(Script);
-            }
-        }
-
-        public sealed class MapReactorData
-        {
-            public int Identifier { get; set; }
-            public bool Flip { get; set; }
-            public Point Position { get; set; }
-            public string Label { get; set; }
-            public int RespawnTime { get; set; }
-
-            public void Load(BinaryReader reader)
-            {
-                Identifier = reader.ReadInt32();
-                Flip = reader.ReadBoolean();
-                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
-                Label = reader.ReadString();
-                RespawnTime = reader.ReadInt32();
-            }
-
-            public void Write(BinaryWriter writer)
-            {
-                writer.Write(Identifier);
-                writer.Write(Flip);
-                writer.Write(Position.X);
-                writer.Write(Position.Y);
-                writer.Write(Label);
-                writer.Write(RespawnTime);
-            }
-        }
-
-        public sealed class MapSeatData
-        {
-            public short Identifier;
-            public Point Position;
-
-            public void Load(BinaryReader reader)
-            {
-                Identifier = reader.ReadInt16();
-                Position = new Point(reader.ReadInt16(), reader.ReadInt16());
-            }
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(Identifier);
-                writer.Write(Position.X);
-                writer.Write(Position.Y);
-            }
-        }
-
-        public int Identifier { get; set; }
-        //public EMapFlags Flags { get; set; }
-        public string ShuffleName { get; set; }
-        public string Music { get; set; }
-        public byte MinLevelLimit { get; set; }
-        public ushort TimeLimit { get; set; }
-        public byte RegenRate { get; set; }
-        public float Traction { get; set; }
-        public short LeftTopX { get; set; }
-        public short LeftTopY { get; set; }
-        public short RightBottomX { get; set; }
-        public short RightBottomY { get; set; }
-        public int ReturnMapIdentifier { get; set; }
-        public int ForcedReturnMapIdentifier { get; set; }
-        //public EMapFieldType FieldTypes { get; set; }
-        //public EMapFieldLimit FieldLimits { get; set; }
-        public byte DecreaseHP { get; set; }
-        public ushort DamagePerSecond { get; set; }
-        public int ProtectItemIdentifier { get; set; }
-        public float MobRate { get; set; }
-        public int LinkIdentifier { get; set; }
-        public string EntryScript { get; set; }
-        public string InitialEntryScript { get; set; }
-        public List<MapFootholdData> Footholds { get; set; }
-        public List<MapMobData> Mobs { get; set; }
-        public List<MapNpcData> Npcs { get; set; }
-        public List<MapReactorData> Reactors { get; set; }
-        public List<MapPortalData> Portals { get; set; }
-        public List<MapSeatData> Seats { get; set; }
 
         public void Load(BinaryReader reader)
         {
-            Identifier = reader.ReadInt32();
-            //Flags = (EMapFlags)pReader.ReadUInt16();
-            ShuffleName = reader.ReadString();
-            Music = reader.ReadString();
-            MinLevelLimit = reader.ReadByte();
-            TimeLimit = reader.ReadUInt16();
-            RegenRate = reader.ReadByte();
-            Traction = reader.ReadSingle();
-            LeftTopX = reader.ReadInt16();
-            LeftTopY = reader.ReadInt16();
-            RightBottomX = reader.ReadInt16();
-            RightBottomY = reader.ReadInt16();
-            ReturnMapIdentifier = reader.ReadInt32();
-            ForcedReturnMapIdentifier = reader.ReadInt32();
-            //FieldTypes = (EMapFieldType)pReader.ReadUInt16();
-            //FieldLimits = (EMapFieldLimit)pReader.ReadUInt32();
-            DecreaseHP = reader.ReadByte();
-            DamagePerSecond = reader.ReadUInt16();
-            ProtectItemIdentifier = reader.ReadInt32();
-            MobRate = reader.ReadSingle();
-            LinkIdentifier = reader.ReadInt32();
-            EntryScript = reader.ReadString();
-            InitialEntryScript = reader.ReadString();
+            m_id = reader.ReadInt32();
+            m_town = reader.ReadBoolean();
+            m_swim = reader.ReadBoolean();
+            m_clock = reader.ReadBoolean();
+            m_everlasting = reader.ReadBoolean();
+            m_personalShop = reader.ReadBoolean();
+            m_allMoveCheck = reader.ReadBoolean();
+            m_recovery = reader.ReadDouble();
+            m_returnMap = reader.ReadInt32();
+            m_forcedMap = reader.ReadInt32();
+            m_limit = reader.ReadInt32();
+            m_autoDecHp = reader.ReadInt32();
+            m_autoDecMp = reader.ReadInt32();
+            m_protectItem = reader.ReadInt32();
 
-            int footholdsCount = reader.ReadInt32();
-            Footholds = new List<MapFootholdData>(footholdsCount);
-            while (footholdsCount-- > 0)
-            {
-                MapFootholdData foothold = new MapFootholdData();
-                foothold.Load(reader);
-                Footholds.Add(foothold);
-            }
-
-            int mobsCount = reader.ReadInt32();
-            Mobs = new List<MapMobData>(mobsCount);
-            while (mobsCount-- > 0)
-            {
-                MapMobData mob = new MapMobData();
-                mob.Load(reader);
-                Mobs.Add(mob);
-            }
-
-            int npcsCount = reader.ReadInt32();
-            Npcs = new List<MapNpcData>(npcsCount);
-            while (npcsCount-- > 0)
-            {
-                MapNpcData npc = new MapNpcData();
-                npc.Load(reader);
-                Npcs.Add(npc);
-            }
-
-            int reactorsCount = reader.ReadInt32();
-            Reactors = new List<MapReactorData>(reactorsCount);
-            while (reactorsCount-- > 0)
-            {
-                MapReactorData reactor = new MapReactorData();
-                reactor.Load(reader);
-                Reactors.Add(reactor);
-            }
-
-            int portalsCount = reader.ReadInt32();
-            Portals = new List<MapPortalData>(portalsCount);
-            while (portalsCount-- > 0)
-            {
-                MapPortalData portal = new MapPortalData();
-                portal.Load(reader);
-                Portals.Add(portal);
-            }
-
+            m_seats = new List<MapSeatData>();
             int seatsCount = reader.ReadInt32();
-            Seats = new List<MapSeatData>(seatsCount);
             while (seatsCount-- > 0)
             {
                 MapSeatData seat = new MapSeatData();
                 seat.Load(reader);
-                Seats.Add(seat);
+                m_seats.Add(seat);
+            }
+
+            m_portals = new List<MapPortalData>();
+            int portalsCount = reader.ReadInt32();
+            while (portalsCount-- > 0)
+            {
+                MapPortalData portal = new MapPortalData();
+                portal.Load(reader);
+                m_portals.Add(portal);
+            }
+
+            m_spawns = new List<MapSpawnData>();
+            int spawnsCount = reader.ReadInt32();
+            while (spawnsCount-- > 0)
+            {
+                MapSpawnData spawn = new MapSpawnData();
+                spawn.Load(reader);
+                m_spawns.Add(spawn);
+            }
+
+            m_footholds = new List<MapFootholdData>();
+            int footholdsCount = reader.ReadInt32();
+            while (footholdsCount-- > 0)
+            {
+                MapFootholdData foothold = new MapFootholdData();
+                foothold.Load(reader);
+                m_footholds.Add(foothold);
+            }
+
+            m_reactors = new List<MapReactorData>();
+            int reactorsCount = reader.ReadInt32();
+            while (reactorsCount-- > 0)
+            {
+                MapReactorData reactor = new MapReactorData();
+                reactor.Load(reader);
+                m_reactors.Add(reactor);
             }
         }
 
         public void Save(BinaryWriter writer)
         {
-            writer.Write(Identifier);
-            //pWriter.Write((ushort)Flags);
-            writer.Write(ShuffleName);
-            writer.Write(Music);
-            writer.Write(MinLevelLimit);
-            writer.Write(TimeLimit);
-            writer.Write(RegenRate);
-            writer.Write(Traction);
-            writer.Write(LeftTopX);
-            writer.Write(LeftTopY);
-            writer.Write(RightBottomX);
-            writer.Write(RightBottomY);
-            writer.Write(ReturnMapIdentifier);
-            writer.Write(ForcedReturnMapIdentifier);
-            //pWriter.Write((ushort)FieldTypes);
-            //pWriter.Write((uint)FieldLimits);
-            writer.Write(DecreaseHP);
-            writer.Write(DamagePerSecond);
-            writer.Write(ProtectItemIdentifier);
-            writer.Write(MobRate);
-            writer.Write(LinkIdentifier);
-            writer.Write(EntryScript);
-            writer.Write(InitialEntryScript);
+            writer.Write(m_id);
+            writer.Write(m_town);
+            writer.Write(m_swim);
+            writer.Write(m_clock);
+            writer.Write(m_everlasting);
+            writer.Write(m_personalShop);
+            writer.Write(m_allMoveCheck);
+            writer.Write(m_recovery);
+            writer.Write(m_returnMap);
+            writer.Write(m_forcedMap);
+            writer.Write(m_limit);
+            writer.Write(m_autoDecHp);
+            writer.Write(m_autoDecMp);
+            writer.Write(m_protectItem);
 
-            writer.Write(Footholds.Count);
-            Footholds.ForEach(f => f.Save(writer));
+            writer.Write(m_seats.Count);
+            m_seats.ForEach(p => p.Save(writer));
 
-            writer.Write(Mobs.Count);
-            Mobs.ForEach(m => m.Save(writer));
+            writer.Write(m_portals.Count);
+            m_portals.ForEach(p => p.Save(writer));
 
-            writer.Write(Npcs.Count);
-            Npcs.ForEach(n => n.Save(writer));
+            writer.Write(m_spawns.Count);
+            m_spawns.ForEach(s => s.Save(writer));
 
-            writer.Write(Reactors.Count);
-            Reactors.ForEach(r => r.Write(writer));
+            writer.Write(m_footholds.Count);
+            m_footholds.ForEach(f => f.Save(writer));
 
-            writer.Write(Portals.Count);
-            Portals.ForEach(p => p.Save(writer));
+            writer.Write(m_reactors.Count);
+            m_reactors.ForEach(r => r.Save(writer));
+        }
+    }
 
-            writer.Write(Seats.Count);
-            Seats.ForEach(s => s.Save(writer));
+    public sealed class MapSeatData
+    {
+        private short m_id;
+        private short m_x;
+        private short m_y;
+
+        public short ID { get { return m_id; } set { m_id = value; } }
+        public short X { get { return m_x; } set { m_x = value; } }
+        public short Y { get { return m_y; } set { m_y = value; } }
+
+        public void Load(BinaryReader reader)
+        {
+            m_id = reader.ReadInt16();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(m_id);
+            writer.Write(m_x);
+            writer.Write(m_y);
+        }
+    }
+
+    public sealed class MapPortalData
+    {
+        private byte m_id;
+        private short m_x;
+        private short m_y;
+        private int m_type;
+        private int m_destinationMap;
+        private string m_destinationName;
+        private string m_name;
+        private string m_script;
+
+        public byte ID { get { return m_id; } set { m_id = value; } }
+        public short X { get { return m_x; } set { m_x = value; } }
+        public short Y { get { return m_y; } set { m_y = value; } }
+        public int Type { get { return m_type; } set { m_type = value; } }
+        public int DestinationMap { get { return m_destinationMap; } set { m_destinationMap = value; } }
+        public string DestinationName { get { return m_destinationName; } set { m_destinationName = value; } }
+        public string Name { get { return m_name; } set { m_name = value; } }
+        public string Script { get { return m_script; } set { m_script = value; } }
+
+        public void Load(BinaryReader reader)
+        {
+            m_id = reader.ReadByte();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_type = reader.ReadInt32();
+            m_destinationMap = reader.ReadInt32();
+            m_destinationName = reader.ReadString();
+            m_name = reader.ReadString();
+            m_script = reader.ReadString();
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(m_id);
+            writer.Write(m_x);
+            writer.Write(m_y);
+            writer.Write(m_type);
+            writer.Write(m_destinationMap);
+            writer.Write(m_destinationName);
+            writer.Write(m_name);
+            writer.Write(m_script);
+        }
+    }
+
+    public sealed class MapSpawnData
+    {
+        private char m_type;
+        private int m_id;
+        private bool m_flip;
+        private bool m_hide;
+        private short m_x;
+        private short m_y;
+        private short m_cy;
+        private short m_foothold;
+        private short m_rx0;
+        private short m_rx1;
+        private int m_mobTime;
+
+        public char Type { get { return m_type; } set { m_type = value; } }
+        public int ID { get { return m_id; } set { m_id = value; } }
+        public bool Flip { get { return m_flip; } set { m_flip = value; } }
+        public bool Hide { get { return m_hide; } set { m_hide = value; } }
+        public short X { get { return m_x; } set { m_x = value; } }
+        public short Y { get { return m_y; } set { m_y = value; } }
+        public short CY { get { return m_cy; } set { m_cy = value; } }
+        public short Foothold { get { return m_foothold; } set { m_foothold = value; } }
+        public short RX0 { get { return m_rx0; } set { m_rx0 = value; } }
+        public short RX1 { get { return m_rx1; } set { m_rx1 = value; } }
+        public int MobTime { get { return m_mobTime; } set { m_mobTime = value; } }
+
+        public void Load(BinaryReader reader)
+        {
+            m_type = reader.ReadChar();
+            m_id = reader.ReadInt32();
+            m_flip = reader.ReadBoolean();
+            m_hide = reader.ReadBoolean();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_cy = reader.ReadInt16();
+            m_foothold = reader.ReadInt16();
+            m_rx0 = reader.ReadInt16();
+            m_rx1 = reader.ReadInt16();
+            m_mobTime = reader.ReadInt32();
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(m_type);
+            writer.Write(m_id);
+            writer.Write(m_flip);
+            writer.Write(m_hide);
+            writer.Write(m_x);
+            writer.Write(m_y);
+            writer.Write(m_cy);
+            writer.Write(m_foothold);
+            writer.Write(m_rx0);
+            writer.Write(m_rx1);
+            writer.Write(m_mobTime);
+        }
+    }
+
+    public sealed class MapFootholdData
+    {
+        private short m_id;
+        private short m_x1;
+        private short m_y1;
+        private short m_x2;
+        private short m_y2;
+
+        public short ID { get { return m_id; } set { m_id = value; } }
+        public short X1 { get { return m_x1; } set { m_x1 = value; } }
+        public short Y1 { get { return m_y1; } set { m_y1 = value; } }
+        public short X2 { get { return m_x2; } set { m_x2 = value; } }
+        public short Y2 { get { return m_y2; } set { m_y2 = value; } }
+
+        public void Load(BinaryReader reader)
+        {
+            m_id = reader.ReadInt16();
+            m_x1 = reader.ReadInt16();
+            m_y1 = reader.ReadInt16();
+            m_x2 = reader.ReadInt16();
+            m_y2 = reader.ReadInt16();
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(m_id);
+            writer.Write(m_x1);
+            writer.Write(m_y1);
+            writer.Write(m_x2);
+            writer.Write(m_y2);
+        }
+    }
+
+    public sealed class MapReactorData
+    {
+        private int m_id;
+        private bool m_flip;
+        private short m_x;
+        private short m_y;
+        private int m_reactorTime;
+        private string m_name;
+
+        public int ID { get { return m_id; } set { m_id = value; } }
+        public bool Flip { get { return m_flip; } set { m_flip = value; } }
+        public short X { get { return m_x; } set { m_x = value; } }
+        public short Y { get { return m_y; } set { m_y = value; } }
+        public int ReactorTime { get { return m_reactorTime; } set { m_reactorTime = value; } }
+        public string Name { get { return m_name; } set { m_name = value; } }
+
+        public void Load(BinaryReader reader)
+        {
+            m_id = reader.ReadInt32();
+            m_flip = reader.ReadBoolean();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_reactorTime = reader.ReadInt32();
+            m_name = reader.ReadString();
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(m_id);
+            writer.Write(m_flip);
+            writer.Write(m_x);
+            writer.Write(m_y);
+            writer.Write(m_reactorTime);
+            writer.Write(m_name);
         }
     }
     #endregion
-
-    internal sealed class MapDataProvider : SafeKeyedCollection<int, MapData>
-    {
-        private static MapDataProvider instance;
-
-        public static MapDataProvider Instance
-        {
-            get
-            {
-                return instance ?? (instance = new MapDataProvider());
-            }
-        }
-
-        private MapDataProvider() : base() { }
-
-        protected override int GetKeyForItem(MapData item)
-        {
-            return item.Identifier;
-        }
-
-        public new MapData this[int identifier]
-        {
-            get
-            {
-                if (!Contains(identifier))
-                {
-                    using (FileStream stream = File.Open(Path.Combine("data", "maps", identifier.ToString() + ".shd"), FileMode.Open, FileAccess.Read))
-                    {
-                        using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII))
-                        {
-                            MapData map = new MapData();
-
-                            map.Load(reader);
-
-                            Add(map);
-                        }
-                    }
-                }
-
-                return base[identifier];
-            }
-        }
-    }
 }

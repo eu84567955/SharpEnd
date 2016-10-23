@@ -2,7 +2,7 @@
 
 namespace SharpEnd
 {
-    internal static class Randomizer
+    public static class Randomizer
     {
         private static readonly Random mRandom = new Random();
 

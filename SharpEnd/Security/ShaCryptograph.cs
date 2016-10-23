@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SharpEnd.Security
 {
-    internal static class ShaCryptograph
+    public static class ShaCryptograph
     {
         public static string Encrypt(EShaMode mode, string input)
         {

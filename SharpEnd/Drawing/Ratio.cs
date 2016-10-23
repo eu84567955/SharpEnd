@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Drawing
 {
-    internal sealed class Ratio
+    public sealed class Ratio
     {
         public bool IsDefined { get; private set; }
         public bool IsNegative { get; private set; }

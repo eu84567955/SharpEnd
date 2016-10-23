@@ -3,13 +3,13 @@ using SharpEnd.Network;
 using SharpEnd.Utility;
 using System;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal sealed class PlayerSkill
+    public sealed class PlayerSkill
     {
         public PlayerSkills Parent { get; set; }
 
-        public int Identifier { get; private set; }
+        public int ID { get; private set; }
         public int Level { get; private set; }
         public int MaxLevel { get; private set; }
         public DateTime Expiration { get; private set; }
@@ -18,7 +18,7 @@ namespace SharpEnd.Players
 
         public PlayerSkill(DatabaseQuery query)
         {
-            Identifier = query.Get<int>("skill_identifier");
+            ID = query.Get<int>("skill_identifier");
             Level = query.Get<int>("level");
             Expiration = query.Get<DateTime>("expiration");
 
@@ -27,7 +27,7 @@ namespace SharpEnd.Players
 
         public PlayerSkill(int identifier, int level = 1)
         {
-            Identifier = identifier;
+            ID = identifier;
             Level = level;
             MaxLevel = 0; // TODO: Get from SkillDataProvider.
             Expiration = DateTime.FromFileTimeUtc((long)EExpirationTime.Permanent);
@@ -42,8 +42,8 @@ namespace SharpEnd.Players
             else
             {
                 Database.Execute("INSERT INTO player_skill VALUES(@player_identifier, @skill_identifier, @level, @max_level, @expiration);",
-                                new MySqlParameter("player_identifier", Parent.Parent.Identifier),
-                                new MySqlParameter("skill_identifier", Identifier),
+                                new MySqlParameter("player_identifier", Parent.Parent.Id),
+                                new MySqlParameter("skill_identifier", ID),
                                 new MySqlParameter("level", Level),
                                 new MySqlParameter("max_level", MaxLevel),
                                 new MySqlParameter("expiration", Expiration));
@@ -53,7 +53,7 @@ namespace SharpEnd.Players
         public void WriteGeneral(OutPacket outPacket)
         {
             outPacket
-                .WriteInt(Identifier)
+                .WriteInt(ID)
                 .WriteInt(Level)
                 .WriteDateTime(Expiration);
         }

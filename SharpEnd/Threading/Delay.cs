@@ -4,7 +4,7 @@ using Timer = System.Timers.Timer;
 
 namespace SharpEnd.Threading
 {
-    internal sealed class Delay
+    public sealed class Delay
     {
         public static void Execute(double delay, Action action)
         {

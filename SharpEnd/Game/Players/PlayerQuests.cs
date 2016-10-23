@@ -1,9 +1,9 @@
 ﻿using SharpEnd.Network;
 using SharpEnd.Utility;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal sealed class PlayerQuests
+    public sealed class PlayerQuests
     {
         private Player m_player;
 
@@ -37,7 +37,7 @@ namespace SharpEnd.Players
                 .WriteShort();
         }
 
-        public void Start(ushort questIdentifier, int npcIdentifier)
+        public void Start(ushort questID, int npcID)
         {
             // TODO: Distribute rewards
 
@@ -46,11 +46,11 @@ namespace SharpEnd.Players
                 outPacket
                     .WriteHeader(EHeader.SMSG_SHOW_LOG)
                     .WriteSByte(1)
-                    .WriteInt(questIdentifier)
+                    .WriteInt(questID)
                     .WriteBoolean(true)
                     .WriteString(string.Empty);
 
-                m_player.Send(outPacket.ToArray());
+                //player.Send(outPacket.ToArray());
             }
 
             using (OutPacket outPacket = new OutPacket())
@@ -58,11 +58,11 @@ namespace SharpEnd.Players
                 outPacket
                     .WriteHeader(EHeader.SMSG_QUEST)
                     .WriteSByte(0x0B)
-                    .WriteInt(questIdentifier)
-                    .WriteInt(npcIdentifier)
+                    .WriteInt(questID)
+                    .WriteInt(npcID)
                     .WriteHexString("00 00 00 00 01");
 
-                m_player.Send(outPacket.ToArray());
+                //player.Send(outPacket.ToArray());
             }
         }
     }

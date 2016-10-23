@@ -1,83 +1,47 @@
 ﻿using SharpEnd.Game.Data;
-using SharpEnd.Game.Life;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class Map
+    public sealed class Map
     {
-        public int Identifier { get; private set; }
-        public string ShuffleName { get; private set; }
-        public string Music { get; private set; }
-        public byte MinLevelLimit { get; private set; }
-        public ushort TimeLimit { get; private set; }
-        public byte RegenRate { get; private set; }
-        public float Traction { get; private set; }
-        public short LeftTopX { get; private set; }
-        public short LeftTopY { get; private set; }
-        public short RightBottomX { get; private set; }
-        public short RightBottomY { get; private set; }
-        public int ReturnMapIdentifier { get; private set; }
-        public int ForcedReturnMapIdentifier { get; private set; }
-        public byte DecreaseHP { get; private set; }
-        public ushort DamagePerSecond { get; private set; }
-        public int ProtectItemIdentifier { get; private set; }
-        public float MobRate { get; private set; }
-        public int LinkIdentifier { get; private set; }
-        public string EntryScript { get; private set; }
-        public string InitialEntryScript { get; private set; }
+        private MapData m_data;
+        private MapPlayers m_players;
+        private MapFootholds m_footholds;
+        private MapPortals m_portals;
+        private MapDrops m_drops;
+        private MapMobs m_mobs;
+        private MapNpcs m_npcs;
+        private MapReactors m_reactors;
 
-        public MapPlayers Players { get; private set; }
-        public MapFootholds Footholds { get; private set; }
-        public MapMobs Mobs { get; private set; }
-        public MapNpcs Npcs { get; private set; }
-        public MapPortals Portals { get; private set; }
-        public MapReactors Reactors { get; private set; }
-        public MapDrops Drops { get; private set; }
-
-        private int m_objectIdentifiers = 0;
-
-        public Map(MapData data)
+        public Map(int mapID)
         {
-            Identifier = data.Identifier;
-            ShuffleName = data.ShuffleName;
-            Music = data.Music;
-            MinLevelLimit = data.MinLevelLimit;
-            TimeLimit = data.TimeLimit;
-            RegenRate = data.RegenRate;
-            Traction = data.Traction;
-            LeftTopX = data.LeftTopX;
-            LeftTopY = data.LeftTopY;
-            RightBottomX = data.RightBottomX;
-            RightBottomY = data.RightBottomY;
-            ReturnMapIdentifier = data.ReturnMapIdentifier;
-            ForcedReturnMapIdentifier = data.ForcedReturnMapIdentifier;
-            DecreaseHP = data.DecreaseHP;
-            DamagePerSecond = data.DamagePerSecond;
-            ProtectItemIdentifier = data.ProtectItemIdentifier;
-            MobRate = data.MobRate;
-            LinkIdentifier = data.LinkIdentifier;
-            EntryScript = data.EntryScript;
-            InitialEntryScript = data.InitialEntryScript;
-
-            Players = new MapPlayers(this);
-            Footholds = new MapFootholds(this);
-            Mobs = new MapMobs(this);
-            Npcs = new MapNpcs(this);
-            Portals = new MapPortals(this);
-            Reactors = new MapReactors(this);
-            Drops = new MapDrops(this);
-
-            data.Footholds.ForEach(f => Footholds.Add(new Foothold(f)));
-            data.Mobs.ForEach(m => Mobs.Add(new Mob(m)));
-            data.Npcs.ForEach(n => Npcs.Add(new Npc(n)));
-            data.Portals.ForEach(p => Portals.Add(new Portal(p)));
-            data.Reactors.ForEach(r => Reactors.Add(new Reactor(r)));
+            m_data = MapDataProvider.Instance.GetMapData(mapID);
+            m_players = new MapPlayers(this);
+            m_footholds = new MapFootholds(this);
+            m_portals = new MapPortals(this);
+            m_drops = new MapDrops(this);
+            m_mobs = new MapMobs(this);
+            m_npcs = new MapNpcs(this);
+            m_reactors = new MapReactors(this);
         }
 
-        public int AssignObjectIdentifier()
+        public int ID { get { return m_data.ID; } }
+        public int ReturnMap { get { return m_data.ReturnMap; } }
+        public int ForcedMap { get { return m_data.ForcedMap; } }
+        public MapPlayers Players { get { return m_players; } }
+        public MapFootholds Footholds { get { return m_footholds; } }
+        public MapPortals Portals { get { return m_portals; } }
+        public MapDrops Drops { get { return m_drops; } }
+        public MapMobs Mobs { get { return m_mobs; } }
+        public MapNpcs Npcs { get { return m_npcs; } }
+        public MapReactors Reactors { get { return m_reactors; } }
+
+        // TODO: Refactor.
+        private int m_objectIDs = 0;
+        public int AssignObjectID()
         {
-            return ++m_objectIdentifiers;
+            return ++m_objectIDs;
         }
 
         public void Send(byte[] buffer, Player ignored = null)
@@ -86,7 +50,7 @@ namespace SharpEnd.Game.Maps
             {
                 if (player != ignored)
                 {
-                    player.Send(buffer);
+                    //player.Send(buffer);
                 }
             }
         }

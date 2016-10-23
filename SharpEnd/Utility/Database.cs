@@ -7,7 +7,7 @@ namespace SharpEnd.Utility
     {
         private string oldSchema;
 
-        internal TemporarySchema(string schema)
+        public TemporarySchema(string schema)
         {
             this.oldSchema = Database.Schema;
             Database.Schema = schema;
@@ -26,7 +26,7 @@ namespace SharpEnd.Utility
         public static string Username { get; internal set; }
         public static string Password { get; internal set; }
 
-        internal static string ConnectionString
+        public static string ConnectionString
         {
             get
             {
@@ -38,13 +38,8 @@ namespace SharpEnd.Utility
             }
         }
 
-        public static void Initialize()
+        public static void Test()
         {
-            Database.Host = "localhost";
-            Database.Schema = "sharpend";
-            Database.Username = "root";
-            Database.Password = "";
-
             MySqlConnection connection = new MySqlConnection(ConnectionString);
             connection.Open();
             connection.Close();
@@ -86,7 +81,7 @@ namespace SharpEnd.Utility
             }
         }
 
-        public static int InsertAndReturnIdentifier(string pStatement, params MySqlParameter[] pParams)
+        public static int InsertAndReturnID(string pStatement, params MySqlParameter[] pParams)
         {
             using (MySqlConnection connection = new MySqlConnection(ConnectionString))
             {

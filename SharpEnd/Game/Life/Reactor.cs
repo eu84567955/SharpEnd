@@ -1,36 +1,25 @@
-﻿using SharpEnd.Game.Maps;
-using static SharpEnd.Game.Data.MapData;
+﻿using SharpEnd.Drawing;
+using SharpEnd.Game.Data;
+using SharpEnd.Game.Maps;
 
 namespace SharpEnd.Game.Life
 {
-    internal sealed class Reactor : MapEntity
+    public sealed class Reactor : MapEntity
     {
-        public int Identifier { get; private set; }
-        public bool Flip { get; private set; }
-        public sbyte State { get; private set; }
-        public string Label { get; private set; }
-
-        public Reactor(int identifier)
-            : base()
-        {
-            Identifier = identifier;
-        }
+        private int m_id;
+        private bool m_flip;
+        private string m_label;
 
         public Reactor(MapReactorData data)
-            : this(data.Identifier)
         {
-            Flip = data.Flip;
-            Position = data.Position;
-            Label = data.Label;
-            //RespawnTime = data.RespawnTime;
+            //m_id = data.Id;
+            //m_position = new Point(data.X, data.Y);
+            //m_flip = data.Flip;
+            //m_label = data.Label;
         }
 
-        public Reactor(int identifier, MovableLife reference)
-            : this(identifier)
-        {
-            Position = reference.Position;
-            Stance = reference.Stance;
-            Foothold = reference.Foothold;
-        }
+        public int Id { get { return m_id; } }
+        public bool Flip { get { return m_flip; } }
+        public string Label { get { return m_label; } }
     }
 }

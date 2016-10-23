@@ -1,13 +1,13 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Game.Life;
 using SharpEnd.Packets;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class MapMobs : MapEntities<Mob>
+    public sealed class MapMobs : MapEntities<Mob>
     {
         public MapMobs(Map map) : base(map) { }
 
@@ -16,14 +16,12 @@ namespace SharpEnd.Game.Maps
             base.InsertItem(item);
 
             Map.Send(MobPackets.MobSpawn(item, -2));
-
-            item.AssignController();
         }
 
         // NOTE: Equivalent of mob death.
         protected override void RemoveItem(Mob item)
         {
-            uint mostDamage = 0;
+            /*uint mostDamage = 0;
             Player owner = null;
 
             foreach (KeyValuePair<Player, int> attacker in item.Attackers)
@@ -52,13 +50,13 @@ namespace SharpEnd.Game.Maps
 
                 foreach (Loot loot in item.Loots)
                 {
-                    if (loot.QuestIdentifier != 0) continue;
+                    if (loot.QuestID != 0) continue;
 
                     int chance = Math.Min(loot.Chance * 1, 1000000);
 
                     if (Randomizer.NextInt(0, 999999) < chance)
                     {
-                        drops.Add(new PlayerItem(loot.ItemIdentifier, Randomizer.NextUShort(loot.Minimum, loot.Maximum))
+                        drops.Add(new PlayerItem(loot.ItemID, Randomizer.NextUShort(loot.Minimum, loot.Maximum))
                         {
                             Dropper = item,
                             Owner = owner
@@ -85,9 +83,9 @@ namespace SharpEnd.Game.Maps
                 // TODO: Add mob to quests.
             }
 
-            item.Controller.ControlledMobs.Remove(item);
+            //item.Controller.ControlledMobs.Remove(item);
 
-            Map.Send(MobPackets.MobDespawn(item.ObjectIdentifier, 1));
+            Map.Send(MobPackets.MobDespawn(item.ObjectID, 1));
 
             base.RemoveItem(item);
 
@@ -97,6 +95,7 @@ namespace SharpEnd.Game.Maps
             {
                 Map.Mobs.Add(new Mob(summon, item));
             }
+    */
         }
     }
 }

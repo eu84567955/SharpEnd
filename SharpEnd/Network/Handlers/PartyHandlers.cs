@@ -2,10 +2,10 @@
 
 namespace SharpEnd.Handlers
 {
-    internal static class PartyHandlers
+    public static class PartyHandlers
     {
         [PacketHandler(EHeader.CMSG_PARTY_ALLOW_INVITE)]
-        public static void AllowInviteHandler(Client client, InPacket inPacket)
+        public static void AllowInviteHandler(GameClient client, InPacket inPacket)
         {
             if (inPacket.ReadBoolean())
             {

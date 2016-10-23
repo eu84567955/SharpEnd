@@ -1,27 +1,26 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace SharpEnd.Collections
 {
     public abstract class SafeKeyedCollection<TKey, TItem> : IEnumerable<TItem>
     {
-        private object m_Lock;
-        private Dictionary<TKey, TItem> m_Inner;
+        private object m_lock;
+        private Dictionary<TKey, TItem> m_inner;
 
         public SafeKeyedCollection()
         {
-            m_Lock = new object();
-            m_Inner = new Dictionary<TKey, TItem>();
+            m_lock = new object();
+            m_inner = new Dictionary<TKey, TItem>();
         }
 
         public int Count
         {
             get
             {
-                lock (m_Lock)
+                lock (m_lock)
                 {
-                    return m_Inner.Count;
+                    return m_inner.Count;
                 }
             }
         }
@@ -30,17 +29,33 @@ namespace SharpEnd.Collections
         {
             get
             {
-                lock (m_Lock)
+                lock (m_lock)
                 {
                     TItem ret;
 
-                    if (!m_Inner.TryGetValue(key, out ret))
+                    if (!m_inner.TryGetValue(key, out ret))
                     {
                         throw new KeyNotFoundException();
                     }
 
                     return ret;
                 }
+            }
+        }
+
+        public bool Contains(TKey key)
+        {
+            lock (m_lock)
+            {
+                return m_inner.ContainsKey(key);
+            }
+        }
+
+        public bool Contains(TItem value)
+        {
+            lock (m_lock)
+            {
+                return m_inner.ContainsValue(value);
             }
         }
 
@@ -53,60 +68,47 @@ namespace SharpEnd.Collections
         {
             TItem item = this[key];
 
-            this.Remove(item);
+            Remove(item);
         }
 
         public void Remove(TItem item)
         {
-            this.RemoveItem(item);
+            RemoveItem(item);
+        }
+
+        public void Clear()
+        {
+            lock (m_lock)
+            {
+                m_inner.Clear();
+            }
         }
 
         protected virtual void InsertItem(TItem item)
         {
-            lock (m_Lock)
+            lock (m_lock)
             {
                 TKey key = GetKeyForItem(item);
-                m_Inner.Add(key, item);
+                m_inner.Add(key, item);
             }
         }
+
         protected virtual void RemoveItem(TItem item)
         {
-            lock (m_Lock)
+            lock (m_lock)
             {
                 TKey key = GetKeyForItem(item);
-                m_Inner.Remove(key);
-            }
-        }
-        public void Clear()
-        {
-            lock (m_Lock)
-            {
-                m_Inner.Clear();
-            }
-        }
-        public bool Contains(TKey key)
-        {
-            lock (m_Lock)
-            {
-                return m_Inner.ContainsKey(key);
-            }
-        }
-        public bool Contains(TItem value)
-        {
-            lock (m_Lock)
-            {
-                return m_Inner.ContainsValue(value);
+                m_inner.Remove(key);
             }
         }
 
         protected abstract TKey GetKeyForItem(TItem item);
 
-        protected virtual void ClearItems() { }
-
         public IEnumerator<TItem> GetEnumerator()
         {
-            return new SafeEnumerator<TItem>(() => m_Inner.Values.GetEnumerator(), m_Lock);
+            return new SafeEnumerator<TItem>(() => m_inner.Values.GetEnumerator(), m_lock);
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

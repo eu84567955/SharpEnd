@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EKeyboardLayoutType : int
+    public enum EKeyboardLayoutType : int
     {
         Basic,
         Secondary

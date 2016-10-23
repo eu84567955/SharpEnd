@@ -2,7 +2,7 @@
 
 namespace SharpEnd
 {
-    internal static class EnumExtensions
+    public static class EnumExtensions
     {
         public static EJob GetJob(this EJobType jobType)
         {

@@ -16,18 +16,7 @@ namespace SharpEnd.Collections
             Monitor.Enter(m_Lock);
             m_Inner = inner();
         }
-
-        #region Implementation of IDisposable
-
-        public void Dispose()
-        {
-            Monitor.Exit(m_Lock);
-        }
-
-        #endregion
-
-        #region Implementation of IEnumerator
-
+        
         public bool MoveNext()
         {
             return m_Inner.MoveNext();
@@ -48,6 +37,9 @@ namespace SharpEnd.Collections
             get { return Current; }
         }
 
-        #endregion
+        public void Dispose()
+        {
+            Monitor.Exit(m_Lock);
+        }
     }
 }

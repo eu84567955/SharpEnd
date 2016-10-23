@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Packets
 {
-    internal static class ServerPackets
+    public static class ServerPackets
     {
         public static byte[] EventList()
         {

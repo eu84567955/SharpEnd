@@ -6,7 +6,7 @@
         Popup,
         Megaphone,
         SuperMegaphone,
-        Header,
+        Ticker,
         Pink,
         Blue,
         Unknown,

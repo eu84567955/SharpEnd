@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd.Network.Packets
 {
-    internal static class LevelPackets
+    public static class LevelPackets
     {
         public static byte[] ShowExperience(uint amount, bool white, bool inChat)
         {

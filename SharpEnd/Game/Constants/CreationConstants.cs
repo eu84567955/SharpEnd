@@ -2,7 +2,7 @@
 
 namespace SharpEnd
 {
-    internal static class CreationConstants
+    public static class CreationConstants
     {
         public static class KeyLayouts
         {

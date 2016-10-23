@@ -1,23 +1,21 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Game.Life;
 using SharpEnd.Game.Maps;
+using SharpEnd.Game.Scripting;
 using SharpEnd.Network;
 using SharpEnd.Packets;
-using SharpEnd.Players;
-using SharpEnd.Script;
-using SharpEnd.Servers;
-using System;
+using SharpEnd.Game.Players;
+using SharpEnd.Network.Servers;
 using System.Collections.Generic;
-using System.IO;
 
 namespace SharpEnd.Handlers
 {
-    internal static class PlayerHandlers
+    public static class PlayerHandlers
     {
         [PacketHandler(EHeader.CMSG_MAP_CHANGE)]
-        public static void ChangeMapHandler(Client client, InPacket inPacket)
+        public static void ChangeMapHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             byte portalCount = inPacket.ReadByte();
 
@@ -64,7 +62,9 @@ namespace SharpEnd.Handlers
                             return;
                         }
 
-                        player.SetMap(portal.DestinationMapIdentifier, portal.Link);
+                        Portal link = MasterServer.Instance.Worlds[client.WorldID][client.ChannelID].MapFactory.GetMap(portal.DestinationMapID).Portals[portal.DestinationLabel];
+
+                        player.SetMap(portal.DestinationMapID, link);
                     }
                     break;
 
@@ -73,63 +73,65 @@ namespace SharpEnd.Handlers
                         // TODO: /m command, some say.
                     }
                     break;
-            }
+            }*/
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_MOVE)]
-        public static void PlayerMoveHandler(Client client, InPacket inPacket)
+        public static void PlayerMoveHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /* var player = client.Player;
 
-            byte portalCount = inPacket.ReadByte();
+             byte portalCount = inPacket.ReadByte();
 
-            if (player.PortalCount != portalCount)
-            {
-                return;
-            }
+             if (player.PortalCount != portalCount)
+             {
+                 return;
+             }
 
-            inPacket.Skip(13);
+             inPacket.Skip(13);
 
-            Point origin = inPacket.ReadPoint();
+             Point origin = inPacket.ReadPoint();
 
-            inPacket.Skip(4);
+             inPacket.Skip(4);
 
-            int rewindOffset = inPacket.Position;
+             int rewindOffset = inPacket.Position;
 
-            if (!player.ParseMovement(inPacket))
-            {
-                return;
-            }
+             if (!player.ParseMovement(inPacket))
+             {
+                 return;
+             }
 
-            inPacket.Position = rewindOffset;
+             inPacket.Position = rewindOffset;
 
-            player.Map.Send(PlayersPackets.PlayerMove(player.Identifier, origin, inPacket.ReadLeftoverBytes()), player);
+             player.Map.Send(PlayersPackets.PlayerMove(player.ID, origin, inPacket.ReadLeftoverBytes()), player);
+         */
         }
 
         [PacketHandler(EHeader.CMSG_SIT)]
-        public static void SitHandler(Client client, InPacket inPacket)
+        public static void SitHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
-            short seatIdentifier = inPacket.ReadShort();
+            short seatID = inPacket.ReadShort();
 
             // TODO: Validate the seat identifier.
             // TODO: Check distance of seat relative to the player.
 
-            if (seatIdentifier != -1)
+            if (seatID != -1)
             {
-                player.Map.Send(MapPackets.MapSeat(player.Identifier, seatIdentifier));
+                player.Map.Send(MapPackets.MapSeat(player.ID, seatID));
             }
             else
             {
-                player.Map.Send(MapPackets.MapSeatCancel(player.Identifier));
+                player.Map.Send(MapPackets.MapSeatCancel(player.ID));
             }
+        */
         }
 
         [PacketHandler(EHeader.CMSG_ATTACK_MELEE)]
-        public static void AttackMeleeHandler(Client client, InPacket inPacket)
+        public static void AttackMeleeHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             AttackData attack = AttackData.Compile(ESkillType.Melee, player, inPacket);
 
@@ -138,12 +140,12 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            int masteryIdentifier = 0; // TODO: Obtain this from players' skills
+            int masteryID = 0; // TODO: Obtain this from players' skills
             sbyte damagedTargets = 0;
-            int skillIdentifier = attack.SkillIdentifier;
+            int skillID = attack.SkillID;
             byte skillLevel = attack.SkillLevel;
 
-            if (skillIdentifier != (int)Skills.All.RegularAttack)
+            if (skillID != (int)Skills.All.RegularAttack)
             {
                 // TODO: Use the god-damn skill!
             }
@@ -166,7 +168,7 @@ namespace SharpEnd.Handlers
                 }
 
                 mob.IsProvoked = true;
-                mob.SwitchController(player);
+                //mob.SwitchController(player);
 
                 int totalDamage = 0;
 
@@ -184,7 +186,7 @@ namespace SharpEnd.Handlers
             foreach (Mob mob in dead)
             {
                 mob.Die();
-            }
+            }*/
         }
 
         // TODO: Move else-where
@@ -193,12 +195,12 @@ namespace SharpEnd.Handlers
             public bool IsPhysical = true;
             public byte Reduction = 0;
             public int Damage = 0;
-            public int MobUniqueIdentifier = 0;
+            public int MobUniqueID = 0;
             public Point Position;
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_HIT)]
-        public static void PlayerHitHandler(Client client, InPacket inPacket)
+        public static void PlayerHitHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -212,7 +214,7 @@ namespace SharpEnd.Handlers
             int damage = inPacket.ReadInt();
             inPacket.Skip(2); // NOTE: Unknown
 
-            player.Stats.DamageHealth(damage);
+            //player.Stats.DamageHealth(damage);
 
             /*bool damageApplied = false;
             bool deadlyAttack = false;
@@ -221,20 +223,20 @@ namespace SharpEnd.Handlers
             byte disease = 0;
             byte level = 0;
             short mpBurn = 0;
-            int uniqueIdentifier = 0;
-            int mobIdentifier = 0;
-            int noDamageIdentifier = 0;
+            int uniqueID = 0;
+            int mobID = 0;
+            int noDamageID = 0;
 
             ReturnDamageData pgmr = new ReturnDamageData();
 
             if (type != MapDamage)
             {
-                mobIdentifier = inPacket.ReadInt();
-                uniqueIdentifier = inPacket.ReadInt();
+                mobID = inPacket.ReadInt();
+                uniqueID = inPacket.ReadInt();
 
-                Mob mob = MasterServer.Instance.GetMapsclient.ChannelIdentifier][player.Map].Mobs[uniqueIdentifier];
+                Mob mob = MasterServer.Instance.GetMapsclient.ChannelID][player.Map].Mobs[uniqueID];
 
-                if (mob == null || mob.Identifier != mobIdentifier)
+                if (mob == null || mob.ID != mobID)
                 {
                     return;
                 }
@@ -248,7 +250,7 @@ namespace SharpEnd.Handlers
                         return;
                     }
 
-                    var attack = MasterServer.Instance.MobDataProvider.GetMobAttack(mob.Identifier, type);
+                    var attack = MasterServer.Instance.MobDataProvider.GetMobAttack(mob.ID, type);
 
                     if (attack == null)
                     {
@@ -268,9 +270,9 @@ namespace SharpEnd.Handlers
                 if (pgmr.Reduction != 0)
                 {
                     pgmr.IsPhysical = inPacket.ReadBoolean();
-                    pgmr.MobUniqueIdentifier = inPacket.ReadInt();
+                    pgmr.MobUniqueID = inPacket.ReadInt();
 
-                    if (pgmr.MobUniqueIdentifier != uniqueIdentifier)
+                    if (pgmr.MobUniqueID != uniqueID)
                     {
                         return;
                     }
@@ -349,14 +351,14 @@ namespace SharpEnd.Handlers
                 // TODO: player.Buffs.TakeDamage(damage);
             }
 
-            //player.SendMap(PlayersPackets.DamagePlayer(player.Identifier, damage, mobIdentifier, hit, type, stance, noDamageIdentifier, pgmr));
+            ////player.SendMap(PlayersPackets.DamagePlayer(player.ID, damage, mobID, hit, type, stance, noDamageID, pgmr));
             */
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_CHAT)]
-        public static void PlayerChatHandler(Client client, InPacket inPacket)
+        public static void PlayerChatHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             inPacket.ReadInt(); // NOTE: Ticks
             string text = inPacket.ReadString();
@@ -364,24 +366,24 @@ namespace SharpEnd.Handlers
 
             if (text.StartsWith(Application.CommandIndicator) || text.StartsWith(Application.PlayerCommandIndicator))
             {
-                MasterServer.Instance.Commands.Execute(player, text);
+                //MasterServer.Instance.Commands.Execute(player, text);
             }
             else
             {
-                player.Map.Send(PlayersPackets.PlayerChat(player.Identifier, text, player.IsGm, shout));
-            }
+                player.Map.Send(PlayersPackets.PlayerChat(player.ID, text, player.IsGm, shout));
+            }*/
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_EMOTE)]
-        public static void PlayerEmoteHandler(Client client, InPacket inPacket)
+        public static void PlayerEmoteHandler(GameClient client, InPacket inPacket)
         {
 
         }
 
         [PacketHandler(EHeader.CMSG_STAT_ADD)]
-        public static void StatAddHandler(Client client, InPacket inPacket)
+        public static void StatAddHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             inPacket.ReadInt(); // NOTE: Ticks.
 
@@ -389,13 +391,13 @@ namespace SharpEnd.Handlers
 
             player.Release();
 
-            player.Stats.AddAbility(type);
+            player.Stats.AddAbility(type);*/
         }
 
         [PacketHandler(EHeader.CMSG_STAT_ADD_MULTI)]
-        public static void AbilityPointsAutoAddHandler(Client client, InPacket inPacket)
+        public static void AbilityPointsAutoAddHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             inPacket.Skip(4); // NOTE: Ticks.
             inPacket.Skip(4); // NOTE: Unknown.
@@ -413,11 +415,11 @@ namespace SharpEnd.Handlers
             player.Release();
 
             player.Stats.AddAbility(primaryType, primaryAmount);
-            player.Stats.AddAbility(secondaryType, secondaryAmount);
+            player.Stats.AddAbility(secondaryType, secondaryAmount);*/
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_HEAL)]
-        public static void PlayerHealHandler(Client client, InPacket inPacket)
+        public static void PlayerHealHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
@@ -432,28 +434,28 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_PLAYER_DETAILS)]
-        public static void PlayerDetailsHandler(Client client, InPacket inPacket)
+        public static void PlayerDetailsHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
             inPacket.ReadInt();
-            int playerIdentifier = inPacket.ReadInt();
-            sbyte worldIdentifier = inPacket.ReadSByte(); // NOTE: Used for cross-world operations
+            int playerID = inPacket.ReadInt();
+            sbyte worldID = inPacket.ReadSByte(); // NOTE: Used for cross-world operations
 
-            if (worldIdentifier == -1)
+            if (worldID == -1)
             {
                 Player target;
 
                 try
                 {
-                    target = player.Map.Players[playerIdentifier];
+                    target = player.Map.Players[playerID];
                 }
                 catch (KeyNotFoundException)
                 {
                     return;
                 }
 
-                client.Send(PlayersPackets.PlayerDetails(target, playerIdentifier == player.Identifier));
+                client.Send(PlayersPackets.PlayerDetails(target, playerID == player.Id));
             }
             else
             {
@@ -462,9 +464,9 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_CHANGE_MAP_SCRIPTED)]
-        public static void ChangeMapScriptedHandler(Client client, InPacket inPacket)
+        public static void ChangeMapScriptedHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             byte portalCount = inPacket.ReadByte();
 
@@ -486,33 +488,18 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            player.Release();
-
             // TODO: Check portal distance relative to the player.
 
-            if (File.Exists(string.Format("scripts/portals/{0}.py", portal.Script)))
+            if (!PortalScriptManager.Instance.RunScript(player, portal.Script, portal.Label))
             {
-                PortalScript script = new PortalScript(player, portal);
-
-                try
-                {
-                    script.Execute();
-                }
-                catch (Exception e)
-                {
-                    Log.Error("Error while executing portal script '{0}': \n{1}", portal.Script, e.Message);
-                }
-            }
-            else
-            {
-                Log.Warn("Missing portal script '{0}'.", portal.Script);
-            }
+                player.Release();
+            }*/
         }
 
         [PacketHandler(EHeader.CMSG_INSTANT_WARP)]
-        public static void InstantWarpHandler(Client client, InPacket inPacket)
+        public static void InstantWarpHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             byte portalCount = inPacket.ReadByte();
 
@@ -539,16 +526,16 @@ namespace SharpEnd.Handlers
             // TODO: Check portal distance relative to the player
             // TODO: Check portal data to verify the destination
 
-            player.Map.Send(PlayersPackets.PlayerMove(player.Identifier, destination, null), player);
+            player.Map.Send(PlayersPackets.PlayerMove(player.ID, destination, null), player);*/
         }
 
         [PacketHandler(EHeader.CMSG_QUEST)]
-        public static void QuestHandler(Client client, InPacket inPacket)
+        public static void QuestHandler(GameClient client, InPacket inPacket)
         {
             var player = client.Player;
 
             EQuestAction action = (EQuestAction)inPacket.ReadSByte();
-            ushort questIdentifier = (ushort)inPacket.ReadInt();
+            ushort questID = (ushort)inPacket.ReadInt();
 
             switch (action)
             {
@@ -560,9 +547,9 @@ namespace SharpEnd.Handlers
 
                 case EQuestAction.Start:
                     {
-                        int npcIdentifier = inPacket.ReadInt();
+                        int npcID = inPacket.ReadInt();
 
-                        player.Quests.Start(questIdentifier, npcIdentifier);
+                        player.Quests.Start(questID, npcID);
                     }
                     break;
 
@@ -593,7 +580,7 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_SPECIAL_STAT)]
-        public static void SpecialStatHandler(Client client, InPacket inPacket)
+        public static void SpecialStatHandler(GameClient client, InPacket inPacket)
         {
             string type = inPacket.ReadString();
             int array = inPacket.ReadInt();
@@ -614,9 +601,9 @@ namespace SharpEnd.Handlers
         }
 
         [PacketHandler(EHeader.CMSG_KEYMAP)]
-        public static void KeymapHandler(Client client, InPacket inPacket)
+        public static void KeymapHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
             int mode = inPacket.ReadInt();
 
@@ -630,24 +617,24 @@ namespace SharpEnd.Handlers
 
                         while (count-- > 0)
                         {
-                            int keyIdentifier = inPacket.ReadInt();
+                            int keyID = inPacket.ReadInt();
                             byte type = inPacket.ReadByte();
                             int action = inPacket.ReadInt();
 
                             if (type != 0)
                             {
-                                if (player.Keymap.ContainsKey(keyIdentifier))
+                                if (player.Keymap.ContainsKey(keyID))
                                 {
-                                    player.Keymap[keyIdentifier] = new Shortcut(type, action);
+                                    player.Keymap[keyID] = new Shortcut(type, action);
                                 }
                                 else
                                 {
-                                    player.Keymap.Add(keyIdentifier, new Shortcut(type, action));
+                                    player.Keymap.Add(keyID, new Shortcut(type, action));
                                 }
                             }
                             else
                             {
-                                player.Keymap.Remove(keyIdentifier);
+                                player.Keymap.Remove(keyID);
                             }
                         }
                     }
@@ -664,7 +651,7 @@ namespace SharpEnd.Handlers
 
                     }
                     break;
-            }
+            }*/
         }
     }
 }

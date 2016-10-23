@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Drawing
 {
-    internal sealed class Rectangle
+    public sealed class Rectangle
     {
         public Point LT;
         public Point RB;

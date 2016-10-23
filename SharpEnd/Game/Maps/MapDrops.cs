@@ -3,7 +3,7 @@ using SharpEnd.Threading;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class MapDrops : MapEntities<Drop>
+    public sealed class MapDrops : MapEntities<Drop>
     {
         private const int ExpirationTime = 3 * 60 * 1000;
 
@@ -42,7 +42,7 @@ namespace SharpEnd.Game.Maps
                 item.Expiry.Cancel();
             }
 
-            Map.Send(DropPackets.DespawnDrop(item.ObjectIdentifier, item.Picker));
+            Map.Send(DropPackets.DespawnDrop(item.ObjectID, item.Picker));
             
             base.RemoveItem(item);
         }

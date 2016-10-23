@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SharpEnd.Game.Commands
 {
-    internal sealed class Command
+    public sealed class Command
     {
         public ECommandType Type { get; private set; }
         public string Name { get; private set; }

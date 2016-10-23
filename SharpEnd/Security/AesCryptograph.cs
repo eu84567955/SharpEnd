@@ -2,7 +2,7 @@
 
 namespace SharpEnd.Security
 {
-    internal static class AesCryptograph
+    public static class AesCryptograph
     {
         private static readonly byte[] sUserKey = new byte[32]
         {

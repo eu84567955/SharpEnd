@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class MapFootholds : List<Foothold>
+    public sealed class MapFootholds : List<Foothold>
     {
         public Map Map { get; private set; }
 
@@ -36,7 +36,7 @@ namespace SharpEnd.Game.Maps
                 }
             }
 
-            return foundFoothold.Identifier;
+            return foundFoothold.ID;
         }
 
         public Point FindFloor(Point position, short heightModifier, Rectangle searchArea = null)

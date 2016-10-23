@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EDropAnimation : sbyte
+    public enum EDropAnimation : sbyte
     {
         New = 0,
         Pop = 1,

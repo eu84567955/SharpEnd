@@ -1,18 +1,36 @@
-﻿using SharpEnd.Network;
-using System.Net.Sockets;
+﻿using SharpEnd.IO;
 
-namespace SharpEnd.Servers
+namespace SharpEnd.Network.Servers
 {
-    internal sealed class LoginServer
+    public sealed class LoginServer
     {
+        private bool m_requestPin;
+        private bool m_requestPic;
+        private bool m_requireStaffIP;
+        private ushort m_port;
+        private int m_defaultCharacterSlots;
+        private int m_invalidLoginThreshold;
+        private int m_rankingUpdateFrequency;
         private Acceptor m_acceptor;
 
-        public LoginServer(ushort port)
+        public LoginServer()
         {
-            m_acceptor = new Acceptor(port);
+            var config = Config.Instance.LoginConfig;
 
-            m_acceptor.OnClientAccepted = OnClientAccepted;
+            m_requestPin = config.RequestPin;
+            m_requestPic = config.RequestPic;
+            m_requireStaffIP = config.RequireStaffIP;
+            m_port = config.Port;
+            m_defaultCharacterSlots = config.DefaultCharacterSlots;
+            m_invalidLoginThreshold = config.InvalidLoginThreshold;
+            m_rankingUpdateFrequency = config.RankingUpdateFrequency;
+            m_acceptor = new Acceptor(m_port);
         }
+
+        public bool RequestPin { get { return m_requestPin; } }
+        public bool RequestPic { get { return m_requestPic; } }
+        public bool RequireStaffIP { get { return m_requireStaffIP; } }
+        public int DefaultCharacterSlots { get { return m_defaultCharacterSlots; } }
 
         public void Run()
         {
@@ -22,11 +40,6 @@ namespace SharpEnd.Servers
         public void Shutdown()
         {
             m_acceptor.Stop();
-        }
-
-        private void OnClientAccepted(Socket socket)
-        {
-            new Client(socket);
         }
     }
 }

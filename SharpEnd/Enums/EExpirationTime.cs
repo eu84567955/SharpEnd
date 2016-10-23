@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum EExpirationTime : long
+    public enum EExpirationTime : long
     {
         Default = 150842304000000000L,
         Zero = 94354848000000000L,

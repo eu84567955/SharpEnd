@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class MapPortals : SafeKeyedCollection<sbyte, Portal>
+    public sealed class MapPortals : SafeKeyedCollection<sbyte, Portal>
     {
         public Map Map { get; private set; }
 
@@ -15,7 +15,7 @@ namespace SharpEnd.Game.Maps
 
         protected override sbyte GetKeyForItem(Portal item)
         {
-            return item.Identifier;
+            return item.ID;
         }
 
         public Portal this[string label]

@@ -4,19 +4,25 @@ namespace SharpEnd.Drawing
 {
     public sealed class Point
     {
-        public short X { get; set; }
-        public short Y { get; set; }
+        private short m_x;
+        private short m_y;
 
         public Point(short x, short y)
         {
-            X = x;
-            Y = y;
+            m_x = x;
+            m_y = y;
         }
 
         public Point(int x, int y)
         {
-            X = (short)x;
-            Y = (short)y;
+            m_x = (short)x;
+            m_y = (short)y;
+        }
+
+        public Point(Point point)
+        {
+            m_x = point.X;
+            m_y = point.Y;
         }
 
         public double DistanceFrom(Point point)
@@ -38,5 +44,8 @@ namespace SharpEnd.Drawing
         {
             throw new NotImplementedException();
         }
+
+        public short X { get { return m_x; } set { m_x = value; } }
+        public short Y { get { return m_y; } set { m_y = value; } }
     }
 }

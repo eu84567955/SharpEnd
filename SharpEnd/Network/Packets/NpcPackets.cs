@@ -5,7 +5,7 @@ using SharpEnd.Utility;
 
 namespace SharpEnd.Packets
 {
-    internal static class NpcPackets
+    public static class NpcPackets
     {
         public static byte[] NpcSpawn(Npc npc)
         {
@@ -13,23 +13,7 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_SPAWN)
-                    .WriteInt(npc.ObjectIdentifier)
-                    .WriteInt(npc.Identifier)
-                    .WritePoint(npc.Position)
-                    .WriteSByte(npc.Stance)
-                    .WriteBoolean(!npc.Flip)
-                    .WriteUShort(npc.Foothold)
-                    .WriteShort(npc.MinimumClickX)
-                    .WriteShort(npc.MaximumClickX)
-                    .WriteBoolean(!npc.Hide)
-                    .WriteInt() // NOTE: Unknown.
-                    .WriteByte() // NOTE: tPresentTimeState.
-                    .WriteInt(-1) // NOTE: tPresent.
-                    .WriteInt() // NOTICE: nNoticeBoardType.
-                    .WriteInt() // NOTE: Unknown.
-                    .WriteInt() // NOTE: Unknown.
-                    .WriteString(string.Empty) // NOTE: Unknown.
-                    .WriteByte(); // NOTE: Unknown.
+                    .WriteBytes(NpcInit(npc));
 
                 return outPacket.ToArray();
             }
@@ -42,14 +26,25 @@ namespace SharpEnd.Packets
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_CONTROL)
                     .WriteBoolean(true)
-                    .WriteInt(npc.ObjectIdentifier)
-                    .WriteInt(npc.Identifier)
+                    .WriteBytes(NpcInit(npc));
+
+                return outPacket.ToArray();
+            }
+        }
+
+        private static byte[] NpcInit(Npc npc)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteInt(npc.ObjectID)
+                    .WriteInt(npc.ID)
                     .WritePoint(npc.Position)
-                    .WriteSByte(npc.Stance)
-                    .WriteBoolean(!npc.Flip)
-                    .WriteUShort(npc.Foothold)
-                    .WriteShort(npc.MinimumClickX)
-                    .WriteShort(npc.MaximumClickX)
+                    .WriteByte(npc.Stance)
+                    .WriteByte(npc.Stance) // NOTE: Flip
+                    .WriteShort(npc.Foothold)
+                    .WriteShort(npc.RX0)
+                    .WriteShort(npc.RX1)
                     .WriteBoolean(!npc.Hide)
                     .WriteInt() // NOTE: Unknown.
                     .WriteByte() // NOTE: tPresentTimeState.
@@ -64,38 +59,38 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] NpcControlCancel(int objectIdentifier)
+        public static byte[] NpcControlCancel(int objectID)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_CONTROL)
                     .WriteBoolean(false)
-                    .WriteInt(objectIdentifier);
+                    .WriteInt(objectID);
 
                 return outPacket.ToArray();
             }
         }
 
-        public static byte[] NpcDespawn(int objectIdentifier)
+        public static byte[] NpcDespawn(int objectID)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_DESPAWN)
-                    .WriteInt(objectIdentifier);
+                    .WriteInt(objectID);
 
                 return outPacket.ToArray();
             }
         }
 
-        public static byte[] NpcAction(int objectIdentifier, byte a, byte b)
+        public static byte[] NpcAction(int objectID, byte a, byte b)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_NPC_ACTION)
-                    .WriteInt(objectIdentifier)
+                    .WriteInt(objectID)
                     .WriteByte(a)
                     .WriteByte(b);
 
@@ -124,7 +119,7 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] NpcShop(Shop shop)
+        /*public static byte[] NpcShop(Shop shop)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -132,7 +127,7 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_NPC_SHOP)
                     .WriteByte() // NOTE: Unknown.
                     .WriteInt() // NOTE: nSelectNpcItemID.
-                    .WriteInt(shop.Identifier)
+                    .WriteInt(shop.ID)
                     .WriteInt() // NOTE: nStarCoin.
                     .WriteInt(); // NOTE: nShopVerNo.
 
@@ -150,21 +145,21 @@ namespace SharpEnd.Packets
                 foreach (ShopItem item in shop)
                 {
                     outPacket
-                        .WriteInt(item.ItemIdentifier)
+                        .WriteInt(item.ItemID)
                         .WriteInt(item.Price)
-                        .WriteInt(item.TokenItemIdentifier)
+                        .WriteInt(item.TokenItemID)
                         .WriteInt(item.TokenPrice)
-                        .WriteInt(item.PointQuestIdentifier)
+                        .WriteInt(item.PointQuestID)
                         .WriteInt(item.PointPrice)
                         .WriteInt(item.StarCoin)
-                        .WriteInt(item.QuestExIdentifier)
+                        .WriteInt(item.QuestExID)
                         .WriteString(item.QuestExKey)
                         .WriteInt(item.QuestExValue)
                         .WriteInt(item.TimePeriod)
                         .WriteInt(item.LevelLimited)
                         .WriteUShort(item.MinimumLevel)
                         .WriteUShort(item.MaximumLevel)
-                        .WriteInt(item.QuestIdentifier)
+                        .WriteInt(item.QuestID)
                         .WriteByte() // NOTE: Unknown.
                         .WriteLong((long)EExpirationTime.Zero)
                         .WriteLong((long)EExpirationTime.Default)
@@ -174,7 +169,7 @@ namespace SharpEnd.Packets
                         .WriteInt() // NOTE: Expiration.
                         .WriteByte(); // NOTE: Unknown.
 
-                    if (GameLogicUtilities.IsRechargeable(item.ItemIdentifier))
+                    if (GameLogicUtilities.IsRechargeable(item.ItemID))
                     {
                         outPacket
                             .WriteShort()
@@ -194,6 +189,6 @@ namespace SharpEnd.Packets
 
                 return outPacket.ToArray();
             }
-        }
+        }*/
     }
 }

@@ -1,9 +1,9 @@
 ﻿using SharpEnd.Network;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 
 namespace SharpEnd.Packets
 {
-    internal static class SkillPackets
+    public static class SkillPackets
     {
         public static byte[] AddSkill(PlayerSkill skill)
         {
@@ -14,7 +14,7 @@ namespace SharpEnd.Packets
                     .WriteByte(1)
                     .WriteShort()
                     .WriteShort(1)
-                    .WriteInt(skill.Identifier)
+                    .WriteInt(skill.ID)
                     .WriteInt(skill.Level)
                     .WriteInt(skill.MaxLevel)
                     .WriteDateTime(skill.Expiration)

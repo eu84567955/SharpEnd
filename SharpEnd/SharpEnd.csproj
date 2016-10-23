@@ -28,6 +28,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -79,10 +81,6 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\IronPython 2.7\Microsoft.Scripting.Metadata.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MoonSharp.Interpreter">
-      <HintPath>E:\Projects\Resonance\Runtime\Debug\MoonSharp.Interpreter.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>E:\Projects\Resonance\Runtime\Debug\MySql.Data.dll</HintPath>
       <Private>False</Private>
@@ -113,6 +111,7 @@
     <Compile Include="Drawing\Rectangle.cs" />
     <Compile Include="Enums\EExpirationTime.cs" />
     <Compile Include="Enums\EFieldEffect.cs" />
+    <Compile Include="Enums\Element.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Game\Commands\Command.cs" />
     <Compile Include="Game\Commands\Commands.cs" />
@@ -128,9 +127,10 @@
     <Compile Include="Game\Constants\CreationConstants.cs" />
     <Compile Include="Game\Constants\GameConstants.cs" />
     <Compile Include="Game\Constants\SkillConstants.cs" />
+    <Compile Include="Game\Data\BeautyDataProvider.cs" />
+    <Compile Include="Game\Data\EquipDataProvider.cs" />
     <Compile Include="Game\Data\MapDataProvider.cs" />
     <Compile Include="Game\Data\MobDataProvider.cs" />
-    <Compile Include="Game\Data\ItemDataProvider.cs" />
     <Compile Include="Drawing\Point.cs" />
     <Compile Include="Enums\EAccountLevel.cs" />
     <Compile Include="Enums\ECommandType.cs" />
@@ -160,19 +160,52 @@
     <Compile Include="Enums\EWorldRibbon.cs" />
     <Compile Include="Enums\EWorldStatus.cs" />
     <Compile Include="Extensions\PacketExtensions.cs" />
+    <Compile Include="Game\Data\MountDataProvider.cs" />
     <Compile Include="Game\Data\NpcDataProvider.cs" />
-    <Compile Include="Game\Data\PetDataProvider.cs" />
+    <Compile Include="Game\Data\QuestDataProvider.cs" />
     <Compile Include="Game\Data\ReactorDataProvider.cs" />
+    <Compile Include="Game\Maps\MapFactory.cs" />
+    <Compile Include="Game\Scripting\EventManager.cs" />
+    <Compile Include="Game\Scripting\EventManipulator.cs" />
     <Compile Include="Game\Maps\Foothold.cs" />
-    <Compile Include="Game\Maps\Loot.cs" />
     <Compile Include="Game\Maps\MapFootholds.cs" />
     <Compile Include="Game\Maps\MapReactors.cs" />
     <Compile Include="Game\Maps\Portal.cs" />
+    <Compile Include="Game\Scripting\Attributes\MapScriptMethodAttribute.cs" />
+    <Compile Include="Game\Scripting\Binding\PlayerScriptInteraction.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptEvent.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptMap.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptMob.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptNpc.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptPlayer.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptPortal.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptQuest.cs" />
+    <Compile Include="Game\Scripting\Binding\ScriptReactor.cs" />
+    <Compile Include="Game\Scripting\Attributes\EventScriptMethodAttribute.cs" />
+    <Compile Include="Game\Scripting\Attributes\NpcScriptMethodAttribute.cs" />
+    <Compile Include="Game\Scripting\Attributes\PortalScriptMethodAttribute.cs" />
+    <Compile Include="Game\Scripting\Attributes\ReactorScriptMethodAttribute.cs" />
+    <Compile Include="Game\Scripting\Attributes\ScriptMethodAttribute.cs" />
+    <Compile Include="Game\Scripting\NpcScriptManager.cs" />
+    <Compile Include="Game\Scripting\PortalScriptManager.cs" />
     <Compile Include="Game\Shops\Shop.cs" />
-    <Compile Include="Game\Script\ItemScript.cs" />
-    <Compile Include="Game\Script\MapScript.cs" />
-    <Compile Include="Game\Script\ReactorScript.cs" />
     <Compile Include="Game\Shops\ShopItem.cs" />
+    <Compile Include="IO\Config.cs" />
+    <Compile Include="Neckson\ActItem.cs" />
+    <Compile Include="Neckson\ActSkill.cs" />
+    <Compile Include="Neckson\CharacterCheckInfo.cs" />
+    <Compile Include="Neckson\ItemInfo.cs" />
+    <Compile Include="Neckson\ItemOption.cs" />
+    <Compile Include="Neckson\ITEMVARIATIONOPTION.cs" />
+    <Compile Include="Neckson\MBCardInfo.cs" />
+    <Compile Include="Neckson\MobInfo.cs" />
+    <Compile Include="Neckson\NpcSpeech.cs" />
+    <Compile Include="Neckson\NxInfo.cs" />
+    <Compile Include="Neckson\QuestAct.cs" />
+    <Compile Include="Neckson\QuestDemand.cs" />
+    <Compile Include="Neckson\QuestRecord.cs" />
+    <Compile Include="Neckson\TimeKeepInfo.cs" />
+    <Compile Include="Neckson\WSRInfo.cs" />
     <Compile Include="Network\Handlers\GeneralHandlers.cs" />
     <Compile Include="Network\Handlers\InventoryHandlers.cs" />
     <Compile Include="Network\Handlers\LoginHandlers.cs" />
@@ -203,14 +236,14 @@
     <Compile Include="Network\Migrations\MigrationRequests.cs" />
     <Compile Include="Network\Acceptor.cs" />
     <Compile Include="Network\BasePacket.cs" />
-    <Compile Include="Network\Client.cs" />
+    <Compile Include="Network\GameClient.cs" />
     <Compile Include="Network\EHeader.cs" />
     <Compile Include="Network\InPacket.cs" />
     <Compile Include="Network\OutPacket.cs" />
     <Compile Include="Network\PacketHandlerAttribute.cs" />
     <Compile Include="Network\Packets\DropPackets.cs" />
     <Compile Include="Network\Packets\EffectPackets.cs" />
-    <Compile Include="Network\Packets\HelpPackets.cs" />
+    <Compile Include="Network\Packets\Helpers\PlayerPacketHelper.cs" />
     <Compile Include="Network\Packets\InventoryPackets.cs" />
     <Compile Include="Network\Packets\LevelPackets.cs" />
     <Compile Include="Network\Packets\LoginPackets.cs" />
@@ -223,10 +256,8 @@
     <Compile Include="Network\Packets\ReactorPackets.cs" />
     <Compile Include="Network\Packets\ServerPackets.cs" />
     <Compile Include="Network\Packets\SkillPackets.cs" />
-    <Compile Include="Game\Players\Account.cs" />
-    <Compile Include="Game\Players\AttackData.cs" />
-    <Compile Include="Game\Players\ControlledMobs.cs" />
-    <Compile Include="Game\Players\ControlledNpcs.cs" />
+    <Compile Include="Game\Account.cs" />
+    <Compile Include="Game\AttackData.cs" />
     <Compile Include="Game\Players\Player.cs" />
     <Compile Include="Game\Players\PlayerItem.cs" />
     <Compile Include="Game\Players\PlayerItems.cs" />
@@ -238,14 +269,13 @@
     <Compile Include="Game\Players\PlayerSPTable.cs" />
     <Compile Include="Game\Players\PlayerStats.cs" />
     <Compile Include="Game\Players\PlayerVariables.cs" />
+    <Compile Include="Network\PlayerLog.cs" />
+    <Compile Include="Network\Servers\LoginServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Game\Script\PortalScript.cs" />
-    <Compile Include="Game\Script\NpcScript.cs" />
-    <Compile Include="Game\Script\ScriptBase.cs" />
+    <Compile Include="Game\Scripting\Script.cs" />
     <Compile Include="Security\AesCryptograph.cs" />
     <Compile Include="Security\ShaCryptograph.cs" />
     <Compile Include="Network\Servers\ChannelServer.cs" />
-    <Compile Include="Network\Servers\LoginServer.cs" />
     <Compile Include="Network\Servers\MasterServer.cs" />
     <Compile Include="Network\Servers\WorldServer.cs" />
     <Compile Include="Utility\Database.cs" />
@@ -262,8 +292,13 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>
@@ -277,6 +312,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Fody.1.29.4\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\dotnet\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

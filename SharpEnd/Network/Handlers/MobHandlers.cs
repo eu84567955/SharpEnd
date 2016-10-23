@@ -6,20 +6,20 @@ using System.Collections.Generic;
 
 namespace SharpEnd.Handlers
 {
-    internal static class MobHandlers
+    public static class MobHandlers
     {
         [PacketHandler(EHeader.CMSG_MOB_MOVE)]
-        public static void MoveHandler(Client client, InPacket inPacket)
+        public static void MoveHandler(GameClient client, InPacket inPacket)
         {
-            var player = client.Player;
+            /*var player = client.Player;
 
-            int objectIdentifier = inPacket.ReadInt();
+            int objectID = inPacket.ReadInt();
 
             Mob mob;
 
             try
             {
-                mob = player.ControlledMobs[objectIdentifier];
+                mob = player.ControlledMobs[objectID];
             }
             catch (KeyNotFoundException)
             {
@@ -27,9 +27,9 @@ namespace SharpEnd.Handlers
             }
 
             inPacket.ReadByte(); // NOTE: Unknown
-            short movementIdentifier = inPacket.ReadShort();
+            short movementID = inPacket.ReadShort();
             bool usingAbility = inPacket.ReadBoolean();
-            byte skillIdentifier = inPacket.ReadByte();
+            byte skillID = inPacket.ReadByte();
             int unknown = inPacket.ReadInt();
             inPacket.ReadByte(); // NOTE: Unknown
             inPacket.ReadByte(); // NOTE: Unknown
@@ -47,9 +47,9 @@ namespace SharpEnd.Handlers
                 return;
             }
 
-            player.Send(MobPackets.MobControlAck(objectIdentifier, movementIdentifier, 0, usingAbility, 0, 0));
+            //player.Send(MobPackets.MobControlAck(objectID, movementID, 0, usingAbility, 0, 0));
 
-            // TODO: Broadcast packet to map.
+            // TODO: Broadcast packet to map.*/
         }
     }
 }

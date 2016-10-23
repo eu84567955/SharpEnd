@@ -3,17 +3,21 @@ using SharpEnd.Network;
 
 namespace SharpEnd.Game.Maps
 {
-    internal abstract class MovableLife
+    public abstract class MovableLife
     {
-        public Point Position { get; set; }
-        public sbyte Stance { get; set; }
-        public ushort Foothold { get; set; }
+        protected Point m_position;
+        protected byte m_stance;
+        protected short m_foothold;
+
+        public Point Position { get { return m_position; } set { m_position = value; } }
+        public byte Stance { get { return m_stance; } set { m_stance = value; } }
+        public short Foothold { get { return m_foothold; } set { m_foothold = value; } }
 
         public bool ParseMovement(InPacket inPacket)
         {
             Point position = null;
-            sbyte stance = 0;
-            ushort foothold = 0;
+            byte stance = 0;
+            short foothold = 0;
 
             byte count = inPacket.ReadByte();
 
@@ -34,7 +38,7 @@ namespace SharpEnd.Game.Maps
                         {
                             position = inPacket.ReadPoint();
                             inPacket.ReadPoint();
-                            foothold = inPacket.ReadUShort();
+                            foothold = inPacket.ReadShort();
 
                             if (type == 15 || type == 17)
                             {
@@ -42,7 +46,7 @@ namespace SharpEnd.Game.Maps
                             }
 
                             inPacket.ReadPoint();
-                            stance = inPacket.ReadSByte();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -54,8 +58,8 @@ namespace SharpEnd.Game.Maps
                         {
                             position = inPacket.ReadPoint();
                             inPacket.ReadPoint();
-                            foothold = inPacket.ReadUShort();
-                            stance = inPacket.ReadSByte();
+                            foothold = inPacket.ReadShort();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -79,7 +83,7 @@ namespace SharpEnd.Game.Maps
                                 inPacket.ReadShort();
                             }
 
-                            stance = inPacket.ReadSByte();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -120,7 +124,7 @@ namespace SharpEnd.Game.Maps
                     case 81:
                     case 83:
                         {
-                            stance = inPacket.ReadSByte();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -148,8 +152,8 @@ namespace SharpEnd.Game.Maps
                     case 82:
                         {
                             position = inPacket.ReadPoint();
-                            foothold = inPacket.ReadUShort();
-                            stance = inPacket.ReadSByte();
+                            foothold = inPacket.ReadShort();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -160,7 +164,7 @@ namespace SharpEnd.Game.Maps
                         {
                             inPacket.ReadPoint();
                             inPacket.ReadShort();
-                            stance = inPacket.ReadSByte();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -170,7 +174,7 @@ namespace SharpEnd.Game.Maps
                         {
                             position = inPacket.ReadPoint();
                             inPacket.ReadPoint();
-                            stance = inPacket.ReadSByte();
+                            stance = inPacket.ReadByte();
                             inPacket.ReadShort();
                             inPacket.ReadBoolean();
                         }
@@ -188,9 +192,9 @@ namespace SharpEnd.Game.Maps
 
             if (position != null)
             {
-                Position = position;
-                Stance = stance;
-                Foothold = foothold;
+                m_position = position;
+                m_stance = stance;
+                m_foothold = foothold;
             }
 
             return true;

@@ -3,7 +3,7 @@ using SharpEnd.Packets;
 
 namespace SharpEnd.Game.Maps
 {
-    internal sealed class MapReactors : MapEntities<Reactor>
+    public sealed class MapReactors : MapEntities<Reactor>
     {
         public MapReactors(Map map) : base(map) { }
 

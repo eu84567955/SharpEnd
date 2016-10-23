@@ -1,10 +1,10 @@
-﻿using SharpEnd.Players;
-using SharpEnd.Servers;
+﻿using SharpEnd.Game.Players;
+using SharpEnd.Network.Servers;
 using System.Collections.Generic;
 
 namespace SharpEnd.Game.Commands.Gm
 {
-    internal static class InfoCommands
+    public static class InfoCommands
     {
         [GmCommand("search", "Searches")]
         public static void SearchCommand(Player player, string category, string name)

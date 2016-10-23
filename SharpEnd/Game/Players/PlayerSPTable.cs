@@ -4,9 +4,9 @@ using SharpEnd.Packets;
 using SharpEnd.Utility;
 using System.Collections.Generic;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal sealed class PlayerSPTable : Dictionary<byte, int>
+    public sealed class PlayerSPTable : Dictionary<byte, int>
     {
         public Player Parent { get; private set; }
 
@@ -29,20 +29,20 @@ namespace SharpEnd.Players
             foreach (KeyValuePair<byte, int> entry in this)
             {
                 bool exists = (long)Database.Scalar("SELECT COUNT(*) FROM player_sp_table WHERE player_identifier=@player_identifier AND advancement=@advancement",
-                                new MySqlParameter("player_identifier", Parent.Identifier),
+                                new MySqlParameter("player_identifier", Parent.Id),
                                 new MySqlParameter("advancement", entry.Key)) != 0;
 
                 if (exists)
                 {
                     Database.Execute("UPDATE player_sp_table SET points=@points WHERE player_identifier=@player_identifier AND advancement=@advancement",
-                                   new MySqlParameter("player_identifier", Parent.Identifier),
+                                   new MySqlParameter("player_identifier", Parent.Id),
                                    new MySqlParameter("advancement", entry.Key),
                                    new MySqlParameter("points", entry.Value));
                 }
                 else
                 {
                     Database.Execute("INSERT INTO player_sp_table VALUES(@player_identifier, @advancement, @points);",
-                                    new MySqlParameter("player_identifier", Parent.Identifier),
+                                    new MySqlParameter("player_identifier", Parent.Id),
                                     new MySqlParameter("advancement", entry.Key),
                                     new MySqlParameter("points", entry.Value));
                 }
@@ -65,7 +65,7 @@ namespace SharpEnd.Players
         {
             this[advancement] = value;
 
-            Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.SkillPoints));
+            //Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.SkillPoints));
         }
     }
 }

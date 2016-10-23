@@ -1,10 +1,10 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Network;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 
 namespace SharpEnd.Packets
 {
-    internal static class PlayersPackets
+    public static class PlayersPackets
     {
         public static byte[] PlayerDetails(Player player, bool self)
         {
@@ -12,13 +12,13 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_DETAILS)
-                    .WriteInt(player.Identifier)
+                    .WriteInt(player.Id)
                     .WriteBoolean(false) // NOTE: Unknown
-                    .WriteByte(player.Stats.Level)
-                    .WriteUShort(player.Stats.Job)
-                    .WriteUShort(player.Stats.SubJob)
+                    .WriteByte(player.Level)
+                    .WriteShort(player.Job)
+                    .WriteUShort() // TODO: sub job.
                     .WriteSByte(0x10) // NOTE: Battle rank
-                    .WriteInt(player.Stats.Fame)
+                    .WriteInt(player.Fame)
                     .WriteBoolean(false) // NOTE: Marriage
                     .WriteSByte() // NOTE: Professions
                     .WriteString("-") // NOTE: Guild name
@@ -29,13 +29,13 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerChat(int playerIdentifier, string text, bool isGm, bool shout)
+        public static byte[] PlayerChat(int playerID, string text, bool isGm, bool shout)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_CHAT)
-                    .WriteInt(playerIdentifier)
+                    .WriteInt(playerID)
                     .WriteBoolean(isGm)
                     .WriteString(text)
                     .WriteBoolean(shout)
@@ -46,13 +46,13 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerMove(int playerIdentifier, Point position, byte[] buffer)
+        public static byte[] PlayerMove(int playerID, Point position, byte[] buffer)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_MOVE)
-                    .WriteInt(playerIdentifier)
+                    .WriteInt(playerID)
                     .WriteInt() // NOTE: Unknown
                     .WritePoint(position)
                     .WriteShort() // NOTE: Unknown

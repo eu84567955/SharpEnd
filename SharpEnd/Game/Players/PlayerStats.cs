@@ -6,9 +6,9 @@ using SharpEnd.Utility;
 using System;
 using System.Collections.Generic;
 
-namespace SharpEnd.Players
+namespace SharpEnd.Game.Players
 {
-    internal class BonusSet
+    public class BonusSet
     {
         public int Strength = 0;
         public int Dexterity = 0;
@@ -18,12 +18,12 @@ namespace SharpEnd.Players
         public int Mana = 0;
     }
 
-    internal class EquipBonus : BonusSet
+    public class EquipBonus : BonusSet
     {
-        public int Identifier = 0;
+        public int ID = 0;
     }
 
-    internal sealed class PlayerStats
+    public sealed class PlayerStats
     {
         private Player m_player;
 
@@ -103,7 +103,7 @@ namespace SharpEnd.Players
 
             if (GameLogicUtilities.HasSeparatedSkillPoints(Job))
             {
-                m_player.SPTable.WriteGeneral(outPacket);
+                //m_player.SPTable.WriteGeneral(outPacket);
             }
             else
             {
@@ -145,7 +145,7 @@ namespace SharpEnd.Players
 
                 EquipBonus bonus = new EquipBonus();
 
-                bonus.Identifier = equip.Identifier;
+                bonus.ID = equip.ID;
                 bonus.Strength = equip.Strength;
                 bonus.Dexterity = equip.Dexterity;
                 bonus.Intelligence = equip.Intelligence;
@@ -180,8 +180,8 @@ namespace SharpEnd.Players
         {
             Level = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Level));
-            //m_player.SendMap(LevelsPackets.LevelUp(m_player.Identifier));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Level));
+            ////player.SendMap(LevelsPackets.LevelUp(m_player.ID));
         }
 
         public void SetHealth(uint value, bool sendPacket = true)
@@ -190,7 +190,7 @@ namespace SharpEnd.Players
 
             if (sendPacket)
             {
-                m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
+                //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
             }
         }
 
@@ -202,7 +202,7 @@ namespace SharpEnd.Players
 
             if (sendPacket)
             {
-                m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
+                //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
             }
 
             ModifiedHealth();
@@ -212,7 +212,7 @@ namespace SharpEnd.Players
         {
             Health = (uint)(Math.Max(0, (Health - damage)));
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Health));
 
             ModifiedHealth();
         }
@@ -227,7 +227,7 @@ namespace SharpEnd.Players
             {
                 /*if (m_player.Instance != null)
                 {
-                    m_player.Instance.PlayerDeath(m_player.Identifier);
+                    m_player.Instance.PlayerDeath(m_player.ID);
                 }*/
 
                 LoseExperience();
@@ -242,7 +242,7 @@ namespace SharpEnd.Players
 
             Mana = value; // TODO: Check constrain range
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
         }
 
         public void ModifyMana(uint mod, bool sendPacket = false)
@@ -253,7 +253,7 @@ namespace SharpEnd.Players
 
             Mana = (ushort)tempMana;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
         }
 
         public void DamageMana(int damage)
@@ -262,64 +262,64 @@ namespace SharpEnd.Players
 
             Mana = (ushort)(Math.Max(50, (Mana - damage)));
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Mana));
         }
 
         public void SetAbilityPoints(ushort value)
         {
             AbilityPoints = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.AbilityPoints));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.AbilityPoints));
         }
 
         public void SetSkillPoints(ushort value)
         {
             SkillPoints = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.SkillPoints));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.SkillPoints));
         }
 
         public void SetJob(ushort value)
         {
             Job = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Job));
-            //m_player.SendMap(LevelsPackets.JobChange(m_player.Identifier));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Job));
+            ////player.SendMap(LevelsPackets.JobChange(m_player.ID));
         }
 
         public void SetStrength(ushort value)
         {
             Strength = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Strength));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Strength));
         }
 
         public void SetDexterity(ushort value)
         {
             Dexterity = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Dexterity));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Dexterity));
         }
 
         public void SetIntelligence(ushort value)
         {
             Intelligence = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Intelligence));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Intelligence));
         }
 
         public void SetLuck(ushort value)
         {
             Luck = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Luck));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Luck));
         }
 
         public void SetMaxHealth(ushort value)
         {
             MaxHealth = value; // TODO: Check constrain range
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxHealth));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxHealth));
 
             ModifiedHealth();
         }
@@ -328,35 +328,35 @@ namespace SharpEnd.Players
         {
             MaxMana = value; // TODO: Check constrain range
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
         }
 
         public void ModifyMaxHealth(ushort mod)
         {
             MaxHealth = (ushort)(Math.Min((MaxHealth + mod), 500000));
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxHealth));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxHealth));
         }
 
         public void ModifyMaxMana(ushort mod)
         {
             MaxMana = (ushort)(Math.Min((MaxMana + mod), 500000));
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.MaxMana));
         }
 
         public void SetExperience(ulong value)
         {
             Experience = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Experience));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Experience));
         }
 
         public void SetFame(short value)
         {
             Fame = value;
 
-            m_player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Fame));
+            //player.Send(PlayerPackets.PlayerUpdate(m_player, EPlayerUpdate.Fame));
         }
 
         public void LoseExperience()
@@ -471,7 +471,7 @@ namespace SharpEnd.Players
                 {
                     ulong allocate = Math.Min(expCounter, batchSize);
 
-                    m_player.Send(LevelPackets.ShowExperience((uint)amount, white, inChat));
+                    //player.Send(LevelPackets.ShowExperience((uint)amount, white, inChat));
 
                     expCounter -= allocate;
                 }

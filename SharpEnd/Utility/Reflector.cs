@@ -1,12 +1,25 @@
 ﻿using SharpEnd.Game.Commands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace SharpEnd.Utility
 {
-    internal static class Reflector
+    public static class Reflector
     {
+        public static IEnumerable<MethodInfo> FindMethodsByAttribute<TAttribute>()
+            where TAttribute : Attribute
+        {
+            return (from method in AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(assembly => !assembly.GlobalAssemblyCache)
+                        .SelectMany(assembly => assembly.GetTypes())
+                        .SelectMany(type => type.GetMethods())
+                    let attribute = Attribute.GetCustomAttribute(method, typeof(TAttribute), false) as TAttribute
+                    where attribute != null
+                    select method);
+        }
+
         public static List<Tuple<T1, T2>> FindAllMethods<T1, T2>()
             where T1 : Attribute
             where T2 : class
@@ -22,11 +35,24 @@ namespace SharpEnd.Utility
                     MethodInfo[] methods = type.GetMethods();
                     foreach (MethodInfo method in methods)
                     {
-                        T1 attribute = Attribute.GetCustomAttribute(method, typeof(T1), false) as T1;
-                        if (attribute == null) continue;
-                        T2 callback = Delegate.CreateDelegate(typeof(T2), method, false) as T2;
-                        if (callback == null) continue;
-                        results.Add(new Tuple<T1, T2>(attribute, callback));
+                        try
+                        {
+                            T1 attribute = Attribute.GetCustomAttribute(method, typeof(T1), false) as T1;
+                            if (attribute == null) continue;
+                            T2 callback = Delegate.CreateDelegate(typeof(T2), method, false) as T2;
+                            if (callback == null) continue;
+                            results.Add(new Tuple<T1, T2>(attribute, callback));
+                        }
+                        catch (AmbiguousMatchException) // NOTE: We're dealing with a method with multiple attributes.
+                        {
+                            T1[] attributes = Attribute.GetCustomAttributes(method, typeof(T1), false) as T1[];
+                            T2 callback = Delegate.CreateDelegate(typeof(T2), method, false) as T2;
+                            if (callback == null) continue;
+                            foreach (T1 attribute in attributes)
+                            {
+                                results.Add(new Tuple<T1, T2>(attribute, callback));
+                            }
+                        }
                     }
                 }
             }

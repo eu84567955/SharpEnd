@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum ECommandType
+    public enum ECommandType
     {
         Gm,
         Player

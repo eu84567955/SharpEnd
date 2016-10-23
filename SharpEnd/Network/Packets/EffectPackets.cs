@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd.Network.Packets
 {
-    internal static class EffectPackets
+    public static class EffectPackets
     {
         // NOTE: Located in Map.wz/Effect.img.
         public static byte[] ShowMapEffect(string text)

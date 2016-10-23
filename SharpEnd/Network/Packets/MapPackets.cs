@@ -1,10 +1,10 @@
 ﻿using SharpEnd.Drawing;
 using SharpEnd.Network;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 
 namespace SharpEnd.Packets
 {
-    internal static class MapPackets
+    public static class MapPackets
     {
         public static byte[] ChangeMap(Player player, bool initial = false, bool spawnByPosition = false, Point position = null)
         {
@@ -16,7 +16,7 @@ namespace SharpEnd.Packets
                     .WriteInt() // NOTE: Channel identifier
                     .WriteBoolean(false) // NOTE: bDev
                     .WriteInt() // NOTE: wOldDriverID
-                    .WriteByte(++player.PortalCount)
+                    .WriteByte() // TODO: Increment portal count and return
                     .WriteInt() // NOTE: Unknown
                     .WriteInt(800) // NOTE: nFieldWidth
                     .WriteInt(600) // NOTE: nFieldHeight
@@ -49,8 +49,8 @@ namespace SharpEnd.Packets
                     // NOTE: Stats
                     {
                         outPacket
-                            .WriteInt(player.Identifier)
-                            .WriteInt(player.Identifier)
+                            .WriteInt(player.Id)
+                            .WriteInt(player.Id)
                             .WriteInt(45)
                             .WriteString(player.Name, 13)
                             .WriteByte(player.Gender)
@@ -61,15 +61,15 @@ namespace SharpEnd.Packets
                             .WriteSByte()
                             .WriteSByte();
 
-                        player.Stats.WriteInitial(outPacket);
+                       // player.Stats.WriteInitial(outPacket);
 
                         outPacket
                             .WriteInt() // NOTE: Waru points
                             .WriteInt() // NOTE: Gachapon experience
-                            .WriteInt(player.MapIdentifier)
-                            .WriteSByte(player.MapSpawnPoint)
+                            .WriteInt(player.Map.ID)
+                            .WriteSByte(player.SpawnPoint)
                             .WriteInt() // NOTE: Unknown
-                            .WriteUShort(player.Stats.SubJob)
+                            .WriteUShort() // NOTE: Sub job.
                             .WriteByte() // NOTE: Fatigue
                             .WriteInt(); // NOTE: Date
 
@@ -245,9 +245,9 @@ namespace SharpEnd.Packets
                 {
                     outPacket
                         .WriteBoolean(false) // NOTE: bUsingBuffProtector
-                        .WriteInt(player.MapIdentifier)
-                        .WriteSByte(player.MapSpawnPoint)
-                        .WriteUInt(player.Stats.Health) // NOTE: Health
+                        .WriteInt(player.Map.ID)
+                        .WriteSByte(player.SpawnPoint)
+                        .WriteInt(player.HP)
                         .WriteBoolean(spawnByPosition);
 
                     if (spawnByPosition)
@@ -277,27 +277,27 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] MapSeat(int playerIdentifier, short seatIdentifier)
+        public static byte[] MapSeat(int playerID, short seatID)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_SIT)
-                    .WriteInt(playerIdentifier)
+                    .WriteInt(playerID)
                     .WriteBoolean(true)
-                    .WriteShort(seatIdentifier);
+                    .WriteShort(seatID);
 
                 return outPacket.ToArray();
             }
         }
 
-        public static byte[] MapSeatCancel(int playerIdentifier)
+        public static byte[] MapSeatCancel(int playerID)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_SIT)
-                    .WriteInt(playerIdentifier)
+                    .WriteInt(playerID)
                     .WriteBoolean(false);
 
                 return outPacket.ToArray();

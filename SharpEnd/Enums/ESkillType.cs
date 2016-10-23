@@ -1,6 +1,6 @@
 ﻿namespace SharpEnd
 {
-    internal enum ESkillType
+    public enum ESkillType
     {
         Melee,
         Ranged,

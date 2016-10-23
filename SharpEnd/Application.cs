@@ -1,19 +1,21 @@
-﻿using SharpEnd.Servers;
+﻿using SharpEnd.IO;
+using SharpEnd.Network.Servers;
 using SharpEnd.Threading;
 using SharpEnd.Utility;
 using System;
+using System.Diagnostics;
 
 namespace SharpEnd
 {
-    internal static class Application
+    public static class Application
     {
         public const string CommandIndicator = "!";
         public const string PlayerCommandIndicator = "@";
 
         public static readonly MapleVersion Version = new MapleVersion()
         {
-            Version = 176,
-            Patch = "3",
+            Version = 177,
+            Patch = "1",
             Localisation = ELocalisation.Global
         };
 
@@ -21,7 +23,7 @@ namespace SharpEnd
 
         static Application()
         {
-            m_usageDelay = new Delay(15 * 1000, () => UpdateTitle(), true);
+            m_usageDelay = new Delay(5 * 1000, () => UpdateTitle(), true);
         }
 
         private static void Main(string[] args)
@@ -30,7 +32,9 @@ namespace SharpEnd
 
             try
             {
-                Database.Initialize();
+                Config.Load();
+
+                Database.Test();
 
                 MasterServer.Instance.Run();
             }
@@ -39,7 +43,7 @@ namespace SharpEnd
                 Log.Error(exception);
             }
 
-            while (MasterServer.Instance.Running)
+            while (MasterServer.Instance.IsRunning)
             {
                 Console.Read();
             }
@@ -55,7 +59,7 @@ namespace SharpEnd
 
         private static void UpdateTitle()
         {
-            Console.Title = $"SharpEnd | Memory Usage: {Math.Round(GC.GetTotalMemory(true) / 1024f) } KB";
+            Console.Title = $"SharpEnd | Memory Usage: {Math.Round(Process.GetCurrentProcess().WorkingSet64 / 1024f) } KB";
         }
     }
 }

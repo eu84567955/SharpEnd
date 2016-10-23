@@ -1,10 +1,10 @@
 ﻿using SharpEnd.Game.Maps;
 using SharpEnd.Network;
-using SharpEnd.Players;
+using SharpEnd.Game.Players;
 
 namespace SharpEnd.Packets
 {
-    internal static class DropPackets
+    public static class DropPackets
     {
         public static byte[] SpawnDrop(Drop drop, EDropAnimation animation)
         {
@@ -14,7 +14,7 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_DROP_SPAWN)
                     .WriteByte() // NOTE: Unknown.
                     .WriteSByte((sbyte)animation)
-                    .WriteInt(drop.ObjectIdentifier)
+                    .WriteInt(drop.ObjectID)
                     .WriteBoolean(drop is Meso)
                     .WriteInt() // NOTE: nDropMotionType.
                     .WriteInt() // NOTE: nDropSpeed.
@@ -26,14 +26,14 @@ namespace SharpEnd.Packets
                 }
                 else if (drop is PlayerItem)
                 {
-                    outPacket.WriteInt(((PlayerItem)drop).Identifier);
+                    outPacket.WriteInt(((PlayerItem)drop).ID);
                 }
 
                 outPacket
-                    .WriteInt(drop.Owner != null ? drop.Owner.Identifier : 0)
+                    .WriteInt(drop.Owner != null ? drop.Owner.Id : 0)
                     .WriteByte() // TODO: Figure this one out.
                     .WritePoint(drop.Position)
-                    .WriteInt(drop.Dropper.ObjectIdentifier);
+                    .WriteInt(drop.Dropper.ObjectID);
 
                 if (animation != EDropAnimation.Existing)
                 {
@@ -63,15 +63,15 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] DespawnDrop(int objectIdentifier, Player picker)
+        public static byte[] DespawnDrop(int objectID, Player picker)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_DROP_DESPAWN)
                     .WriteByte((byte)(picker == null ? 0 : 2))
-                    .WriteInt(objectIdentifier)
-                    .WriteInt(picker != null ? picker.Identifier : 0);
+                    .WriteInt(objectID)
+                    .WriteInt(picker != null ? picker.Id : 0);
 
                 return outPacket.ToArray();
             }
@@ -97,7 +97,7 @@ namespace SharpEnd.Packets
                 }
                 else
                 {
-                    outPacket.WriteInt(((PlayerItem)drop).Identifier);
+                    outPacket.WriteInt(((PlayerItem)drop).ID);
                 }
 
                 outPacket.WriteInt(drop is PlayerItem ? ((PlayerItem)drop).Quantity : 0);

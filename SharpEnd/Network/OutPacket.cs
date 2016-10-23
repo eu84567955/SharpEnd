@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SharpEnd.Network
 {
-    internal sealed class OutPacket : BasePacket
+    public sealed class OutPacket : BasePacket
     {
         private BinaryWriter m_writer;
 

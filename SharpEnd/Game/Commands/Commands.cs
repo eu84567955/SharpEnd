@@ -1,11 +1,11 @@
-﻿using SharpEnd.Players;
+﻿using SharpEnd.Game.Players;
 using SharpEnd.Utility;
 using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Game.Commands
 {
-    internal sealed class Commands : Dictionary<ECommandType, Dictionary<string, Command>>
+    public sealed class Commands : Dictionary<ECommandType, Dictionary<string, Command>>
     {
         public Commands() : base()
         {
@@ -57,7 +57,7 @@ namespace SharpEnd.Game.Commands
 
             Command command = null;
 
-            if (text.StartsWith(Application.CommandIndicator) && player.IsGm)
+            if (text.StartsWith(Application.CommandIndicator) && false) // TODO: Check for Gm.
             {
                 command = this[ECommandType.Gm].GetOrDefault(commandName, null);
             }
@@ -112,17 +112,17 @@ namespace SharpEnd.Game.Commands
                     }
                     catch (Exception e)
                     {
-                        player.Notify("[Command] Unknown error: " + e.InnerException.Message);
+                        //player.Notify("[Command] Unknown error: " + e.InnerException.Message);
                     }
                 }
                 else
                 {
-                    player.Notify(string.Format("[Command] Syntax: {0}", command.Syntax));
+                    //player.Notify(string.Format("[Command] Syntax: {0}", command.Syntax));
                 }
             }
             else
             {
-                player.Notify("[Command] Invalid command.");
+                //player.Notify("[Command] Invalid command.");
             }
         }
     }

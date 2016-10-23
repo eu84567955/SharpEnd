@@ -1,20 +1,20 @@
 ﻿using MySql.Data.MySqlClient;
 using SharpEnd.Network;
-using SharpEnd.Servers;
+using SharpEnd.Network.Servers;
 using SharpEnd.Utility;
 using System;
 using System.Collections.Generic;
 
 namespace SharpEnd.Packets
 {
-    internal static class LoginPackets
+    public static class LoginPackets
     {
         public static byte[] Handshake(byte[] riv, byte[] siv)
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteUShort(15)
+                    .WriteUShort(15) // TODO: Calculate automatically.
                     .WriteUShort(Application.Version.Version)
                     .WriteString(Application.Version.Patch)
                     .WriteBytes(riv)
@@ -38,19 +38,19 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] Start()
+        public static byte[] ApplyHotfix()
         {
             using (OutPacket outPacket = new OutPacket())
             {
                 outPacket
-                    .WriteHeader(EHeader.SMSG_START)
-                    .WriteBoolean(true);
+                    .WriteHeader(EHeader.SMSG_APPLY_HOTFIX)
+                    .WriteByte();
 
                 return outPacket.ToArray();
             }
         }
 
-        public static byte[] AuthServer(bool enable)
+        public static byte[] NMCOResult(bool enable)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -89,7 +89,7 @@ namespace SharpEnd.Packets
             PS_SubTesterAccount = 0x200,
         }
 
-        public static byte[] LoginSuccess(Client client)
+        public static byte[] LoginSuccess(GameClient client)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -99,7 +99,7 @@ namespace SharpEnd.Packets
                     .WriteByte()
                     .WriteByte()
                     .WriteString(client.Account.Username)
-                    .WriteInt(client.Account.Identifier);
+                    .WriteInt(client.Account.Id);
 
                 byte admin = 0, tradeBlock = 0;
 
@@ -122,7 +122,7 @@ namespace SharpEnd.Packets
                     .WriteZero(6)
                     .WriteString(client.Account.Username)
                     .WriteHexString("03 00 00 00 00 00 00 00 00 00 30 58 67 CF E4 F3 CA 01 3D 00 00 00 01 08 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 01 01 00 00 01 00 01 01 00 01 01 00 01 01 00 01 01 00 00 01 00 00 01 00 01 01 00 00 FF FF FF FF 01 04")
-                    .WriteLong(client.Identifier);
+                    .WriteLong(client.Id);
 
                 return outPacket.ToArray();
             }
@@ -134,22 +134,22 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_WORLD_INFORMATION)
-                    .WriteByte(world.Identifier)
-                    .WriteString("Scania")
-                    .WriteByte()
-                    .WriteString("Welcome to SharpEnd.")
+                    .WriteByte(world.Id)
+                    .WriteString(world.Name)
+                    .WriteByte((byte)world.Ribbon)
+                    .WriteString(world.EventMessage)
                     .WriteShort(100)
                     .WriteShort(100)
                     .WriteByte()
-                    .WriteByte(1);
+                    .WriteByte((byte)world.Count);
 
-                for (byte i = 0; i < 1; i++)
+                foreach (ChannelServer channel in world)
                 {
                     outPacket
-                        .WriteString($"{"Scania"}-{i}")
-                        .WriteInt(1)
-                        .WriteByte(world.Identifier)
-                        .WriteByte(i)
+                        .WriteString($"{world.Name}-{channel.Id}")
+                        .WriteInt(1) // TODO: Proper load.
+                        .WriteByte(world.Id)
+                        .WriteByte(channel.Id)
                         .WriteBoolean(false); // NOTE: Adult channel.
                 }
 
@@ -177,6 +177,37 @@ namespace SharpEnd.Packets
             }
         }
 
+        public static byte[] HighlightWorld(int worldId)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_WORLD_HIGHLIGHT)
+                    .WriteInt(worldId);
+
+                return outPacket.ToArray();
+            }
+        }
+
+        public static byte[] RecommendedWorld(bool enable, int worldId, string message)
+        {
+            using (OutPacket outPacket = new OutPacket())
+            {
+                outPacket
+                    .WriteHeader(EHeader.SMSG_RECOMMENDED_WORLD)
+                    .WriteBoolean(enable);
+
+                if (enable)
+                {
+                    outPacket
+                        .WriteInt(worldId)
+                        .WriteString(message);
+                }
+
+                return outPacket.ToArray();
+            }
+        }
+
         public static byte[] WorldStatus(short status)
         {
             using (OutPacket outPacket = new OutPacket())
@@ -189,7 +220,7 @@ namespace SharpEnd.Packets
             }
         }
 
-        public static byte[] PlayerList(byte count, DatabaseQuery query, EPICState picState)
+        public static byte[] PlayerList(byte count, DatabaseQuery query, int characterSlots)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -229,9 +260,9 @@ namespace SharpEnd.Packets
                 }
 
                 outPacket
-                    .WriteByte((byte)picState)
+                    .WriteByte((byte)EPICState.Disable)
                     .WriteByte()
-                    .WriteInt(9)
+                    .WriteInt(characterSlots)
                     .WriteInt()
                     .WriteInt(-1)
                     .WriteLong()
@@ -360,7 +391,7 @@ namespace SharpEnd.Packets
             {
                 while (equipmentQuery.NextRow())
                 {
-                    int itemIdentifier = equipmentQuery.Get<int>("item_identifier");
+                    int itemID = equipmentQuery.Get<int>("item_identifier");
                     short inventorySlot = Math.Abs(equipmentQuery.Get<short>("inventory_slot"));
 
                     if (inventorySlot > 100)
@@ -368,7 +399,7 @@ namespace SharpEnd.Packets
                         inventorySlot -= 100;
                     }
 
-                    visibleLayer.Add((byte)inventorySlot, itemIdentifier);
+                    visibleLayer.Add((byte)inventorySlot, itemID);
                 }
             }
 
@@ -441,7 +472,7 @@ namespace SharpEnd.Packets
         private static readonly byte[] channelIP = new byte[4] { 8, 31, 99, 141 };
         private static readonly byte[] chatIP = new byte[4] { 8, 31, 99, 133 };
 
-        public static byte[] ServerIP(ushort port, int playerIdentifier)
+        public static byte[] ServerIP(ushort port, int playerID)
         {
             using (OutPacket outPacket = new OutPacket())
             {
@@ -453,7 +484,7 @@ namespace SharpEnd.Packets
                     .WriteUShort(port)
                     .WriteBytes(chatIP)
                     .WriteUShort(port)
-                    .WriteInt(playerIdentifier)
+                    .WriteInt(playerID)
                     .WriteByte()
                     .WriteInt()
                     .WriteByte()
