@@ -166,6 +166,16 @@ namespace SharpEnd.Network
             return this;
         }
 
+        public OutPacket WriteIntDateTime(DateTime value)
+        {
+            return WriteInt(int.Parse(value.ToString("yyyyMMddHH")));
+        }
+
+        public OutPacket WriteLongDateTime(DateTime value)
+        {
+            return WriteLong(value.ToFileTimeUtc());
+        }
+
         public void SetUInt(int offset, uint value)
         {
             int tOffset = Position;

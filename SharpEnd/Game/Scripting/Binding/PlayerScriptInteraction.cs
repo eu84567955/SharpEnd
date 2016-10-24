@@ -16,12 +16,12 @@ namespace SharpEnd.Game.Scripting
 
         public ScriptEvent GetEvent(string name)
         {
-            return MasterServer.Instance.Worlds[m_client.World][m_client.Channel].EventManager.GetRunningScript(name);
+            return MasterServer.Instance.Worlds[m_client.World].Channels[m_client.Channel].EventManager.GetRunningScript(name);
         }
 
         public ScriptEvent MakeEvent(string name, bool onlyOne, object attachment)
         {
-            return MasterServer.Instance.Worlds[m_client.World][m_client.Channel].EventManager.RunScript(name, onlyOne, attachment);
+            return MasterServer.Instance.Worlds[m_client.World].Channels[m_client.Channel].EventManager.RunScript(name, onlyOne, attachment);
         }
     }
 }

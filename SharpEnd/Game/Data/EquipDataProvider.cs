@@ -33,6 +33,16 @@ namespace SharpEnd.Game.Data
                 }
             }
         }
+
+        public bool IsValidEquip(int equipID)
+        {
+            return m_equips.ContainsKey(equipID);
+        }
+
+        public EquipData GetEquipData(int equipID)
+        {
+            return m_equips[equipID];
+        }
     }
 
     #region Data Classes

@@ -13,7 +13,7 @@ namespace SharpEnd.Game.Maps
             Map = map;
         }
 
-        public ushort FindBelow(Point position)
+        public short FindBelow(Point position)
         {
             short x = position.X;
             short y = position.Y;

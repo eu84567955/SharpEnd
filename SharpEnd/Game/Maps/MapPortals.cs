@@ -1,61 +1,59 @@
-﻿using SharpEnd.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpEnd.Game.Maps
 {
-    public sealed class MapPortals : SafeKeyedCollection<sbyte, Portal>
+    public sealed class MapPortals
     {
+        private Map m_map;
+        private List<Portal> m_portals;
+
         public Map Map { get; private set; }
 
         public MapPortals(Map map)
-            : base()
         {
-            Map = map;
+            m_map = map;
+            m_portals = new List<Portal>();
         }
 
-        protected override sbyte GetKeyForItem(Portal item)
+        public void Add(Portal portal)
         {
-            return item.ID;
+            m_portals.Add(portal);
         }
 
-        public Portal this[string label]
+        public void Remove(Portal portal)
+        {
+            m_portals.Remove(portal);
+        }
+
+        public void Clear()
+        {
+            m_portals.Clear();
+        }
+
+        public Portal this[sbyte id]
         {
             get
             {
-                foreach (Portal portal in this)
+                if (id == -1)
                 {
-                    if (portal.Label.ToLower() == label.ToLower())
-                    {
-                        return portal;
-                    }
-                }
+                    var spawnPoints = m_portals.Where(p => p.IsSpawnPoint);
+                    int toSkip = Randomizer.NextInt(0, spawnPoints.Count());
 
-                throw new KeyNotFoundException();
-            }
-        }
-
-        public new Portal this[sbyte identifier]
-        {
-            get
-            {
-                if (identifier == -1)
-                {
-                    List<Portal> spawnPoints = new List<Portal>();
-
-                    foreach (Portal portal in this)
-                    {
-                        if (portal.Label == "sp")
-                        {
-                            spawnPoints.Add(portal);
-                        }
-                    }
-
-                    return spawnPoints[Randomizer.NextSByte(0, spawnPoints.Count)];
+                    return spawnPoints.Skip(toSkip).Take(1).First();
                 }
                 else
                 {
-                    return base[identifier];
+                    return m_portals.FirstOrDefault(p => p.ID == id);
                 }
+            }
+        }
+
+        public Portal this[string name]
+        {
+            get
+            {
+                return m_portals.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
             }
         }
     }

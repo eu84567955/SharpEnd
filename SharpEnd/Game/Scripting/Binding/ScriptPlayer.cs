@@ -29,7 +29,7 @@ namespace SharpEnd.Game.Scripting
 
         public int GetId()
         {
-            return Player.Id;
+            return Player.ID;
         }
 
         public string GetName()

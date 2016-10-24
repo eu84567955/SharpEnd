@@ -13,10 +13,10 @@ namespace SharpEnd.Game.Players
         {
             Parent = parent;
 
-            while (query.NextRow())
+            /*while (query.NextRow())
             {
                 Add(new PlayerSkill(query));
-            }
+            }*/
         }
 
         public new void Add(PlayerSkill skill)
@@ -73,9 +73,9 @@ namespace SharpEnd.Game.Players
         public void WriteBlessings(OutPacket outPacket)
         {
             outPacket
-                .WriteBoolean(false) // NOTE: Blessing of fairy
-                .WriteBoolean(false) // NOTE: Blessing of empress
-                .WriteBoolean(false); // NOTE: Ultimate explorer
+                .WriteBoolean(false) // NOTE: Blessing of fairy.
+                .WriteBoolean(false) // NOTE: Blessing of empress.
+                .WriteBoolean(false); // NOTE: Ultimate explorer.
         }
     }
 }

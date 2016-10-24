@@ -5,29 +5,32 @@ namespace SharpEnd.Game.Maps
 {
     public sealed class Portal
     {
-        public sbyte ID { get; private set; }
-        public Point Position { get; private set; }
-        public string Label { get; private set; }
-        public int DestinationMapID { get; private set; }
-        public string DestinationLabel { get; private set; }
-        public string Script { get; private set; }
+        private byte m_id;
+        private Point m_position;
+        private int m_type;
+        private int m_destinationMap;
+        private string m_destinationName;
+        private string m_name;
+        private string m_script;
 
-        public bool IsSpawnPoint
-        {
-            get
-            {
-                return Label == "sp";
-            }
-        }
+        public byte ID { get { return m_id; } }
+        public Point Position { get { return m_position; } }
+        public int Type { get { return m_type; } }
+        public int DestinationMap { get { return m_destinationMap; } }
+        public string DestinationName { get { return m_destinationName; } }
+        public string Name { get { return m_name; } }
+        public string Script { get { return m_script; } }
+        public bool IsSpawnPoint { get { return m_name == "sp"; } }
 
         public Portal(MapPortalData data)
         {
-            //ID = data.ID;
-            //Position = data.Position;
-            //Label = data.Label;
-            //DestinationMapID = data.ToMap;
-            //DestinationLabel = data.ToName;
-            //Script = data.Script;
+            m_id = data.ID;
+            m_position = new Point(data.X, data.Y);
+            m_type = data.Type;
+            m_destinationMap = data.DestinationMap;
+            m_destinationName = data.DestinationName;
+            m_name = data.Name;
+            m_script = data.Script;
         }
     }
 }

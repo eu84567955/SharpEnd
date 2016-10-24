@@ -33,6 +33,16 @@ namespace SharpEnd.Game.Data
                 }
             }
         }
+
+        public bool IsValidQuest(int questID)
+        {
+            return m_quests.ContainsKey(questID);
+        }
+
+        public QuestData GetQuestData(int questID)
+        {
+            return m_quests[questID];
+        }
     }
 
     #region Data Classes

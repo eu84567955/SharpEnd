@@ -1,4 +1,5 @@
 ﻿using SharpEnd.Game.Data;
+using SharpEnd.Game.Life;
 using SharpEnd.Game.Players;
 
 namespace SharpEnd.Game.Maps
@@ -24,6 +25,18 @@ namespace SharpEnd.Game.Maps
             m_mobs = new MapMobs(this);
             m_npcs = new MapNpcs(this);
             m_reactors = new MapReactors(this);
+
+            m_data.Footholds.ForEach(f => m_footholds.Add(new Foothold(f)));
+            m_data.Portals.ForEach(p => m_portals.Add(new Portal(p)));
+            m_data.Spawns.ForEach(s =>
+            {
+                switch (s.Type)
+                {
+                    case 'm': m_mobs.Add(new Mob(s)); break;
+                    case 'n': m_npcs.Add(new Npc(s)); break;
+                }
+            });
+            m_data.Reactors.ForEach(r => m_reactors.Add(new Reactor(r)));
         }
 
         public int ID { get { return m_data.ID; } }
@@ -50,7 +63,7 @@ namespace SharpEnd.Game.Maps
             {
                 if (player != ignored)
                 {
-                    //player.Send(buffer);
+                    player.Client.Send(buffer);
                 }
             }
         }

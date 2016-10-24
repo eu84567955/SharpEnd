@@ -29,20 +29,20 @@ namespace SharpEnd.Game.Players
             foreach (KeyValuePair<byte, int> entry in this)
             {
                 bool exists = (long)Database.Scalar("SELECT COUNT(*) FROM player_sp_table WHERE player_identifier=@player_identifier AND advancement=@advancement",
-                                new MySqlParameter("player_identifier", Parent.Id),
+                                new MySqlParameter("player_identifier", Parent.ID),
                                 new MySqlParameter("advancement", entry.Key)) != 0;
 
                 if (exists)
                 {
                     Database.Execute("UPDATE player_sp_table SET points=@points WHERE player_identifier=@player_identifier AND advancement=@advancement",
-                                   new MySqlParameter("player_identifier", Parent.Id),
+                                   new MySqlParameter("player_identifier", Parent.ID),
                                    new MySqlParameter("advancement", entry.Key),
                                    new MySqlParameter("points", entry.Value));
                 }
                 else
                 {
                     Database.Execute("INSERT INTO player_sp_table VALUES(@player_identifier, @advancement, @points);",
-                                    new MySqlParameter("player_identifier", Parent.Id),
+                                    new MySqlParameter("player_identifier", Parent.ID),
                                     new MySqlParameter("advancement", entry.Key),
                                     new MySqlParameter("points", entry.Value));
                 }

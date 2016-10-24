@@ -12,7 +12,7 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_DETAILS)
-                    .WriteInt(player.Id)
+                    .WriteInt(player.ID)
                     .WriteBoolean(false) // NOTE: Unknown
                     .WriteByte(player.Level)
                     .WriteShort(player.Job)

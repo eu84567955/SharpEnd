@@ -8,6 +8,46 @@ namespace SharpEnd.Packets.Helpers
 {
     public static class PlayerPacketHelper
     {
+        public static void AddPlayerStats(OutPacket outPacket, Player player)
+        {
+            outPacket
+                .WriteInt(player.ID)
+                .WriteInt(player.ID)
+                .WriteInt(45)
+                .WriteString(player.Name, 13)
+                .WriteByte(player.Gender)
+                .WriteByte(player.Skin)
+                .WriteInt(player.Face)
+                .WriteInt(player.Hair)
+                .WriteSByte(-1)
+                .WriteSByte()
+                .WriteSByte()
+                .WriteByte(player.Level)
+                .WriteShort(player.Job)
+                .WriteShort(player.Strength)
+                .WriteShort(player.Dexterity)
+                .WriteShort(player.Intelligence)
+                .WriteShort(player.Luck)
+                .WriteInt(player.HP)
+                .WriteInt(player.MaxHP)
+                .WriteInt(player.MP)
+                .WriteInt(player.MaxMP)
+                .WriteShort() // NOTE: Ability points.
+                .WriteByte() // NOTE: Skill tree.
+                .WriteLong(player.Experience)
+                .WriteInt(player.Fame)
+                .WriteInt() // NOTE: Weapon points (has to do with Zero/Mercedes).
+                .WriteInt() // NOTE: Gachapon experience (unusued anymore).
+                .WriteInt(player.Map.ID)
+                .WriteSByte(player.SpawnPoint)
+                .WriteInt() // NOTE: Unknown.
+                .WriteUShort() // NOTE: Special job (to differentiate between explorer jobs e.g. Dual Blade).
+                .WriteByte() // NOTE: Fatigue.
+                .WriteIntDateTime(DateTime.Now)
+                .WriteZero(36) // NOTE: Traits.
+                .WriteHexString("00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 23 24 D1 01 00 66 08 1D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 42 2C D2 01 B0 BD B0 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+        }
+
         public static void AddItemInfo(OutPacket outPacket, short slot, PlayerItem item, bool shortSlot = false)
         {
             if (slot != 0)

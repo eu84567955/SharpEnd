@@ -41,7 +41,7 @@ namespace SharpEnd.Packets
                     .WriteInt(npc.ID)
                     .WritePoint(npc.Position)
                     .WriteByte(npc.Stance)
-                    .WriteByte(npc.Stance) // NOTE: Flip
+                    .WriteByte(npc.Stance) // NOTE: Flip.
                     .WriteShort(npc.Foothold)
                     .WriteShort(npc.RX0)
                     .WriteShort(npc.RX1)

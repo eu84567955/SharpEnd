@@ -33,6 +33,16 @@ namespace SharpEnd.Game.Data
                 }
             }
         }
+
+        public bool IsValidReactor(int reactorID)
+        {
+            return m_reactors.ContainsKey(reactorID);
+        }
+
+        public ReactorData GetReactorData(int reactorID)
+        {
+            return m_reactors[reactorID];
+        }
     }
 
     #region Data Classes

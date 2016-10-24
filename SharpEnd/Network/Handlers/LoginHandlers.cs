@@ -40,7 +40,7 @@ namespace SharpEnd.Handlers
             // NOTE: Intentionally left blank.
         }
 
-        [PacketHandler(EHeader.CMSG_APPLY_HOTFIX)]
+        [PacketHandler(EHeader.CMSG_HOTFIX)]
         public static void ApplyHotfixHandler(GameClient client, InPacket inPacket)
         {
             client.Send(LoginPackets.ApplyHotfix());
@@ -49,7 +49,7 @@ namespace SharpEnd.Handlers
         [PacketHandler(EHeader.CMSG_NMCO)]
         public static void NMCOHandler(GameClient client, InPacket inPacket)
         {
-            client.Send(LoginPackets.NMCOResult(true));
+            client.Send(LoginPackets.NMCOResult(false));
         }
 
         [PacketHandler(EHeader.CMSG_AUTHENTICATION)]
@@ -143,7 +143,7 @@ namespace SharpEnd.Handlers
 
             try
             {
-                channel = MasterServer.Instance.Worlds[worldId][channelId];
+                channel = MasterServer.Instance.Worlds[worldId].Channels[channelId];
             }
             catch (KeyNotFoundException)
             {
@@ -156,14 +156,9 @@ namespace SharpEnd.Handlers
             client.Channel = channelId;
 
             byte count = (byte)(long)Database.Scalar("SELECT COUNT(*) FROM players WHERE account_id=@account_id", new MySqlParameter("account_id", client.Account.Id));
-            
-            if (!client.Account.ContainsVariable("character_slots"))
-            {
-                client.Account.SetVariable("character_slots", MasterServer.Instance.Login.DefaultCharacterSlots);
-            }
-            
-            int characterSlots = client.Account.GetVariable<int>("character_slots");
-            
+
+            int characterSlots = 3;
+
             using (DatabaseQuery query = Database.Query("SELECT * FROM players WHERE account_id=@account_id", new MySqlParameter("account_id", client.Account.Id)))
             {
                 client.Send(LoginPackets.PlayerList(count, query, characterSlots));
@@ -215,10 +210,7 @@ namespace SharpEnd.Handlers
                 objects.Add(inPacket.ReadInt());
             }
 
-            /*if (!MasterServer.Instance.ValidCharData.Validate(job, objects))
-            {
-                return;
-            }*/
+            // TODO: Validate object count & objects.
 
             int i = 0;
 
@@ -256,16 +248,16 @@ namespace SharpEnd.Handlers
 
             if (true) // TODO: Validate player creation.
             {
-                int playerID = Database.InsertAndReturnID("INSERT INTO players(account_id,world_id,name,gender,skin,face,hair,job) " +
-                                         "VALUES(@account_identifier,@name,@gender,@skin,@face,@hair,@job)",
-                                         new MySqlParameter("account_id", client.Account.Id),
-                                         new MySqlParameter("world_id", client.World),
-                                         new MySqlParameter("name", name),
-                                         new MySqlParameter("gender", gender),
-                                         new MySqlParameter("skin", skin),
-                                         new MySqlParameter("face", face),
-                                         new MySqlParameter("hair", hair),
-                                         new MySqlParameter("job", (ushort)job));
+                int playerID = Database.InsertAndReturnID("INSERT INTO players(account_id, world_id, name, gender, skin, face, hair, job) " +
+                                                          "VALUES(@account_id, @world_id, @name, @gender, @skin, @face, @hair, @job)",
+                                                          new MySqlParameter("account_id", client.Account.Id),
+                                                          new MySqlParameter("world_id", client.World),
+                                                          new MySqlParameter("name", name),
+                                                          new MySqlParameter("gender", gender),
+                                                          new MySqlParameter("skin", skin),
+                                                          new MySqlParameter("face", face),
+                                                          new MySqlParameter("hair", hair),
+                                                          new MySqlParameter("job", (ushort)job));
                 /*
                 foreach (int itemID in itemIDs)
                 {
@@ -339,7 +331,7 @@ namespace SharpEnd.Handlers
 
             int playerID = inPacket.ReadInt();
 
-            ChannelServer destination = MasterServer.Instance.Worlds[client.World][client.Channel];
+            ChannelServer destination = MasterServer.Instance.Worlds[client.World].Channels[client.Channel];
 
             destination.Migrations.Register(playerID, client.Account.Id, client.Host);
 
@@ -351,7 +343,7 @@ namespace SharpEnd.Handlers
         {
             int playerID = inPacket.ReadInt();
 
-            ChannelServer destination = MasterServer.Instance.Worlds[client.World][client.Channel];
+            ChannelServer destination = MasterServer.Instance.Worlds[client.World].Channels[client.Channel];
 
             destination.Migrations.Register(playerID, client.Account.Id, client.Host);
 

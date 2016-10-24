@@ -44,12 +44,12 @@ namespace SharpEnd.Game.Players
                 return;
             }
 
-            Database.Execute("DELETE FROM player_keymap WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.Id));
+            Database.Execute("DELETE FROM player_keymap WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.ID));
 
             foreach (KeyValuePair<int, Shortcut> entry in this)
             {
                 Database.Execute("INSERT INTO player_keymap VALUES(@player_identifier, @key_identifier, @type, @action)",
-                                 new MySqlParameter("player_identifier", Parent.Id),
+                                 new MySqlParameter("player_identifier", Parent.ID),
                                  new MySqlParameter("key_identifier", entry.Key),
                                  new MySqlParameter("type", entry.Value.Type),
                                  new MySqlParameter("action", entry.Value.Action));

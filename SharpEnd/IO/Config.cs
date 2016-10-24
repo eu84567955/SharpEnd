@@ -11,8 +11,6 @@ namespace SharpEnd.IO
 
         [JsonProperty("database")]
         private CDatabase m_databaseConfig;
-        [JsonProperty("server")]
-        private CServer m_serverConfig;
         [JsonProperty("login")]
         private CLogin m_loginConfig;
         [JsonProperty("worlds")]
@@ -34,10 +32,6 @@ namespace SharpEnd.IO
             {
                 instance = new Config
                 {
-                    m_serverConfig = new CServer
-                    {
-                        PreloadData = true
-                    },
                     m_databaseConfig = new CDatabase
                     {
                         Host = "localhost",
@@ -91,7 +85,6 @@ namespace SharpEnd.IO
         public static Config Instance { get { return m_instance; } }
 
         public CDatabase DatabaseConfig { get { return m_databaseConfig; } set { m_databaseConfig = value; } }
-        public CServer ServerConfig { get { return m_serverConfig; } set { m_serverConfig = value; } }
         public CLogin LoginConfig { get { return m_loginConfig; } set { m_loginConfig = value; } }
         public CWorld[] WorldConfig { get { return m_worldConfig; } set { m_worldConfig = value; } }
     }
@@ -102,11 +95,6 @@ namespace SharpEnd.IO
         public string Schema { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-    }
-
-    public struct CServer
-    {
-        public bool PreloadData { get; set; }
     }
 
     public struct CLogin

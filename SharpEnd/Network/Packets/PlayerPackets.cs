@@ -100,7 +100,7 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_PLAYER_SPAWN)
-                    .WriteInt(player.Id)
+                    .WriteInt(player.ID)
                     .WriteByte(player.Level)
                     .WriteString(player.Name)
                     .WriteString(string.Empty); // NOTE: Ultimate Explorer

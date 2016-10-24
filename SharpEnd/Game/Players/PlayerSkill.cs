@@ -42,7 +42,7 @@ namespace SharpEnd.Game.Players
             else
             {
                 Database.Execute("INSERT INTO player_skill VALUES(@player_identifier, @skill_identifier, @level, @max_level, @expiration);",
-                                new MySqlParameter("player_identifier", Parent.Parent.Id),
+                                new MySqlParameter("player_identifier", Parent.Parent.ID),
                                 new MySqlParameter("skill_identifier", ID),
                                 new MySqlParameter("level", Level),
                                 new MySqlParameter("max_level", MaxLevel),

@@ -25,13 +25,13 @@ namespace SharpEnd.Network
 
         public void Add(Player player)
         {
-            m_idToPlayerMap.Add(player.Id, player);
+            m_idToPlayerMap.Add(player.ID, player);
             m_nameToPlayerMap.Add(player.Name.ToLower(), player);
         }
 
         public void Remove(Player player)
         {
-            m_idToPlayerMap.Remove(player.Id);
+            m_idToPlayerMap.Remove(player.ID);
             m_nameToPlayerMap.Remove(player.Name.ToLower());
         }
 

@@ -35,12 +35,13 @@ namespace SharpEnd.Game.Players
         private PlayerSkills m_skills;
         private PlayerQuests m_quests;
 
+        private byte m_portals;
         private Map m_map;
         private EventManipulator m_event;
 
         public override int ObjectID { get { return m_id; } set { return; } }
         public GameClient Client { get { return m_client; } }
-        public int Id { get { return m_id; } }
+        public int ID { get { return m_id; } }
         public string Name { get { return m_name; } }
         public byte Gender { get { return m_gender; } }
         public byte Skin { get { return m_skin; } set { m_skin = value; } }
@@ -65,6 +66,8 @@ namespace SharpEnd.Game.Players
         public PlayerSkills Skills { get { return m_skills; } }
         public PlayerQuests Quests { get { return m_quests; } }
 
+        public byte Portals { get { return m_portals; } set { m_portals = value; } }
+        public new Map Map { get { return m_map; } set { m_map = value; } }
         public EventManipulator Event { get { return m_event; } set { m_event = value; } }
 
         internal Player(GameClient client, DatabaseQuery query)
@@ -91,29 +94,25 @@ namespace SharpEnd.Game.Players
             m_spawnPoint = query.Get<sbyte>("spawn_point");
             m_meso = query.Get<long>("meso");
 
-            using (DatabaseQuery itemsQuery = Database.Query(""))
+            m_items = new PlayerItems(this, null);
+            m_skills = new PlayerSkills(this, null);
+            m_quests = new PlayerQuests(this, null);
+
+            m_map = MasterServer.Instance.Worlds[m_client.World].Channels[m_client.Channel].MapFactory.GetMap(query.Get<int>("map"));
+
+            if (true) // TODO: Gm check.
             {
-                m_items = new PlayerItems(this, itemsQuery);
+                m_map = MasterServer.Instance.Worlds[m_client.World].Channels[m_client.Channel].MapFactory.GetMap(180000000);
             }
-
-            using (DatabaseQuery skillsQuery = Database.Query(""))
+            else if (m_map.ForcedMap != 999999999)
             {
-                m_skills = new PlayerSkills(this, skillsQuery);
+                m_map = MasterServer.Instance.Worlds[m_client.World].Channels[m_client.Channel].MapFactory.GetMap(m_map.ForcedMap);
             }
-
-            using (DatabaseQuery questsQuery = Database.Query(""))
+            else if (m_hp == 0)
             {
-                m_quests = new PlayerQuests(this, questsQuery);
-            }
+                m_hp = 50;
 
-            m_map = MasterServer.Instance.Worlds[m_client.World][m_client.Channel].MapFactory.GetMap(query.Get<int>("map"));
-
-            int forcedMap = m_map.ForcedMap;
-
-            if (forcedMap != 999999999) // TODO: Constant.
-            {
-                m_map = MasterServer.Instance.Worlds[m_client.World][m_client.Channel].MapFactory.GetMap(forcedMap);
-                m_spawnPoint = -1;
+                m_map = MasterServer.Instance.Worlds[m_client.World].Channels[m_client.Channel].MapFactory.GetMap(m_map.ReturnMap);
             }
 
             m_position = m_map.Portals[m_spawnPoint].Position;
@@ -150,9 +149,9 @@ namespace SharpEnd.Game.Players
                                new MySqlParameter("etcetera_slots", (byte)24),
                                new MySqlParameter("cash_slots", (byte)96));
 
-            Items.Save();
-            Skills.Save();
-            Quests.Save();
+            m_items.Save();
+            m_skills.Save();
+            m_quests.Save();
         }
 
         public void Died()

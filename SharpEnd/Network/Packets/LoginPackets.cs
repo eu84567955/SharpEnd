@@ -134,21 +134,21 @@ namespace SharpEnd.Packets
             {
                 outPacket
                     .WriteHeader(EHeader.SMSG_WORLD_INFORMATION)
-                    .WriteByte(world.Id)
+                    .WriteByte(world.ID)
                     .WriteString(world.Name)
                     .WriteByte((byte)world.Ribbon)
                     .WriteString(world.EventMessage)
                     .WriteShort(100)
                     .WriteShort(100)
                     .WriteByte()
-                    .WriteByte((byte)world.Count);
+                    .WriteByte((byte)world.Channels.Length);
 
-                foreach (ChannelServer channel in world)
+                foreach (ChannelServer channel in world.Channels)
                 {
                     outPacket
                         .WriteString($"{world.Name}-{channel.Id}")
                         .WriteInt(1) // TODO: Proper load.
-                        .WriteByte(world.Id)
+                        .WriteByte(world.ID)
                         .WriteByte(channel.Id)
                         .WriteBoolean(false); // NOTE: Adult channel.
                 }
@@ -243,8 +243,6 @@ namespace SharpEnd.Packets
 
                     outPacket.WriteByte();
 
-                    bool test = false;
-
                     bool rankings = query.Get<byte>("level") > 30;
 
                     outPacket.WriteBoolean(rankings);
@@ -260,7 +258,7 @@ namespace SharpEnd.Packets
                 }
 
                 outPacket
-                    .WriteByte((byte)EPICState.Disable)
+                    .WriteByte((byte)EPICState.Assigned)
                     .WriteByte()
                     .WriteInt(characterSlots)
                     .WriteInt()
@@ -277,8 +275,8 @@ namespace SharpEnd.Packets
         {
             // NOTE: Statistics
             outPacket
-                .WriteInt(query.Get<int>("identifier"))
-                .WriteInt(query.Get<int>("identifier"))
+                .WriteInt(query.Get<int>("player_id"))
+                .WriteInt(query.Get<int>("player_id"))
                 .WriteInt()
                 .WriteString(query.Get<string>("name"), 13)
                 .WriteByte(query.Get<byte>("gender"))
@@ -289,16 +287,16 @@ namespace SharpEnd.Packets
                 .WriteSByte() // NOTE: nMixAddHairColor
                 .WriteSByte() // NOTE: nMixHairBaseProb
                 .WriteByte(query.Get<byte>("level"))
-                .WriteUShort(query.Get<ushort>("job"))
-                .WriteUShort(query.Get<ushort>("strength"))
-                .WriteUShort(query.Get<ushort>("dexterity"))
-                .WriteUShort(query.Get<ushort>("intelligence"))
-                .WriteUShort(query.Get<ushort>("luck"))
-                .WriteUInt(query.Get<uint>("health"))
-                .WriteUInt(query.Get<uint>("max_health"))
-                .WriteUInt(query.Get<uint>("mana"))
-                .WriteUInt(query.Get<uint>("max_mana"))
-                .WriteUShort(query.Get<ushort>("ability_points"));
+                .WriteShort(query.Get<short>("job"))
+                .WriteShort(query.Get<short>("strength"))
+                .WriteShort(query.Get<short>("dexterity"))
+                .WriteShort(query.Get<short>("intelligence"))
+                .WriteShort(query.Get<short>("luck"))
+                .WriteUInt(query.Get<uint>("hp"))
+                .WriteUInt(query.Get<uint>("max_hp"))
+                .WriteUInt(query.Get<uint>("mp"))
+                .WriteUInt(query.Get<uint>("max_mp"))
+                .WriteUShort();//query.Get<ushort>("ability_points"));
 
             if (GameLogicUtilities.HasSeparatedSkillPoints(query.Get<ushort>("job")))
             {
@@ -306,18 +304,18 @@ namespace SharpEnd.Packets
             }
             else
             {
-                outPacket.WriteUShort(query.Get<ushort>("skill_points"));
+                outPacket.WriteUShort();// query.Get<ushort>("skill_points"));
             }
 
             outPacket
-                .WriteULong(query.Get<ulong>("experience"))
+                .WriteLong(query.Get<long>("experience"))
                 .WriteInt(query.Get<int>("fame"))
                 .WriteInt()
                 .WriteInt()
-                .WriteInt(query.Get<int>("map_identifier"))
-                .WriteSByte(query.Get<sbyte>("map_spawn"))
+                .WriteInt(query.Get<int>("map"))
+                .WriteSByte(query.Get<sbyte>("spawn_point"))
                 .WriteInt() // NOTE: Unknown
-                .WriteUShort(query.Get<ushort>("sub_job"))
+                .WriteUShort()// query.Get<ushort>("sub_job"))
                 .WriteByte() // NOTE: Fatigue
                 .WriteInt(); // NOTE: Date
 
@@ -338,9 +336,10 @@ namespace SharpEnd.Packets
                 }
             }
 
+            /*
             outPacket
                 .WriteByte() // NOTE: Unknown
-                .WriteLong() // NOTE: Unknown
+                .WriteLong((long)EExpirationTime.Zero) // NOTE: Unknown
                 .WriteInt() // NOTE: Battle experience
                 .WriteByte() // NOTE: Battle rank
                 .WriteInt() // NOTE: Battle points
@@ -373,6 +372,8 @@ namespace SharpEnd.Packets
             outPacket
                 .WriteLong() // NOTE: Last login date
                 .WriteBoolean(false); // NOTE: Burning event
+                */
+            outPacket.WriteHexString("00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 23 24 D1 01 00 66 08 1D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 42 2C D2 01 B0 BD B0 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
 
             // NOTE: Appereance
             outPacket
@@ -387,7 +388,7 @@ namespace SharpEnd.Packets
             SortedDictionary<byte, int> hiddenLayer = new SortedDictionary<byte, int>();
             SortedDictionary<byte, int> totemLayer = new SortedDictionary<byte, int>();
 
-            using (DatabaseQuery equipmentQuery = Database.Query("SELECT item_identifier,inventory_slot FROM player_item WHERE player_identifier=@player_identifier AND inventory_slot<0", new MySqlParameter("@player_identifier", query.Get<int>("identifier"))))
+            /*using (DatabaseQuery equipmentQuery = Database.Query("SELECT item_identifier,inventory_slot FROM player_item WHERE player_identifier=@player_identifier AND inventory_slot<0", new MySqlParameter("@player_identifier", query.Get<int>("identifier"))))
             {
                 while (equipmentQuery.NextRow())
                 {
@@ -401,7 +402,7 @@ namespace SharpEnd.Packets
 
                     visibleLayer.Add((byte)inventorySlot, itemID);
                 }
-            }
+            }*/
 
             foreach (KeyValuePair<byte, int> entry in visibleLayer)
             {
@@ -482,13 +483,9 @@ namespace SharpEnd.Packets
                     .WriteByte()
                     .WriteBytes(channelIP)
                     .WriteUShort(port)
-                    .WriteBytes(chatIP)
-                    .WriteUShort(port)
+                    .WriteHexString("00 00 00 00 00 00 0A 08 B9 85 57 22")
                     .WriteInt(playerID)
-                    .WriteByte()
-                    .WriteInt()
-                    .WriteByte()
-                    .WriteLong();
+                    .WriteHexString("00 00 00 00 00 00 00 69 54 F0 56 04 00 00 00");
 
                 return outPacket.ToArray();
             }

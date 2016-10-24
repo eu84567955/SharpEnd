@@ -20,7 +20,7 @@ namespace SharpEnd.Game.Commands.Gm
         [GmCommand("meso", "Sets your meso.")]
         public static void MesoCommand(Player player, int amount)
         {
-            player.Items.SetMeso(amount);
+            //player.Items.SetMeso(amount);
         }
     }
 }

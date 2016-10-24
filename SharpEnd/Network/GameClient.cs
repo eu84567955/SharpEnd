@@ -37,8 +37,8 @@ namespace SharpEnd.Network
         public GameClient(Socket socket)
         {
             m_id = -1; // TODO: Use the server to generate a RNG long.
-            m_world = byte.MaxValue;
-            m_channel = byte.MaxValue;
+            m_world = 0;
+            m_channel = 0;
             m_account = null;
             m_player = null;
 
@@ -48,8 +48,8 @@ namespace SharpEnd.Network
             m_socket.ReceiveBufferSize = 0xFFFF;
             m_socket.SendBufferSize = 0xFFFF;
 
-            m_sendCipher = new MapleCipher(176, siv, MapleCipher.TransformDirection.Encrypt);
-            m_recvCipher = new MapleCipher(176, riv, MapleCipher.TransformDirection.Decrypt);
+            m_sendCipher = new MapleCipher(Application.Version.Version, siv, MapleCipher.TransformDirection.Encrypt);
+            m_recvCipher = new MapleCipher(Application.Version.Version, riv, MapleCipher.TransformDirection.Decrypt);
 
             m_locker = new object();
             m_disposed = false;
@@ -290,13 +290,13 @@ namespace SharpEnd.Network
             Decrypt
         }
 
-        private short m_majorVersion;
+        private ushort m_majorVersion;
         private byte[] m_IV;
         private TransformDirection m_direction;
 
         private Action<byte[]> m_transformer;
 
-        public short MajorVersion
+        public ushort MajorVersion
         {
             get { return m_majorVersion; }
         }
@@ -305,7 +305,7 @@ namespace SharpEnd.Network
             get { return m_direction; }
         }
 
-        public MapleCipher(short majorVersion, byte[] IV, TransformDirection transformDirection)
+        public MapleCipher(ushort majorVersion, byte[] IV, TransformDirection transformDirection)
         {
             m_majorVersion = majorVersion;
 

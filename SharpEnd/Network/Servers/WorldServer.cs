@@ -1,11 +1,10 @@
-﻿using SharpEnd.Collections;
-using SharpEnd.IO;
+﻿using SharpEnd.IO;
 
 namespace SharpEnd.Network.Servers
 {
-    public sealed class WorldServer : SafeKeyedCollection<byte, ChannelServer>
+    public sealed class WorldServer
     {
-        private byte m_worldId;
+        private byte m_id;
         private ushort m_port;
         private string m_name;
         private EWorldRibbon m_ribbon;
@@ -14,12 +13,13 @@ namespace SharpEnd.Network.Servers
         private int m_experienceRate;
         private int m_mesoRate;
         private int m_dropRate;
+        private ChannelServer[] m_channels;
 
-        public WorldServer(byte worldId)
+        public WorldServer(byte id)
         {
-            m_worldId = worldId;
+            m_id = id;
 
-            var config = Config.Instance.WorldConfig[worldId];
+            var config = Config.Instance.WorldConfig[id];
 
             m_port = config.Port;
             m_name = config.Name;
@@ -29,14 +29,15 @@ namespace SharpEnd.Network.Servers
             m_experienceRate = config.ExperienceRate;
             m_mesoRate = config.MesoRate;
             m_dropRate = config.DropRate;
+            m_channels = new ChannelServer[config.Channels];
 
             for (byte channelId = 0; channelId < config.Channels; channelId++)
             {
-                Add(new ChannelServer(m_worldId, channelId, GetChannelPort(channelId), config.BackgroundEvents));
+                m_channels[channelId] = new ChannelServer(m_id, channelId, GetChannelPort(channelId), config.BackgroundEvents);
             }
         }
 
-        public byte Id { get { return m_worldId; } }
+        public byte ID { get { return m_id; } }
         public string Name { get { return m_name; } }
         public EWorldRibbon Ribbon { get { return m_ribbon; } }
         public string EventMessage { get { return m_eventMessage; } }
@@ -44,16 +45,12 @@ namespace SharpEnd.Network.Servers
         public int ExperienceRate { get { return m_experienceRate; } }
         public int MesoRate { get { return m_mesoRate; } }
         public int DropRate { get { return m_dropRate; } }
+        public ChannelServer[] Channels { get { return m_channels; } }
         public short Status { get { return 0; } } // TODO: Get status based on connected clients' count.
-
-        protected override byte GetKeyForItem(ChannelServer item)
-        {
-            return item.Id;
-        }
 
         public void Run()
         {
-            foreach (ChannelServer channel in this)
+            foreach (ChannelServer channel in m_channels)
             {
                 channel.Run();
             }
@@ -61,7 +58,7 @@ namespace SharpEnd.Network.Servers
 
         public void Shutdown()
         {
-            foreach (ChannelServer channel in this)
+            foreach (ChannelServer channel in m_channels)
             {
                 channel.Shutdown();
             }

@@ -12,11 +12,11 @@ namespace SharpEnd.Packets
                 outPacket
                     .WriteHeader(EHeader.SMSG_REACTOR_SPAWN)
                     .WriteInt(reactor.ObjectID)
-                    .WriteInt(reactor.Id)
+                    .WriteInt(reactor.ID)
                     .WriteByte() // TODO: State.
                     .WritePoint(reactor.Position)
                     .WriteByte(reactor.Stance)
-                    .WriteString(reactor.Label);
+                    .WriteString(reactor.Name);
 
                 return outPacket.ToArray();
             }

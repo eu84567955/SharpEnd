@@ -11,58 +11,43 @@ namespace SharpEnd.Game.Maps
         // TODO: Validate order of objects.
         protected override void InsertItem(Player item)
         {
-            /*foreach (Player player in this)
+            foreach (Player player in this)
             {
-                item.Send(PlayerPackets.PlayerSpawn(player));
+                item.Client.Send(PlayerPackets.PlayerSpawn(player));
             }
 
             Map.Send(PlayerPackets.PlayerSpawn(item));
 
             base.InsertItem(item);
 
+            foreach (Drop drop in Map.Drops)
+            {
+                item.Client.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
+            }
+
             foreach (Mob mob in Map.Mobs)
             {
-                item.Send(MobPackets.MobSpawn(mob, -1));
+                item.Client.Send(MobPackets.MobSpawn(mob, -1));
             }
 
             foreach (Npc npc in Map.Npcs)
             {
-                item.Send(NpcPackets.NpcSpawn(npc));
+                item.Client.Send(NpcPackets.NpcSpawn(npc));
             }
 
             foreach (Reactor reactor in Map.Reactors)
             {
-                item.Send(ReactorPackets.ReactorSpawn(reactor));
+                item.Client.Send(ReactorPackets.ReactorSpawn(reactor));
             }
 
-            foreach (Drop drop in Map.Drops)
-            {
-                item.Send(DropPackets.SpawnDrop(drop, EDropAnimation.Existing));
-            }
-
-            if (!string.IsNullOrEmpty(Map.EntryScript) || !string.IsNullOrEmpty(Map.InitialEntryScript))
-            {
-                bool initial = !string.IsNullOrEmpty(Map.InitialEntryScript);
-
-                if (initial && Count != 1)
-                {
-                    // NOTE: Initial map entry scripts are only executed if this is the first player to enter the map.
-                    // If the players' count does not equal to 1, we don't execute the script.
-
-                    return;
-                }
-
-                string name = initial ? Map.InitialEntryScript : Map.EntryScript;
-
-                // TODO: Run map script.
-            }*/
+            // TODO: Run map script.
         }
 
         protected override void RemoveItem(Player item)
         {
             base.RemoveItem(item);
-            
-            Map.Send(PlayerPackets.PlayerDespawn(item.Id));
+
+            Map.Send(PlayerPackets.PlayerDespawn(item.ID));
         }
     }
 }

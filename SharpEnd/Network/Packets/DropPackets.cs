@@ -30,7 +30,7 @@ namespace SharpEnd.Packets
                 }
 
                 outPacket
-                    .WriteInt(drop.Owner != null ? drop.Owner.Id : 0)
+                    .WriteInt(drop.Owner != null ? drop.Owner.ID : 0)
                     .WriteByte() // TODO: Figure this one out.
                     .WritePoint(drop.Position)
                     .WriteInt(drop.Dropper.ObjectID);
@@ -71,7 +71,7 @@ namespace SharpEnd.Packets
                     .WriteHeader(EHeader.SMSG_DROP_DESPAWN)
                     .WriteByte((byte)(picker == null ? 0 : 2))
                     .WriteInt(objectID)
-                    .WriteInt(picker != null ? picker.Id : 0);
+                    .WriteInt(picker != null ? picker.ID : 0);
 
                 return outPacket.ToArray();
             }

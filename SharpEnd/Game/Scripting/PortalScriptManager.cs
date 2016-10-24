@@ -28,12 +28,12 @@ namespace SharpEnd.Game.Scripting
 
         public bool RunScript(Player player, string scriptName, string portalID)
         {
-            if (m_playersBeingFulfilled.ContainsKey(player.Id))
+            if (m_playersBeingFulfilled.ContainsKey(player.ID))
             {
                 return false;
             }
 
-            m_playersBeingFulfilled.Add(player.Id, true);
+            m_playersBeingFulfilled.Add(player.ID, true);
 
             try
             {
@@ -63,7 +63,7 @@ namespace SharpEnd.Game.Scripting
             }
             finally
             {
-                m_playersBeingFulfilled.Remove(player.Id);
+                m_playersBeingFulfilled.Remove(player.ID);
             }
         }
     }

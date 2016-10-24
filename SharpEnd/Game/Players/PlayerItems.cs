@@ -12,8 +12,6 @@ namespace SharpEnd.Game.Players
     {
         public Player Parent { get; private set; }
 
-        public long Meso { get; private set; }
-
         public byte EquipmentSlots { get; set; }
         public byte UsableSlots { get; set; }
         public byte SetupSlots { get; set; }
@@ -25,15 +23,15 @@ namespace SharpEnd.Game.Players
         {
             Parent = player;
 
-            while (query.NextRow())
+            /*while (query.NextRow())
             {
                 Add(new PlayerItem(query));
-            }
+            }*/
         }
 
         public void Save()
         {
-            Database.Execute("DELETE FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.Id));
+            Database.Execute("DELETE FROM player_item WHERE player_identifier=@player_identifier", new MySqlParameter("player_identifier", Parent.ID));
 
             foreach (PlayerItem item in this)
             {
@@ -89,11 +87,11 @@ namespace SharpEnd.Game.Players
         public void WriteInitial(OutPacket outPacket)
         {
             outPacket
-                .WriteLong(Meso)
+                .WriteLong() // NOTE: Meso.
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
-                .WriteInt(Parent.Id)
+                .WriteInt(Parent.ID)
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()
@@ -104,12 +102,12 @@ namespace SharpEnd.Game.Players
                 .WriteByte()
                 .WriteByte()
                 .WriteByte()
-                .WriteByte(EquipmentSlots)
-                .WriteByte(UsableSlots)
-                .WriteByte(SetupSlots)
-                .WriteByte(EtceteraSlots)
-                .WriteByte(CashSlots)
-                .WriteLong()
+                .WriteByte(24)
+                .WriteByte(24)
+                .WriteByte(24)
+                .WriteByte(24)
+                .WriteByte(96)
+                .WriteLong((long)EExpirationTime.Zero)
                 .WriteByte();
 
             foreach (PlayerItem item in GetEquipped(EEquippedQueryMode.Normal))
@@ -170,7 +168,7 @@ namespace SharpEnd.Game.Players
             SortedDictionary<byte, int> hiddenLayer = new SortedDictionary<byte, int>();
             SortedDictionary<byte, int> totemLayer = new SortedDictionary<byte, int>();
 
-            foreach (PlayerItem item in GetEquipped())
+            /*foreach (PlayerItem item in GetEquipped())
             {
                 byte position = (byte)Math.Abs(item.Slot);
 
@@ -193,7 +191,7 @@ namespace SharpEnd.Game.Players
                 {
                     hiddenLayer[position] = item.ID;
                 }
-            }
+            }*/
 
             foreach (KeyValuePair<byte, int> entry in visibleLayer)
             {
@@ -224,40 +222,7 @@ namespace SharpEnd.Game.Players
                 .WriteInt(visibleLayer.GetOrDefault((byte)11, 0))
                 .WriteInt(visibleLayer.GetOrDefault((byte)15, 0)); // TODO: Find the correct slot
         }
-
-        public void SetMeso(int amount, bool sendPacket = false)
-        {
-            Meso = Math.Min(amount, 9999999999);
-
-            //Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
-        }
-
-        public bool ModifyMeso(int mod, bool sendPacket = false)
-        {
-            if (mod < 0)
-            {
-                if (-mod > Meso)
-                {
-                    return false;
-                }
-
-                Meso += mod;
-            }
-            else
-            {
-                if (Meso + mod < 0)
-                {
-                    return false;
-                }
-
-                Meso += mod;
-            }
-
-           // Parent.Send(PlayerPackets.PlayerUpdate(Parent, EPlayerUpdate.Meso));
-
-            return true;
-        }
-
+        
         public short GetNextFreeSlot(EInventoryType inventory)
         {
             for (short i = 1; i <= 24; i++) // TODO: Change 24 to the max slots of the inventory type

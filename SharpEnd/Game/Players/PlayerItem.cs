@@ -135,7 +135,7 @@ namespace SharpEnd.Game.Players
         {
             Database.Execute(@"INSERT INTO `player_item` 
                              VALUES(@player_identifier, @item_identifier, @inventory_slot, @quantity, @expiration, @slots, @scrolls, @strength, @dexterity, @intelligence, @luck, @health, @mana, @weapon_attack, @magic_attack, @weapon_defense, @magic_defense, @accuracy, @avoidability, @hands, @speed, @jump, @creator, @flags);",
-                             new MySqlParameter("player_identifier", Player.Id),
+                             new MySqlParameter("player_identifier", Player.ID),
                              new MySqlParameter("inventory_slot", Slot),
                              new MySqlParameter("item_identifier", ID),
                              new MySqlParameter("quantity", Quantity),

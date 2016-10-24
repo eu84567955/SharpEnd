@@ -5,19 +5,19 @@ namespace SharpEnd.Game.Maps
 {
     public sealed class Foothold
     {
-        public ushort ID { get; private set; }
-        public ushort NextID { get; private set; }
-        public ushort PreviousID { get; private set; }
-        public short DragForce { get; private set; }
-        public Line Line { get; private set; }
+        private short m_id;
+        private Line m_line;
+
+        public short ID { get { return m_id; } }
+        public Line Line { get { return m_line; } }
 
         public Foothold(MapFootholdData data)
         {
-            //ID = data.ID;
-            //NextID = data.NextID;
-            //PreviousID = data.PreviousID;
-            //DragForce = data.DragForce;
-            //Line = new Line(data.Point1, data.Point2);
+            m_id = data.ID;
+            m_line = new Line(
+                new Point(data.X1, data.Y1),
+                new Point(data.X2, data.Y2)
+                );
         }
     }
 }

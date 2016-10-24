@@ -1,4 +1,5 @@
-﻿using SharpEnd.Game.Data;
+﻿using SharpEnd.Drawing;
+using SharpEnd.Game.Data;
 using SharpEnd.Game.Maps;
 using SharpEnd.Game.Players;
 
@@ -21,7 +22,7 @@ namespace SharpEnd.Game.Life
         public Mob(MapSpawnData spawn)
             : this(spawn.ID)
         {
-            m_position = new Drawing.Point(spawn.X, spawn.Y);
+            m_position = new Point(spawn.X, spawn.Y);
             m_stance = 5; // TODO.
             m_foothold = spawn.Foothold;
         }

@@ -15,7 +15,7 @@ namespace SharpEnd
         public static readonly MapleVersion Version = new MapleVersion()
         {
             Version = 177,
-            Patch = "1",
+            Patch = "2",
             Localisation = ELocalisation.Global
         };
 
@@ -29,7 +29,7 @@ namespace SharpEnd
         private static void Main(string[] args)
         {
             Log.Entitle();
-
+            
             try
             {
                 Config.Load();

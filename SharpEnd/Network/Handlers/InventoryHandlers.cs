@@ -111,12 +111,12 @@ namespace SharpEnd.Handlers
             inPacket.ReadInt(); // NOTE: Ticks.
             int amount = inPacket.ReadInt();
 
-            if (amount < 10 || amount > 50000 || amount > player.Items.Meso)
+            /*if (amount < 10 || amount > 50000 || amount > player.Items.Meso)
             {
                 return;
-            }
+            }*/
 
-            player.Items.ModifyMeso(-amount, true);
+            //player.Items.ModifyMeso(-amount, true);
 
             Meso meso = new Meso(amount)
             {
@@ -155,7 +155,7 @@ namespace SharpEnd.Handlers
 
                 if (drop is Meso)
                 {
-                    player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
+                    //player.Items.ModifyMeso(((Meso)drop).Amount, true); // TODO: Check for max meso.
                 }
                 else if (drop is PlayerItem)
                 {

@@ -13,25 +13,25 @@ namespace SharpEnd.Handlers
         [PacketHandler(EHeader.CMSG_MIGRATE_TO_CHANNEL)]
         public static void MigrateToChannelHandler(GameClient client, InPacket inPacket)
         {
-            inPacket.ReadInt(); // NOTE: World alliance identifier.
+            inPacket.ReadInt(); // NOTE: Unknown.
             int accountID;
             int playerID = inPacket.ReadInt();
 
-            if ((accountID = MasterServer.Instance.Worlds[client.World][client.Channel].Migrations.Validate(playerID, client.Host)) == 0)
+            if ((accountID = MasterServer.Instance.Worlds[client.World].Channels[client.Channel].Migrations.Validate(playerID, client.Host)) == 0)
             {
                 client.Close();
 
                 return;
             }
 
-            using (DatabaseQuery query = Database.Query("SELECT * FROM account WHERE identifier=@identifier", new MySqlParameter("@identifier", accountID)))
+            using (DatabaseQuery query = Database.Query("SELECT * FROM accounts WHERE account_id=@account_id", new MySqlParameter("@account_id", accountID)))
             {
                 query.NextRow();
 
                 client.Account = new Account(query);
             }
 
-            using (DatabaseQuery query = Database.Query("SELECT * FROM player WHERE identifier=@identifier", new MySqlParameter("@identifier", playerID)))
+            using (DatabaseQuery query = Database.Query("SELECT * FROM players WHERE player_id=@player_id", new MySqlParameter("@player_id", playerID)))
             {
                 query.NextRow();
 
@@ -44,14 +44,9 @@ namespace SharpEnd.Handlers
 
             client.Player.Map.Players.Add(client.Player);
 
-            //client.Send(PlayerPackets.Keymap(client.Player.Keymap));
-
             string tickerMessage = MasterServer.Instance.Worlds[client.World].TickerMessage;
 
             client.Send(MessagePackets.Notification(tickerMessage, ENoticeType.Ticker));
-
-            // TODO: Check for expired items.
-            // TODO: Check for berserk.
         }
 
         [PacketHandler(EHeader.CMSG_MIGRATE_TO_CASH_SHOP)]

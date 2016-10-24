@@ -455,7 +455,7 @@ namespace SharpEnd.Handlers
                     return;
                 }
 
-                client.Send(PlayersPackets.PlayerDetails(target, playerID == player.Id));
+                client.Send(PlayersPackets.PlayerDetails(target, playerID == player.ID));
             }
             else
             {

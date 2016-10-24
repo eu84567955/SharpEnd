@@ -1,7 +1,6 @@
 ﻿using SharpEnd.Game.Maps;
 using SharpEnd.Game.Scripting;
 using SharpEnd.Migrations;
-using SharpEnd.Network;
 using SharpEnd.Threading;
 
 namespace SharpEnd.Network.Servers
@@ -31,6 +30,12 @@ namespace SharpEnd.Network.Servers
             m_respawnTimer = new Delay(15 * 1000, () => { }, true);
         }
 
+        public byte Id { get { return m_channelId; } }
+        public ushort Port { get { return m_port; } }
+        public MapFactory MapFactory { get { return m_mapFactory; } }
+        public EventManager EventManager { get { return m_eventManager; } }
+        public MigrationRequests Migrations { get { return m_migrations; } }
+
         public void Run()
         {
             m_eventManager.Initialize();
@@ -42,11 +47,5 @@ namespace SharpEnd.Network.Servers
             m_acceptor.Stop();
             m_respawnTimer.Cancel();
         }
-
-        public byte Id { get { return m_channelId; } }
-        public ushort Port { get { return m_port; } }
-        public MapFactory MapFactory { get { return m_mapFactory; } }
-        public EventManager EventManager { get { return m_eventManager; } }
-        public MigrationRequests Migrations { get { return m_migrations; } }
     }
 }
